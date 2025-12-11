@@ -84,7 +84,7 @@ export function Modal({ isOpen, onClose, type }: ModalProps) {
               {data.title}
             </h3>
           </div>
-          <button onClick={onClose} className="dark:text-[#A3A9B7] light:text-[#5B6B8C] dark:hover:text-white light:hover:text-[#0C182C] transition-colors">
+          <button onClick={onClose} className="dark:text-[#A3A9B7] light:text-[#5B6B8C] dark:hover:text-white light:hover:text-[#0C182C] transition-colors cursor-pointer">
             <X className="w-6 h-6" />
           </button>
         </div>
@@ -115,13 +115,13 @@ export function Modal({ isOpen, onClose, type }: ModalProps) {
           <div className="flex items-center justify-between gap-3 pt-2">
             <button 
               onClick={onClose}
-              className="px-4 py-2 dark:bg-white/5 dark:hover:bg-white/10 light:bg-black/5 light:hover:bg-black/10 border dark:border-white/10 light:border-black/10 rounded-lg text-sm dark:text-white light:text-[#0C182C] transition-colors"
+              className="px-4 py-2 dark:bg-white/5 dark:hover:bg-white/10 light:bg-black/5 light:hover:bg-black/10 border dark:border-white/10 light:border-black/10 rounded-lg text-sm dark:text-white light:text-[#0C182C] transition-colors cursor-pointer"
             >
               Close
             </button>
             <button 
               onClick={onClose}
-              className="px-4 py-2 bg-[#00C2B8] hover:bg-[#00C2B8]/90 rounded-lg text-sm text-white transition-colors flex items-center gap-2"
+              className="px-4 py-2 bg-[#00C2B8] hover:bg-[#00C2B8]/90 rounded-lg text-sm text-white transition-colors flex items-center gap-2 cursor-pointer"
             >
               {data.action}
               <ArrowRight className="w-4 h-4" />

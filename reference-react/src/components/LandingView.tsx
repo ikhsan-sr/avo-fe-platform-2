@@ -550,7 +550,7 @@ export function LandingView({ onStartAnalysis }: LandingViewProps) {
                 className={`relative rounded-[10px] shrink-0 w-full transition-all duration-300 transform overflow-hidden ${
                   isLoading 
                     ? 'bg-[rgba(22,36,62,0.6)] cursor-not-allowed border border-[rgba(0,194,184,0.15)]' 
-                    : 'bg-[#00c2b8] hover:bg-[#00a098] hover:scale-[1.02] shadow-[0px_10px_15px_-3px_rgba(0,194,184,0.3),0px_4px_6px_-4px_rgba(0,194,184,0.3)] group'
+                    : 'cursor-pointer bg-[#00c2b8] hover:bg-[#00a098] hover:scale-[1.02] shadow-[0px_10px_15px_-3px_rgba(0,194,184,0.3),0px_4px_6px_-4px_rgba(0,194,184,0.3)] group'
                 }`}
                 data-name="Button"
               >

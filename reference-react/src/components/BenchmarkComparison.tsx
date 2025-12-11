@@ -329,7 +329,7 @@ export function BenchmarkComparison({ userDomain, userScore, userScores }: Bench
                         <div className="content-stretch flex gap-[16px] items-center relative shrink-0">
                           <button
                             onClick={() => toggleCompetitor(competitor.domain)}
-                            className="flex items-center justify-center relative shrink-0"
+                            className="flex items-center justify-center relative shrink-0 cursor-pointer"
                           >
                             <div className={`flex-none transition-transform duration-300 ${isExpanded ? '' : 'rotate-180'}`}>
                               <div className="bg-[rgba(0,194,184,0.05)] content-stretch flex items-center justify-center p-[8.105px] relative rounded-[7.368px] size-[28px]">
@@ -363,7 +363,7 @@ export function BenchmarkComparison({ userDomain, userScore, userScores }: Bench
                             e.stopPropagation();
                             handleRemoveCompetitor(competitor.domain);
                           }}
-                          className="relative shrink-0 size-[28px] hover:opacity-70 transition-opacity"
+                          className="relative shrink-0 size-[28px] hover:opacity-70 transition-opacity cursor-pointer"
                         >
                           <svg className="block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 28 28">
                             <g>

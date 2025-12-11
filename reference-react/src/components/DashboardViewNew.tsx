@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useState, useCallback } from 'react';
 import { usePollingGet } from '../../../src/hooks/api';
 import { storageUtils } from '../../../src/utils/storage';
 import { timeAgo } from '../../../src/utils/timeUtils';
@@ -139,23 +139,148 @@ function useDashboardAnimation(
   detailScores: DetailScoreSet,
   isLoading: boolean,
 ) {
+  const [loadingOptimize, setLoadingOptimize] = useState(true);
+  const [loadingManifest, setLoadingManifest] = useState(true);
+  const [loadingGenerative, setLoadingGenerative] = useState(true);
+  const [loadingAuthority, setLoadingAuthority] = useState(true);
+  const [loadingInfo, setLoadingInfo] = useState(true);
+
+  const [displayOpt, setDisplayOpt] = useState(0);
+  const [displayMan, setDisplayMan] = useState(0);
+  const [displayGen, setDisplayGen] = useState(0);
+  const [displayAvg, setDisplayAvg] = useState<number | undefined>(undefined);
+  const [progressStroke, setProgressStroke] = useState(0);
+
+  const [barOpt, setBarOpt] = useState(0);
+  const [barMan, setBarMan] = useState(0);
+  const [barGen, setBarGen] = useState(0);
+
+  useEffect(() => {
+    if (isLoading) {
+      const resetId = setTimeout(() => {
+        setLoadingOptimize(true);
+        setLoadingManifest(true);
+        setLoadingGenerative(true);
+        setLoadingAuthority(true);
+        setLoadingInfo(true);
+        setDisplayOpt(0);
+        setDisplayMan(0);
+        setDisplayGen(0);
+        setDisplayAvg(undefined);
+        setProgressStroke(0);
+        setBarOpt(0);
+        setBarMan(0);
+        setBarGen(0);
+      }, 0);
+      return () => clearTimeout(resetId);
+    }
+
+    const animateCount = (target: number | undefined, setter: (n: number) => void, durationMs = 1000) => {
+      if (!Number.isFinite(target as number)) return;
+      const t = target as number;
+      let current = 0;
+      const steps = Math.max(1, Math.floor(durationMs / 16));
+      const inc = t / steps;
+      const id = setInterval(() => {
+        current += inc;
+        if (current >= t) {
+          setter(Math.round(t));
+          clearInterval(id);
+        } else {
+          setter(Math.ceil(current));
+        }
+      }, 16);
+      return id as unknown as number;
+    };
+
+    const animateBar = (target: number | undefined, setter: (n: number) => void, durationMs = 1000) => {
+      if (!Number.isFinite(target as number)) return;
+      const t = target as number;
+      let current = 0;
+      const steps = Math.max(1, Math.floor(durationMs / 16));
+      const inc = t / steps;
+      const id = setInterval(() => {
+        current += inc;
+        if (current >= t) {
+          setter(t);
+          clearInterval(id);
+        } else {
+          setter(current);
+        }
+      }, 16);
+      return id as unknown as number;
+    };
+
+    const timers: number[] = [];
+    const timeouts: number[] = [];
+
+    timeouts.push(setTimeout(() => {
+      setLoadingOptimize(false);
+      timers.push(animateCount(localScores.opt, setDisplayOpt, 800) as number);
+      timers.push(animateBar(localScores.opt, setBarOpt, 800) as number);
+    }, 500) as unknown as number);
+
+    timeouts.push(setTimeout(() => {
+      setLoadingManifest(false);
+      timers.push(animateCount(localScores.man, setDisplayMan, 800) as number);
+      timers.push(animateBar(localScores.man, setBarMan, 800) as number);
+    }, 1500) as unknown as number);
+
+    timeouts.push(setTimeout(() => {
+      setLoadingGenerative(false);
+      timers.push(animateCount(localScores.gen, setDisplayGen, 800) as number);
+      timers.push(animateBar(localScores.gen, setBarGen, 800) as number);
+    }, 2500) as unknown as number);
+
+    timeouts.push(setTimeout(() => {
+      setLoadingAuthority(false);
+      if (Number.isFinite(localScores.avg as number)) {
+        const avg = localScores.avg as number;
+        let current = 0;
+        const steps = Math.max(1, Math.floor(1000 / 10));
+        const inc = avg / steps;
+        const id = setInterval(() => {
+          current += inc;
+          if (current >= avg) {
+            setDisplayAvg(Math.round(avg));
+            setProgressStroke(avg);
+            clearInterval(id);
+          } else {
+            const val = Math.ceil(current);
+            setDisplayAvg(val);
+            setProgressStroke(val);
+          }
+        }, 10);
+        timers.push(id as unknown as number);
+      }
+    }, 3500) as unknown as number);
+
+    timeouts.push(setTimeout(() => {
+      setLoadingInfo(false);
+    }, 4500) as unknown as number);
+
+    return () => {
+      timeouts.forEach((to) => clearTimeout(to as any));
+      timers.forEach((tm) => tm && clearInterval(tm as any));
+    };
+  }, [isLoading, localScores.opt, localScores.man, localScores.gen, localScores.avg]);
+
   const loading = useMemo(
-    () => ({ optimize: isLoading, manifest: isLoading, generative: isLoading, authority: isLoading, info: isLoading }),
-    [isLoading]
+    () => ({ optimize: loadingOptimize, manifest: loadingManifest, generative: loadingGenerative, authority: loadingAuthority, info: loadingInfo }),
+    [loadingOptimize, loadingManifest, loadingGenerative, loadingAuthority, loadingInfo]
   );
 
   const display = useMemo(
-    () => ({ opt: localScores.opt, man: localScores.man, gen: localScores.gen, details: detailScores }),
-    [localScores, detailScores]
+    () => ({ opt: displayOpt, man: displayMan, gen: displayGen, details: detailScores }),
+    [displayOpt, displayMan, displayGen, detailScores]
   );
 
   const barWidths = useMemo(
-    () => ({ opt: localScores.opt ?? 0, man: localScores.man ?? 0, gen: localScores.gen ?? 0 }),
-    [localScores]
+    () => ({ opt: barOpt, man: barMan, gen: barGen }),
+    [barOpt, barMan, barGen]
   );
 
-  const displayScore = localScores.avg;
-  const progressStroke = localScores.avg ?? 0;
+  const displayScore = displayAvg;
 
   return { loading, displayScore, progressStroke, barWidths, display };
 }
@@ -276,7 +401,7 @@ function ScoreCardContent({
               {details.map((d, idx) => (
                 <div key={idx} className="content-stretch flex font-['Manrope:Regular',sans-serif] font-normal items-center justify-between leading-[normal] relative shrink-0 text-nowrap w-full whitespace-pre" data-name="Detail Item">
                   <p className="relative shrink-0 text-[#a7a7a7] text-[14px]">{d.label}</p>
-                  <p className="relative shrink-0 text-[16px] text-white">{loading ? <LoadingDots color="#ffffff" /> : (typeof d.value === 'number' && Number.isFinite(d.value) ? Math.round(d.value) : <LoadingDots color="#ffffff" />)}</p>
+                  <p className="relative shrink-0 text-[16px] text-white">{loading ? <LoadingDots color="#ffffff" /> : (typeof d.value === 'number' && Number.isFinite(d.value) ? Math.round(d.value) : '-' )}</p>
                 </div>
               ))}
             </div>
@@ -288,11 +413,12 @@ function ScoreCardContent({
 }
 
 export function DashboardView({ domain, onOpenModal, onReset, analysisId }: DashboardViewProps) {
+  const shouldStopPolling = useCallback((data: any) => (data as any)?.data?.json?.status === 'finished', []);
   const { data: analysisData, isLoading } = usePollingGet<any>(
     analysisId ? `/findone-main-process?id=${analysisId}` : null,
     {
       interval: 2000,
-      shouldStopPolling: (data) => (data as any)?.data?.json?.status === 'finished',
+      shouldStopPolling,
       initialLoading: true,
     }
   );
@@ -302,6 +428,12 @@ export function DashboardView({ domain, onOpenModal, onReset, analysisId }: Dash
     detailScores,
     isLoading,
   );
+  const [animated, setAnimated] = useState(false);
+
+  useEffect(() => {
+    const t = setTimeout(() => setAnimated(true), 100);
+    return () => clearTimeout(t);
+  }, []);
 
 
   return (
@@ -322,7 +454,7 @@ export function DashboardView({ domain, onOpenModal, onReset, analysisId }: Dash
       <DashboardHeader onReset={onReset} />
 
       {/* Main Content */}
-      <div className={`relative flex-1`}>
+      <div className={`relative flex-1 fade-enter ${animated ? 'fade-enter-active' : ''}`} style={{ transitionDelay: '100ms' }}>
         {/* Authority Score Circle - Slides from center to left */}
         <div 
           className="absolute top-[60px] left-1/2"
