@@ -10,6 +10,7 @@ import svgBase from "../imports/svg-1zduvpfvng";
 import svgExtra from "../imports/svg-9xenn4o0xj";
 const svgPaths = { ...svgBase, ...svgExtra };
 import svgPathsGenerative from "../imports/svg-v5gyqubm8s";
+import Image from 'next/image';
 // import imgPattern from "figma:asset/e777a57b939162b876418f1793283d92d18bafa0.png";
 
 interface DashboardViewProps {
@@ -206,13 +207,13 @@ function AuthorityScoreCircle({
               typeof displayScore === 'number' && Number.isFinite(displayScore) ? (
                 <p className="[text-shadow:rgba(50,255,4,0.15)_0px_4px_60px,rgba(4,11,23,0.3)_0px_10px_25px] font-['Satoshi:Bold',sans-serif] leading-[96px] not-italic text-[#defcd7] text-[96px] text-nowrap tracking-[-4.8px] whitespace-pre">{Math.round(displayScore)}</p>
               ) : (
-                <p className="[text-shadow:rgba(50,255,4,0.15)_0px_4px_60px,rgba(4,11,23,0.3)_0px_10px_25px] font-['Satoshi:Bold',sans-serif] leading-[96px] not-italic text-[#defcd7] text-[96px] text-nowrap tracking-[-4.8px] whitespace-pre">-</p>
+                <LoadingSpinner size={48} />
               )
             )}
           </div>
           <div className="box-border content-stretch flex items-center justify-center px-[16px] py-[8px] relative rounded-[2.68435e+07px] shrink-0" data-name="Container">
             <div aria-hidden="true" className="absolute border border-[rgba(0,194,184,0.4)] border-solid inset-0 pointer-events-none rounded-[2.68435e+07px]" />
-            <p className="font-['Manrope:Medium',sans-serif] font-medium leading-[16px] relative shrink-0 text-[#00c2b8] text-[14px] text-nowrap whitespace-pre">{createdAt ? timeAgo(createdAt) : '-'}</p>
+            <p className="font-['Manrope:Medium',sans-serif] font-medium leading-[16px] relative shrink-0 text-[#00c2b8] text-[14px] text-nowrap whitespace-pre">{createdAt ? timeAgo(createdAt) : <LoadingDots color="#00c2b8" />}</p>
           </div>
         </div>
       </div>
@@ -251,7 +252,7 @@ function ScoreCardContent({
                       <p className="relative shrink-0 text-[#919eab] text-[24px]">/100</p>
                     </>
                   ) : (
-                    <p className="relative shrink-0 text-[36px] text-white">-</p>
+                    <LoadingDots color="#ffffff" />
                   )
                 )}
               </div>
@@ -275,7 +276,7 @@ function ScoreCardContent({
               {details.map((d, idx) => (
                 <div key={idx} className="content-stretch flex font-['Manrope:Regular',sans-serif] font-normal items-center justify-between leading-[normal] relative shrink-0 text-nowrap w-full whitespace-pre" data-name="Detail Item">
                   <p className="relative shrink-0 text-[#a7a7a7] text-[14px]">{d.label}</p>
-                  <p className="relative shrink-0 text-[16px] text-white">{loading ? <LoadingDots color="#ffffff" /> : (typeof d.value === 'number' && Number.isFinite(d.value) ? Math.round(d.value) : '-')}</p>
+                  <p className="relative shrink-0 text-[16px] text-white">{loading ? <LoadingDots color="#ffffff" /> : (typeof d.value === 'number' && Number.isFinite(d.value) ? Math.round(d.value) : <LoadingDots color="#ffffff" />)}</p>
                 </div>
               ))}
             </div>
@@ -380,23 +381,8 @@ export function DashboardView({ domain, onOpenModal, onReset, analysisId }: Dash
                     </div>
                     <p className="font-['Manrope:SemiBold',sans-serif] font-semibold leading-[normal] relative shrink-0 text-[#00c2b8] text-[14px] text-nowrap tracking-[0.6px] uppercase whitespace-pre">OPTIMIZE</p>
                   </div>
-                  <div className="relative shrink-0 size-[18px] opacity-30">
-                    <svg className="block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 18 18">
-                      <g id="Group 1">
-                        <path d={svgPaths.p3561600} fill="url(#paint0_linear_4029_129)" id="Vector" opacity="0.5" />
-                        <path d={svgPaths.p21f2da00} fill="url(#paint1_linear_4029_129)" id="Union" opacity="0.8" />
-                      </g>
-                      <defs>
-                        <linearGradient gradientUnits="userSpaceOnUse" id="paint0_linear_4029_129" x1="8.99979" x2="8.99979" y1="0.0817732" y2="17.9178">
-                          <stop stopColor="#00C2B8" />
-                          <stop offset="1" stopColor="#00A198" />
-                        </linearGradient>
-                        <linearGradient gradientUnits="userSpaceOnUse" id="paint1_linear_4029_129" x1="8.99992" x2="8.99992" y1="-7.60982e-05" y2="17.9999">
-                          <stop stopColor="#00C2B8" />
-                          <stop offset="1" stopColor="#00A198" />
-                        </linearGradient>
-                      </defs>
-                    </svg>
+                  <div className="relative shrink-0 size-[18px]">
+                    <Image src="icons/exclamation.svg" alt="Exclamation Icon" width={18} height={18} />
                   </div>
                 </div>
               </div>
@@ -438,23 +424,8 @@ export function DashboardView({ domain, onOpenModal, onReset, analysisId }: Dash
                     </div>
                     <p className="font-['Manrope:SemiBold',sans-serif] font-semibold leading-[normal] relative shrink-0 text-[#c6f558] text-[14px] text-nowrap tracking-[0.6px] uppercase whitespace-pre">MANIFEST</p>
                   </div>
-                  <div className="relative shrink-0 size-[18px] opacity-30">
-                    <svg className="block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 18 18">
-                      <g id="Group 1">
-                        <path d={svgPaths.p3561600} fill="url(#paint0_linear_4029_129_manifest)" id="Vector" opacity="0.5" />
-                        <path d={svgPaths.p21f2da00} fill="url(#paint1_linear_4029_129_manifest)" id="Union" opacity="0.8" />
-                      </g>
-                      <defs>
-                        <linearGradient gradientUnits="userSpaceOnUse" id="paint0_linear_4029_129_manifest" x1="8.99979" x2="8.99979" y1="0.0817732" y2="17.9178">
-                          <stop stopColor="#00C2B8" />
-                          <stop offset="1" stopColor="#00A198" />
-                        </linearGradient>
-                        <linearGradient gradientUnits="userSpaceOnUse" id="paint1_linear_4029_129_manifest" x1="8.99992" x2="8.99992" y1="-7.60982e-05" y2="17.9999">
-                          <stop stopColor="#00C2B8" />
-                          <stop offset="1" stopColor="#00A198" />
-                        </linearGradient>
-                      </defs>
-                    </svg>
+                 <div className="relative shrink-0 size-[18px]">
+                    <Image src="icons/exclamation.svg" alt="Exclamation Icon" width={18} height={18} />
                   </div>
                 </div>
               </div>
@@ -503,25 +474,8 @@ export function DashboardView({ domain, onOpenModal, onReset, analysisId }: Dash
                     </div>
                     <p className="font-['Manrope:SemiBold',sans-serif] font-semibold leading-[normal] relative shrink-0 text-[#f8b400] text-[14px] text-nowrap tracking-[0.6px] uppercase whitespace-pre">GENERATIVE</p>
                   </div>
-                  <div className="mix-blend-luminosity relative shrink-0 size-[17.836px]">
-                    <div className="absolute bottom-[-0.92%] left-0 right-[-0.92%] top-0">
-                      <svg className="block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 18 18">
-                        <g id="Frame 1" style={{ mixBlendMode: "luminosity" }}>
-                          <path d={svgPaths.p2ef25880} fill="url(#paint0_linear_4029_122)" fillOpacity="0.5" id="Vector" opacity="0.1" />
-                          <path d={svgPaths.p21f2da00} fill="url(#paint1_linear_4029_122)" fillOpacity="0.5" id="Union" />
-                        </g>
-                        <defs>
-                          <linearGradient gradientUnits="userSpaceOnUse" id="paint0_linear_4029_122" x1="8.91805" x2="8.91805" y1="3.49475e-05" y2="17.8361">
-                            <stop stopColor="#00C2B8" />
-                            <stop offset="1" stopColor="#00A198" />
-                          </linearGradient>
-                          <linearGradient gradientUnits="userSpaceOnUse" id="paint1_linear_4029_122" x1="8.99992" x2="8.99992" y1="-7.60982e-05" y2="17.9999">
-                            <stop stopColor="#00C2B8" />
-                            <stop offset="1" stopColor="#00A198" />
-                          </linearGradient>
-                        </defs>
-                      </svg>
-                    </div>
+                  <div className="relative shrink-0 size-[18px]">
+                    <Image src="icons/exclamation.svg" alt="Exclamation Icon" width={18} height={18} />
                   </div>
                 </div>
               </div>

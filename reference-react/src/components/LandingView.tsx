@@ -3,17 +3,6 @@ import { motion, AnimatePresence } from 'motion/react';
 import svgPaths from "../imports/svg-cvpwbi0swb";
 import { usePost } from '../../../src/hooks/api';
 import { storageUtils } from '../../../src/utils/storage';
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "./ui/alert-dialog";
 // import imgPattern from "figma:asset/e777a57b939162b876418f1793283d92d18bafa0.png";
 
 interface LandingViewProps {
@@ -602,36 +591,6 @@ export function LandingView({ onStartAnalysis }: LandingViewProps) {
         </div>
       </div>
 
-      {/* Storage Management Footer */}
-      <div className="fixed bottom-4 right-4 z-50">
-        <AlertDialog>
-          <AlertDialogTrigger asChild>
-            <button className="text-[12px] text-[#919eab] hover:text-[#00c2b8] transition-colors opacity-50 hover:opacity-100">
-              Clear Storage
-            </button>
-          </AlertDialogTrigger>
-          <AlertDialogContent className="bg-[#16243e] border border-[rgba(252,252,252,0.06)] text-[#fcfcfc]">
-            <AlertDialogHeader>
-              <AlertDialogTitle>Clear Local Storage?</AlertDialogTitle>
-              <AlertDialogDescription className="text-[#919eab]">
-                This will remove all saved analysis data from your browser. This action cannot be undone.
-              </AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogFooter>
-              <AlertDialogCancel className="bg-transparent border-[rgba(252,252,252,0.1)] text-[#fcfcfc] hover:bg-[rgba(252,252,252,0.05)]">Cancel</AlertDialogCancel>
-              <AlertDialogAction 
-                onClick={() => {
-                  storageUtils.clearAvoData();
-                  alert("Storage cleared successfully");
-                }}
-                className="bg-[#e3170a] hover:bg-[#c41207] text-white border-none"
-              >
-                Clear Data
-              </AlertDialogAction>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
-      </div>
     </div>
   );
 }
