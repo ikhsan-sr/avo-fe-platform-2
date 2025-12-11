@@ -330,7 +330,7 @@ function AuthorityScoreCircle({
               <LoadingSpinner size={48} />
             ) : (
               typeof displayScore === 'number' && Number.isFinite(displayScore) ? (
-                <p className="[text-shadow:rgba(50,255,4,0.15)_0px_4px_60px,rgba(4,11,23,0.3)_0px_10px_25px] font-['Satoshi:Bold',sans-serif] leading-[96px] not-italic text-[#defcd7] text-[96px] text-nowrap tracking-[-4.8px] whitespace-pre">{Math.round(displayScore)}</p>
+                <p className="[text-shadow:rgba(50,255,4,0.15)_0px_4px_60px,rgba(4,11,23,0.3)_0px_10px_25px] font-['Satoshi:Bold',sans-serif] not-italic text-[#defcd7] text-[48px] sm:text-[64px] md:text-[96px] leading-[60px] md:leading-[96px] text-nowrap tracking-[-2px] md:tracking-[-4.8px] whitespace-pre">{Math.round(displayScore)}</p>
               ) : (
                 <LoadingSpinner size={48} />
               )
@@ -373,8 +373,8 @@ function ScoreCardContent({
                 ) : (
                   typeof score === 'number' && Number.isFinite(score) ? (
                     <>
-                      <p className="relative shrink-0 text-[36px] text-white">{Math.round(score)}</p>
-                      <p className="relative shrink-0 text-[#919eab] text-[24px]">/100</p>
+                      <p className="relative shrink-0 text-[28px] md:text-[36px] text-white">{Math.round(score)}</p>
+                      <p className="relative shrink-0 text-[#919eab] text-[18px] md:text-[24px]">/100</p>
                     </>
                   ) : (
                     <LoadingDots color="#ffffff" />
@@ -429,15 +429,25 @@ export function DashboardView({ domain, onOpenModal, onReset, analysisId }: Dash
     isLoading,
   );
   const [animated, setAnimated] = useState(false);
+  const [viewportWidth, setViewportWidth] = useState(typeof window !== 'undefined' ? window.innerWidth : 1024);
 
   useEffect(() => {
     const t = setTimeout(() => setAnimated(true), 100);
     return () => clearTimeout(t);
   }, []);
 
+  useEffect(() => {
+    const handler = () => setViewportWidth(window.innerWidth);
+    window.addEventListener('resize', handler);
+    return () => window.removeEventListener('resize', handler);
+  }, []);
+
+  const isMd = viewportWidth >= 768;
+  const isTablet = viewportWidth >= 640 && viewportWidth < 768;
+
 
   return (
-    <div className="bg-[#0c192c] relative size-full flex flex-col" data-name="AVQ">
+    <div className="bg-[#0c192c] relative size-full flex flex-col overflow-x-hidden" data-name="AVQ">
       {/* Pattern Background */}
       <div className="absolute h-[777px] left-0 opacity-10 top-0 w-full pointer-events-none" data-name="Pattern">
         <div aria-hidden="true" className="absolute inset-0">
@@ -454,11 +464,11 @@ export function DashboardView({ domain, onOpenModal, onReset, analysisId }: Dash
       <DashboardHeader onReset={onReset} />
 
       {/* Main Content */}
-      <div className={`relative flex-1 fade-enter ${animated ? 'fade-enter-active' : ''}`} style={{ transitionDelay: '100ms' }}>
-        {/* Authority Score Circle - Slides from center to left */}
-        <div 
-          className="absolute top-[60px] left-1/2"
-          style={{ transform: 'translateX(calc(-50% - 200px))' }}
+    <div className={`relative flex-1 min-h-screen md:min-h-[1100px] fade-enter ${animated ? 'fade-enter-active' : ''}`} style={{ transitionDelay: '100ms' }}>
+        {/* Authority Score Circle - desktop absolute, mobile centered */}
+        <div
+          className={isMd ? "absolute top-[60px] left-1/2" : "flex justify-center px-4"}
+          style={isMd ? { transform: 'translateX(calc(-50% - 200px))' } : undefined}
         >
           <AuthorityScoreCircle 
             loading={loading.authority}
@@ -468,20 +478,24 @@ export function DashboardView({ domain, onOpenModal, onReset, analysisId }: Dash
           />
         </div>
 
-        {/* Info Container - Appears after Authority Score slides left */}
+        {/* Info Container - desktop absolute, mobile centered */}
         <div 
-          className="absolute top-[60px]"
-          style={{ left: 'calc(50% - 8px)', opacity: 1, transform: 'translateX(0)' }}
+          className={isMd ? "absolute top-[60px]" : "flex justify-center px-4 mt-6"}
+          style={isMd ? { left: 'calc(50% - 8px)', opacity: 1, transform: 'translateX(0)' } : undefined}
         >
           <InfoContainer domain={domain} loading={loading.info} score={localScores.avg ?? 0} />
         </div>
 
-        {/* Three Cards */}
-        <div className="absolute content-stretch flex items-start justify-between left-1/2 top-[380px] translate-x-[-50%] w-[871px]" data-name="Card">
+        {/* Three Cards - responsive grid */}
+        <div className={
+          isMd
+            ? "absolute content-stretch flex items-start justify-between left-1/2 top-[380px] translate-x-[-50%] w-[871px]"
+            : `w-full px-4 grid gap-4 ${isTablet ? 'grid-cols-2' : 'grid-cols-1'} mt-6`
+        } data-name="Card">
           {/* OPTIMIZE Card */}
           <div 
             onClick={() => onOpenModal('omg_optimize')}
-            className="content-stretch flex flex-col items-start relative rounded-[12px] shrink-0 w-[277px] cursor-pointer transition-all duration-300 hover:scale-[1.02] hover:border-[rgba(0,194,184,0.3)] hover:shadow-[0px_8px_32px_0px_rgba(0,194,184,0.2)]"
+            className="content-stretch flex flex-col items-start relative rounded-[12px] shrink-0 w-full md:w-[277px] min-h-[48px] cursor-pointer transition-all duration-300 hover:scale-[1.02] hover:border-[rgba(0,194,184,0.3)] hover:shadow-[0px_8px_32px_0px_rgba(0,194,184,0.2)]"
           >
             <div aria-hidden="true" className="absolute border border-[rgba(240,241,244,0.05)] border-solid inset-0 pointer-events-none rounded-[12px] shadow-[0px_4px_16px_0px_rgba(112,112,112,0.15)]" />
             
@@ -537,7 +551,7 @@ export function DashboardView({ domain, onOpenModal, onReset, analysisId }: Dash
           {/* MANIFEST Card */}
           <div 
             onClick={() => onOpenModal('omg_manifest')}
-            className="content-stretch flex flex-col items-start relative rounded-[12px] shrink-0 w-[277px] cursor-pointer transition-all duration-300 hover:scale-[1.02] hover:border-[rgba(207,255,4,0.3)] hover:shadow-[0px_8px_32px_0px_rgba(207,255,4,0.2)]"
+            className="content-stretch flex flex-col items-start relative rounded-[12px] shrink-0 w-full md:w-[277px] min-h-[48px] cursor-pointer transition-all duration-300 hover:scale-[1.02] hover:border-[rgba(207,255,4,0.3)] hover:shadow-[0px_8px_32px_0px_rgba(207,255,4,0.2)]"
           >
             <div aria-hidden="true" className="absolute border border-[rgba(240,241,244,0.05)] border-solid inset-0 pointer-events-none rounded-[12px] shadow-[0px_4px_16px_0px_rgba(112,112,112,0.15)]" />
             
@@ -581,7 +595,7 @@ export function DashboardView({ domain, onOpenModal, onReset, analysisId }: Dash
           {/* GENERATIVE Card */}
           <div 
             onClick={() => onOpenModal('omg_generative')}
-            className="content-stretch flex flex-col items-start relative rounded-[12px] shrink-0 w-[277px] cursor-pointer transition-all duration-300 hover:scale-[1.02] hover:border-[rgba(248,180,0,0.3)] hover:shadow-[0px_8px_32px_0px_rgba(248,180,0,0.2)]"
+            className="content-stretch flex flex-col items-start relative rounded-[12px] shrink-0 w-full md:w-[277px] min-h-[48px] cursor-pointer transition-all duration-300 hover:scale-[1.02] hover:border-[rgba(248,180,0,0.3)] hover:shadow-[0px_8px_32px_0px_rgba(248,180,0,0.2)]"
           >
             <div aria-hidden="true" className="absolute border border-[rgba(240,241,244,0.05)] border-solid inset-0 pointer-events-none rounded-[12px] shadow-[0px_4px_16px_0px_rgba(112,112,112,0.15)]" />
             
@@ -629,18 +643,33 @@ export function DashboardView({ domain, onOpenModal, onReset, analysisId }: Dash
           </div>
         </div>
 
-        {/* Benchmark Comparison - Below the three cards */}
-        <div className="absolute content-stretch flex items-start justify-center left-1/2 top-[700px] translate-x-[-50%] w-[871px]">
-          <BenchmarkComparison 
-            userDomain={domain}
-            userScore={localScores.avg ?? 0}
-            userScores={{
-              opt: localScores.opt ?? 0,
-              man: localScores.man ?? 0,
-              gen: localScores.gen ?? 0,
-              avg: localScores.avg ?? 0,
-            }}
-          />
+        {/* Benchmark Comparison - responsive container with horizontal scroll on small screens */}
+        <div className={isMd ? "absolute content-stretch flex items-start justify-center left-1/2 top-[700px] translate-x-[-50%] w-[871px]" : "w-full px-4 overflow-x-auto mt-6"}>
+          {isMd ? (
+            <BenchmarkComparison 
+              userDomain={domain}
+              userScore={localScores.avg ?? 0}
+              userScores={{
+                opt: localScores.opt ?? 0,
+                man: localScores.man ?? 0,
+                gen: localScores.gen ?? 0,
+                avg: localScores.avg ?? 0,
+              }}
+            />
+          ) : (
+            <div className="min-w-[871px]">
+              <BenchmarkComparison 
+                userDomain={domain}
+                userScore={localScores.avg ?? 0}
+                userScores={{
+                  opt: localScores.opt ?? 0,
+                  man: localScores.man ?? 0,
+                  gen: localScores.gen ?? 0,
+                  avg: localScores.avg ?? 0,
+                }}
+              />
+            </div>
+          )}
         </div>
       </div>
     </div>
