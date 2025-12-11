@@ -1,0 +1,551 @@
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap');
+@import url('https://api.fontshare.com/v2/css?f[]=satoshi@700,900,500,400,300&display=swap');
+
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  --font-size: 16px;
+  
+  /* Avonetiq Brand Color System - Updated to match Figma */
+  --brand-primary: #0c192c;        /* Dark Navy - Primary brand color */
+  --brand-primary-light: #16243e;  /* Light Navy */
+  --brand-primary-dark: #0a0f1e;   /* Darker Navy */
+  
+  --brand-accent: #00c2b8;         /* Cyan Accent - Primary interactive */
+  --brand-accent-light: #4DE3FF;   /* Light Cyan */
+  --brand-accent-dark: #00a098;    /* Dark Cyan */
+  
+  --brand-secondary: #cfff04;      /* Lime Yellow - Secondary accent */
+  --brand-warning: #f8b400;        /* Orange - Warning/Highlight */
+  --brand-error: #e3170a;          /* Error Red */
+  
+  --brand-neutral-100: #fcfcfc;    /* Text white */
+  --brand-neutral-200: #EDF1F7;    /* Light background */
+  --brand-neutral-300: #C4CDD5;    /* Border */
+  --brand-neutral-400: #919EAB;    /* Muted text */
+  --brand-neutral-500: #637381;    /* Secondary text */
+  --brand-neutral-600: #454F5b;    /* Primary text */
+  --brand-neutral-700: #212B36;    /* Dark text */
+  --brand-neutral-800: #161B22;    /* Darkest */
+  
+  /* Light Mode Theme Variables */
+  --background: #FFFFFF;
+  --foreground: #0c192c;
+  --card: #FFFFFF;
+  --card-foreground: #0c192c;
+  --popover: #FFFFFF;
+  --popover-foreground: #0c192c;
+  --primary: #0c192c;
+  --primary-foreground: #fcfcfc;
+  --secondary: #00c2b8;
+  --secondary-foreground: #0c192c;
+  --muted: #F7F9FC;
+  --muted-foreground: #637381;
+  --accent: #00c2b8;
+  --accent-foreground: #0c192c;
+  --destructive: #e3170a;
+  --destructive-foreground: #fcfcfc;
+  --border: rgba(12, 25, 44, 0.1);
+  --input: transparent;
+  --input-background: #F7F9FC;
+  --switch-background: #C4CDD5;
+  --font-weight-medium: 500;
+  --font-weight-normal: 400;
+  --ring: #00c2b8;
+  --chart-1: #00c2b8;
+  --chart-2: #cfff04;
+  --chart-3: #f8b400;
+  --chart-4: #e3170a;
+  --chart-5: #16243e;
+  --radius: 0.625rem;
+  --sidebar: #F7F9FC;
+  --sidebar-foreground: #0c192c;
+  --sidebar-primary: #0c192c;
+  --sidebar-primary-foreground: #fcfcfc;
+  --sidebar-accent: #EDF1F7;
+  --sidebar-accent-foreground: #0c192c;
+  --sidebar-border: rgba(12, 25, 44, 0.1);
+  --sidebar-ring: #00c2b8;
+}
+
+.dark {
+  /* Dark Mode Theme Variables */
+  --background: #0c192c;
+  --foreground: #fcfcfc;
+  --card: #16243e;
+  --card-foreground: #fcfcfc;
+  --popover: #16243e;
+  --popover-foreground: #fcfcfc;
+  --primary: #00c2b8;
+  --primary-foreground: #0c192c;
+  --secondary: #cfff04;
+  --secondary-foreground: #0c192c;
+  --muted: #16243e;
+  --muted-foreground: #919EAB;
+  --accent: #00c2b8;
+  --accent-foreground: #0c192c;
+  --destructive: #e3170a;
+  --destructive-foreground: #fcfcfc;
+  --border: rgba(252, 252, 252, 0.06);
+  --input: rgba(252, 252, 252, 0.05);
+  --ring: #00c2b8;
+  --font-weight-medium: 500;
+  --font-weight-normal: 400;
+  --chart-1: #00c2b8;
+  --chart-2: #cfff04;
+  --chart-3: #f8b400;
+  --chart-4: #e3170a;
+  --chart-5: #16243e;
+  --sidebar: #0a0f1e;
+  --sidebar-foreground: #fcfcfc;
+  --sidebar-primary: #00c2b8;
+  --sidebar-primary-foreground: #0c192c;
+  --sidebar-accent: #16243e;
+  --sidebar-accent-foreground: #fcfcfc;
+  --sidebar-border: rgba(252, 252, 252, 0.06);
+  --sidebar-ring: #00c2b8;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-input-background: var(--input-background);
+  --color-switch-background: var(--switch-background);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+/**
+ * Base typography. This is not applied to elements which have an ancestor with a Tailwind text class.
+ */
+@layer base {
+  :where(:not(:has([class*=' text-']), :not(:has([class^='text-'])))) {
+    h1 {
+      font-size: var(--text-2xl);
+      font-weight: var(--font-weight-medium);
+      line-height: 1.5;
+    }
+
+    h2 {
+      font-size: var(--text-xl);
+      font-weight: var(--font-weight-medium);
+      line-height: 1.5;
+    }
+
+    h3 {
+      font-size: var(--text-lg);
+      font-weight: var(--font-weight-medium);
+      line-height: 1.5;
+    }
+
+    h4 {
+      font-size: var(--text-base);
+      font-weight: var(--font-weight-medium);
+      line-height: 1.5;
+    }
+
+    p {
+      font-size: var(--text-base);
+      font-weight: var(--font-weight-normal);
+      line-height: 1.5;
+    }
+
+    label {
+      font-size: var(--text-base);
+      font-weight: var(--font-weight-medium);
+      line-height: 1.5;
+    }
+
+    button {
+      font-size: var(--text-base);
+      font-weight: var(--font-weight-medium);
+      line-height: 1.5;
+    }
+
+    input {
+      font-size: var(--text-base);
+      font-weight: var(--font-weight-normal);
+      line-height: 1.5;
+    }
+  }
+}
+
+html {
+  font-size: var(--font-size);
+}
+
+/* Custom AVO Styles - Avonetiq Brand */
+body {
+  background: linear-gradient(135deg, #0A2540 0%, #1A3A5C 100%);
+  background-attachment: fixed;
+  color: #F7F9FC;
+  overflow-x: hidden;
+  font-family: 'Manrope', sans-serif;
+  min-height: 100vh;
+  position: relative;
+}
+
+/* Cyan Accent Overlays */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: 
+    radial-gradient(circle at 20% 30%, rgba(0, 212, 255, 0.08) 0%, transparent 50%),
+    radial-gradient(circle at 80% 70%, rgba(99, 91, 255, 0.06) 0%, transparent 40%),
+    radial-gradient(circle at 50% 50%, rgba(0, 212, 255, 0.04) 0%, transparent 60%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Light Mode Styles */
+.light body {
+  background: linear-gradient(135deg, #FFFFFF 0%, #F7F9FC 50%, #EDF1F7 100%);
+  background-attachment: fixed;
+  color: #0A2540;
+}
+
+.light body::before {
+  background-image: 
+    radial-gradient(circle at 20% 30%, rgba(0, 212, 255, 0.05) 0%, transparent 50%),
+    radial-gradient(circle at 80% 70%, rgba(99, 91, 255, 0.03) 0%, transparent 40%);
+}
+
+/* Dark Mode - Keep original navy gradient */
+.dark body {
+  background: linear-gradient(135deg, #0A2540 0%, #1A3A5C 100%);
+  background-attachment: fixed;
+  color: #F7F9FC;
+}
+
+.dark body::before {
+  background-image: 
+    radial-gradient(circle at 20% 30%, rgba(0, 212, 255, 0.12) 0%, transparent 50%),
+    radial-gradient(circle at 80% 70%, rgba(99, 91, 255, 0.08) 0%, transparent 40%);
+}
+
+.font-display {
+  font-family: 'Satoshi', 'Space Grotesk', sans-serif;
+  font-weight: 700;
+}
+
+/* Avonetiq Brand Glass Panels */
+.glass-panel {
+  background: rgba(22, 36, 62, 0.8);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(252, 252, 252, 0.06);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
+}
+
+.dark .glass-panel {
+  background: rgba(22, 36, 62, 0.8);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(252, 252, 252, 0.06);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
+}
+
+.light .glass-panel {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(12, 25, 44, 0.1);
+  box-shadow: 0 8px 32px 0 rgba(12, 25, 44, 0.08);
+}
+
+.glass-card {
+  background: rgba(22, 36, 62, 0.7);
+  border: 1px solid rgba(252, 252, 252, 0.06);
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 16px 0 rgba(0, 0, 0, 0.15);
+}
+
+.dark .glass-card {
+  background: rgba(22, 36, 62, 0.7);
+  border: 1px solid rgba(252, 252, 252, 0.06);
+  box-shadow: 0 4px 16px 0 rgba(0, 0, 0, 0.15);
+}
+
+.light .glass-card {
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid rgba(12, 25, 44, 0.12);
+  box-shadow: 0 4px 16px 0 rgba(12, 25, 44, 0.06);
+}
+
+.glass-card:hover {
+  border-color: rgba(0, 194, 184, 0.5);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 40px -10px rgba(0, 194, 184, 0.3);
+}
+
+.dark .glass-card:hover {
+  border-color: rgba(0, 194, 184, 0.5);
+  box-shadow: 0 12px 40px -10px rgba(0, 194, 184, 0.3);
+}
+
+.light .glass-card:hover {
+  border-color: rgba(0, 194, 184, 0.3);
+  box-shadow: 0 12px 40px -10px rgba(0, 194, 184, 0.2);
+}
+
+/* Custom Monospace Font - Using Manrope */
+.font-mono {
+  font-family: 'Manrope', sans-serif;
+  font-weight: 500;
+}
+
+/* Background Grid - Avonetiq Brand */
+.bg-grid {
+  background-image: 
+    linear-gradient(rgba(0, 212, 255, 0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 212, 255, 0.06) 1px, transparent 1px);
+  background-size: 50px 50px;
+}
+
+.dark .bg-grid {
+  background-image: 
+    linear-gradient(rgba(0, 212, 255, 0.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 212, 255, 0.08) 1px, transparent 1px);
+  background-size: 50px 50px;
+}
+
+.light .bg-grid {
+  background-image: 
+    linear-gradient(rgba(10, 37, 64, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(10, 37, 64, 0.04) 1px, transparent 1px);
+  background-size: 50px 50px;
+}
+
+/* Animations */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes pulse-slow {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.animate-pulse-slow {
+  animation: pulse-slow 3s ease-in-out infinite;
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.3s ease-out;
+}
+
+.fade-enter {
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+.fade-enter-active {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 600ms ease-out, transform 600ms ease-out;
+}
+
+/* Feed scroll - Avonetiq Brand */
+.feed-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 212, 255, 0.4) transparent;
+}
+
+.feed-scroll::-webkit-scrollbar {
+  width: 4px;
+}
+
+.feed-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.feed-scroll::-webkit-scrollbar-thumb {
+  background: rgba(0, 212, 255, 0.4);
+  border-radius: 4px;
+}
+
+.dark .feed-scroll {
+  scrollbar-color: rgba(0, 212, 255, 0.5) transparent;
+}
+
+.dark .feed-scroll::-webkit-scrollbar-thumb {
+  background: rgba(0, 212, 255, 0.5);
+}
+
+.light .feed-scroll {
+  scrollbar-color: rgba(10, 37, 64, 0.3) transparent;
+}
+
+.light .feed-scroll::-webkit-scrollbar-thumb {
+  background: rgba(10, 37, 64, 0.3);
+}
+
+/* Feed item animation */
+@keyframes slide-in {
+  from {
+    opacity: 0;
+    transform: translateX(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.feed-item-animate {
+  animation: slide-in 0.3s ease-out;
+}
+
+/* Sunshine Reflection Animation */
+@keyframes shimmer {
+  0%, 100% {
+    transform: translateX(-5%) translateY(-5%);
+    opacity: 1;
+  }
+  50% {
+    transform: translateX(5%) translateY(5%);
+    opacity: 0.7;
+  }
+}
+
+@keyframes shimmer-delayed {
+  0%, 100% {
+    transform: translateX(3%) translateY(-3%) scale(1);
+    opacity: 0.8;
+  }
+  50% {
+    transform: translateX(-3%) translateY(3%) scale(1.02);
+    opacity: 1;
+  }
+}
+
+.animate-shimmer {
+  animation: shimmer 5s ease-in-out infinite;
+}
+
+.animate-shimmer-delayed {
+  animation: shimmer-delayed 7s ease-in-out infinite;
+  animation-delay: 1s;
+}
+
+@keyframes spin-slow {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin-slow {
+  animation: spin-slow 8s linear infinite;
+}
+
+/* Accessibility: reduce motion */
+@media (prefers-reduced-motion: reduce) {
+  .ambient-grad,
+  .ambient-blobs,
+  .ambient-particles {
+    animation: none;
+    transition: none;
+    opacity: 0.9;
+  }
+}
+
+/* Loading Spinner Animation */
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+
+/* Pulse animation for loading */
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.animate-pulse {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
