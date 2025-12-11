@@ -70,7 +70,7 @@ export function Modal({ isOpen, onClose, type }: ModalProps) {
   const data = modalData[type];
 
   return (
-    <div className={`fixed inset-0 z-[100] flex items-center justify-center p-4 transition-opacity duration-300 ${isOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}>
+    <div className={`hidden fixed inset-0 z-[100] flex items-center justify-center p-4 transition-opacity duration-300 ${isOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}>
       <div className="absolute inset-0 dark:bg-[#0C182C]/80 light:bg-white/80 backdrop-blur-sm" onClick={onClose}></div>
       <div className={`relative w-full max-w-2xl glass-panel rounded-2xl overflow-hidden border dark:border-white/10 light:border-black/10 shadow-2xl transition-all duration-300 ${isOpen ? 'scale-100 opacity-100' : 'scale-95 opacity-0'}`}>
         

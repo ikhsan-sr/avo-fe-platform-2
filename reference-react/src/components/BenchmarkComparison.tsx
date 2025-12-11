@@ -747,16 +747,16 @@ export function BenchmarkComparison({ userDomain, userScore, userScores }: Bench
                               </div>
 
                               {/* Divider */}
-                              <div className="h-0 relative shrink-0 w-full">
+                              {/* <div className="h-0 relative shrink-0 w-full">
                                 <div className="absolute bottom-[-0.5px] left-0 right-0 top-[-0.5px]">
                                   <svg className="block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 871 1">
                                     <path d="M0 0.5H871" stroke="white" strokeOpacity="0.1" />
                                   </svg>
                                 </div>
-                              </div>
+                              </div> */}
 
                               {/* Charts Placeholder */}
-                              <div className="content-stretch flex items-start justify-between relative shrink-0 w-full gap-[24px]">
+                              {/* <div className="content-stretch flex items-start justify-between relative shrink-0 w-full gap-[24px]">
                                 <div className="flex-1 flex flex-col items-center justify-center p-8 bg-[rgba(22,36,62,0.3)] rounded-[12px]">
                                   <p className="text-[#939393] text-center mb-2">Radar Chart</p>
                                   <p className="text-[#6a6a6b] text-[12px] text-center">Visual comparison across all metrics</p>
@@ -765,7 +765,7 @@ export function BenchmarkComparison({ userDomain, userScore, userScores }: Bench
                                   <p className="text-[#939393] text-center mb-2">Line Chart</p>
                                   <p className="text-[#6a6a6b] text-[12px] text-center">Trend analysis over time</p>
                                 </div>
-                              </div>
+                              </div> */}
                             </div>
                           </div>
                         </div>

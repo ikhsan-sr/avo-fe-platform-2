@@ -4,6 +4,7 @@
 /node_modules
 /reference-react/node_modules
 /reference-react/build
+/reference-react/dist
 /.pnp
 .pnp.*
 .yarn/*

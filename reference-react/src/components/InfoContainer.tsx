@@ -328,7 +328,7 @@ export function InfoContainer({ domain, loading = false, score }: InfoContainerP
       </div>
 
       {/* Brand Context Card */}
-      <div className={`bg-gradient-to-r content-stretch flex flex-col from-[rgba(19,46,61,0.7)] items-start p-[16px] relative rounded-[14px] shrink-0 to-[rgba(10,58,85,0.7)] transition-all duration-900 ease-out ${loading ? 'opacity-0 translate-y-6' : 'opacity-100 translate-y-0'}`} data-name="BrandContext" style={{ transitionDelay: loading ? '0ms' : '1200ms' }}>
+      <div className={`hidden bg-gradient-to-r content-stretch flex flex-col from-[rgba(19,46,61,0.7)] items-start p-[16px] relative rounded-[14px] shrink-0 to-[rgba(10,58,85,0.7)] transition-all duration-900 ease-out ${loading ? 'opacity-0 translate-y-6' : 'opacity-100 translate-y-0'}`} data-name="BrandContext" style={{ transitionDelay: loading ? '0ms' : '1200ms' }}>
         <div aria-hidden="true" className="absolute border-[0.8px] border-[rgba(252,252,252,0.06)] border-solid inset-0 pointer-events-none rounded-[14px] shadow-[0px_4px_16px_0px_rgba(0,0,0,0.15)]" />
         <div className="content-stretch flex gap-[20px] items-center relative shrink-0">
           {/* Value Rating */}
