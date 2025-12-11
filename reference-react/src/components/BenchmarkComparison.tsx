@@ -1,6 +1,9 @@
 import { useState } from 'react';
+import type { JSX } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import svgPaths from "../imports/svg-k5ed7ohuxp";
+import pathsA from "../imports/svg-2kr7bspzf9";
+import pathsB from "../imports/svg-uaoyunhbeu";
+const svgPaths = { ...pathsA, ...pathsB };
 import Vector from "../imports/Vector";
 
 interface Competitor {
@@ -620,7 +623,7 @@ export function BenchmarkComparison({ userDomain, userScore, userScores }: Bench
                                             <div className="relative shrink-0 size-[16px]">
                                               <svg className="block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 16 16">
                                                 <g>
-                                                  <path d={svgPaths.p2ea5a080} stroke="white" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.33333" />
+                                                  <path d={svgPaths.p17134c00} stroke="white" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.33333" />
                                                 </g>
                                               </svg>
                                             </div>
@@ -727,7 +730,7 @@ export function BenchmarkComparison({ userDomain, userScore, userScores }: Bench
                                             <div className="relative shrink-0 size-[16px]">
                                               <svg className="block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 16 16">
                                                 <g>
-                                                  <path d={svgPaths.p2ea5a080} stroke="white" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.33333" />
+                                                  <path d={svgPaths.p17134c00} stroke="white" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.33333" />
                                                 </g>
                                               </svg>
                                             </div>

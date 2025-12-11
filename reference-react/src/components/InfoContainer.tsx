@@ -160,8 +160,8 @@ export function InfoContainer({ domain, loading = false, score }: InfoContainerP
       return (
         <svg className="block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 24 24">
           <g id="Icon">
-            <path d={svgPaths.p1f023100} id="Vector" stroke="var(--stroke-0, #E3170A)" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" />
-            <path d={state === 'veryPoorly' ? svgPaths.p3bebc700 : svgPaths.p60f4400} fill="var(--fill-0, #E3170A)" id="Union" />
+            <path d={'p1f023100' in svgPaths ? svgPaths.p1f023100 : (svgPaths as any).p11b100} id="Vector" stroke="var(--stroke-0, #E3170A)" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" />
+            <path d={('p3bebc700' in svgPaths) ? (svgPaths as any).p3bebc700 : (svgPaths as any).p60f4400} fill="var(--fill-0, #E3170A)" id="Union" /> 
           </g>
         </svg>
       );
@@ -170,7 +170,7 @@ export function InfoContainer({ domain, loading = false, score }: InfoContainerP
         <div className="absolute bottom-0 left-0 right-[-18.75%] top-0">
           <svg className="block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 29 24">
             <g id="Icon">
-              <path d={svgPaths.p11b100} id="Vector" stroke="var(--stroke-0, #F8B400)" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" />
+              <path d={'p11b100' in svgPaths ? (svgPaths as any).p11b100 : (svgPaths as any).p1f023100} id="Vector" stroke="var(--stroke-0, #F8B400)" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" />
               <path d="M12.5 12L27.5 10" id="Vector 3" stroke="var(--stroke-0, #F8B400)" strokeLinecap="round" strokeWidth="2" />
             </g>
           </svg>
@@ -181,7 +181,7 @@ export function InfoContainer({ domain, loading = false, score }: InfoContainerP
       return (
         <svg className="block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 24 24">
           <g id="Icon">
-            <path d={svgPaths.p1f023100} id="Vector" stroke="var(--stroke-0, #00C2B8)" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" />
+            <path d={'p1f023100' in svgPaths ? svgPaths.p1f023100 : (svgPaths as any).p11b100} id="Vector" stroke="var(--stroke-0, #00C2B8)" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" />
             <path d="M9 11L12 14L22 4" id="Vector_2" stroke="var(--stroke-0, #00C2B8)" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" />
           </g>
         </svg>
@@ -199,7 +199,7 @@ export function InfoContainer({ domain, loading = false, score }: InfoContainerP
               <svg className="block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 12 12">
                 <g id="Icon">
                   <path d="M8 3.5H11V6.5" id="Vector" stroke="var(--stroke-0, #E3170A)" strokeLinecap="round" strokeLinejoin="round" />
-                  <path d={svgPaths.p3a7e7417} id="Vector_2" stroke="var(--stroke-0, #E3170A)" strokeLinecap="round" strokeLinejoin="round" />
+                  <path d={(svgPaths as any).p3a7e7417} id="Vector_2" stroke="var(--stroke-0, #E3170A)" strokeLinecap="round" strokeLinejoin="round" />
                 </g>
               </svg>
             </div>
@@ -211,7 +211,7 @@ export function InfoContainer({ domain, loading = false, score }: InfoContainerP
         <div className="h-[6px] relative shrink-0 w-[12px]" data-name="Vector">
           <div className="absolute inset-[-1.67%_-0.83%]">
             <svg className="block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 13 7">
-              <path d={svgPaths.p11560b00} fill="var(--fill-0, #F8B400)" id="Vector" stroke="var(--stroke-0, #F8B400)" strokeWidth="0.1" />
+              <path d={'p11560b00' in svgPaths ? (svgPaths as any).p11560b00 : (svgPaths as any).p1f023100} fill="var(--fill-0, #F8B400)" id="Vector" stroke="var(--stroke-0, #F8B400)" strokeWidth="0.1" />
             </svg>
           </div>
         </div>
@@ -223,7 +223,7 @@ export function InfoContainer({ domain, loading = false, score }: InfoContainerP
           <svg className="block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 12 12">
             <g id="Icon">
               <path d="M8 3.5H11V6.5" id="Vector" stroke="var(--stroke-0, #C6F558)" strokeLinecap="round" strokeLinejoin="round" />
-              <path d={svgPaths.p3a7e7417} id="Vector_2" stroke="var(--stroke-0, #C6F558)" strokeLinecap="round" strokeLinejoin="round" />
+              <path d={(svgPaths as any).p3a7e7417} id="Vector_2" stroke="var(--stroke-0, #C6F558)" strokeLinecap="round" strokeLinejoin="round" />
             </g>
           </svg>
         </div>

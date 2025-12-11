@@ -1,0 +1,206 @@
+{
+    "status": "ok",
+    "message": "Data successfully fetched",
+    "data": {
+        "json": {
+            "id": "185c4f74-7ac6-46c2-b6a4-3554332c248c",
+            "payload": {
+                "data": {
+                    "url": "tokopedia.com",
+                    "type": "all",
+                    "questions": [
+                        "What are the best online marketplaces for buying electronics and gadgets?",
+                        "How can I safely pay for items when shopping on an e-commerce platform?",
+                        "Where can I find unique handmade crafts and local products online?"
+                    ]
+                }
+            },
+            "status": "finished",
+            "created_at": "2025-12-11T06:24:00.138Z",
+            "updated_at": "2025-12-11T06:24:41.369Z",
+            "executor": null,
+            "url": "tokopedia.com",
+            "optimize": 69,
+            "manifest": 40,
+            "generative": 0,
+            "questions": [
+                "What are the best online marketplaces for buying electronics and gadgets?",
+                "How can I safely pay for items when shopping on an e-commerce platform?",
+                "Where can I find unique handmade crafts and local products online?"
+            ],
+            "overall_score": 36.3333333333333,
+            "sub_processes": [
+                {
+                    "id": "5d423e16-8a1e-4497-a704-97b2dfb6f0d1",
+                    "type": "backlink",
+                    "status": "finished",
+                    "metadata": {
+                        "backlink_score": 0,
+                        "total_backlinks": 986,
+                        "authoritative_backlinks": 3
+                    },
+                    "header_id": "185c4f74-7ac6-46c2-b6a4-3554332c248c",
+                    "created_at": "2025-12-11T06:24:02.0247+00:00",
+                    "updated_at": "2025-12-11T06:24:05.369798+00:00",
+                    "error_metadata": null
+                },
+                {
+                    "id": "36863564-70da-430b-9eca-0c70ccdf5034",
+                    "type": "news_mentioned",
+                    "status": "finished",
+                    "metadata": {
+                        "total_mentions": 1,
+                        "news_mention_score": 20
+                    },
+                    "header_id": "185c4f74-7ac6-46c2-b6a4-3554332c248c",
+                    "created_at": "2025-12-11T06:24:00.808244+00:00",
+                    "updated_at": "2025-12-11T06:24:06.121961+00:00",
+                    "error_metadata": null
+                },
+                {
+                    "id": "7b210274-2c14-4dd2-bed1-153076d715c1",
+                    "type": "ai_overview",
+                    "status": "finished",
+                    "metadata": {
+                        "total_hits": 2,
+                        "ai_overview_score": 0,
+                        "total_appearances": 0
+                    },
+                    "header_id": "185c4f74-7ac6-46c2-b6a4-3554332c248c",
+                    "created_at": "2025-12-11T06:24:06.656582+00:00",
+                    "updated_at": "2025-12-11T06:24:07.091574+00:00",
+                    "error_metadata": null
+                },
+                {
+                    "id": "bab5890f-6e31-4b2f-8749-29a30fb0c091",
+                    "type": "wikidata",
+                    "status": "finished",
+                    "metadata": {
+                        "wikidata_score": {
+                            "data": 100
+                        }
+                    },
+                    "header_id": "185c4f74-7ac6-46c2-b6a4-3554332c248c",
+                    "created_at": "2025-12-11T06:24:06.388712+00:00",
+                    "updated_at": "2025-12-11T06:24:09.793488+00:00",
+                    "error_metadata": null
+                },
+                {
+                    "id": "87dfad10-8acc-403c-b8d5-4ed7059aae5f",
+                    "type": "ai_cite_score",
+                    "status": "finished",
+                    "metadata": {
+                        "total_hits": 2,
+                        "per_iterasi": {
+                            "1": {
+                                "rank": null,
+                                "hasMatch": false
+                            },
+                            "2": {
+                                "rank": null,
+                                "hasMatch": false
+                            }
+                        },
+                        "ai_cite_score": 0,
+                        "total_appearances": 0
+                    },
+                    "header_id": "185c4f74-7ac6-46c2-b6a4-3554332c248c",
+                    "created_at": "2025-12-11T06:24:01.009192+00:00",
+                    "updated_at": "2025-12-11T06:24:27.361145+00:00",
+                    "error_metadata": null
+                },
+                {
+                    "id": "f4e20cf3-3d08-4712-92d8-f54ab7c988a7",
+                    "type": "schema",
+                    "status": "finished",
+                    "metadata": {
+                        "overallScore": 0,
+                        "error_metadata": {
+                            "id": "f4e20cf3-3d08-4712-92d8-f54ab7c988a7",
+                            "type": "schema",
+                            "error": {
+                                "code": "ERR_BAD_REQUEST",
+                                "name": "AxiosError",
+                                "stack": "AxiosError: Request failed with status code 400\n    at settle (/usr/local/lib/node_modules/n8n/node_modules/.pnpm/axios@1.12.0/node_modules/axios/lib/core/settle.js:19:12)\n    at RedirectableRequest.handleResponse (/usr/local/lib/node_modules/n8n/node_modules/.pnpm/axios@1.12.0/node_modules/axios/lib/adapters/http.js:565:9)\n    at RedirectableRequest.emit (node:events:531:35)\n    at RedirectableRequest._processResponse (/usr/local/lib/node_modules/n8n/node_modules/.pnpm/follow-redirects@1.15.11/node_modules/follow-redirects/index.js:409:10)\n    at ClientRequest.RedirectableRequest._onNativeResponse (/usr/local/lib/node_modules/n8n/node_modules/.pnpm/follow-redirects@1.15.11/node_modules/follow-redirects/index.js:102:12)\n    at Object.onceWrapper (node:events:634:26)\n    at ClientRequest.emit (node:events:519:28)\n    at HTTPParser.parserOnIncomingClient [as onIncoming] (node:_http_client:716:27)\n    at HTTPParser.parserOnHeadersComplete (node:_http_common:117:17)\n    at TLSSocket.socketOnData (node:_http_client:558:22)\n    at Axios.request (/usr/local/lib/node_modules/n8n/node_modules/.pnpm/axios@1.12.0/node_modules/axios/lib/core/Axios.js:45:41)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at invokeAxios (/usr/local/lib/node_modules/n8n/node_modules/.pnpm/n8n-core@file+packages+core_@opentelemetry+api@1.9.0_@opentelemetry+sdk-trace-base@1.30_08b575bec2313d5d8a4cc75358971443/node_modules/n8n-core/src/execution-engine/node-execution-context/utils/request-helper-functions.ts:313:10)\n    at proxyRequestToAxios (/usr/local/lib/node_modules/n8n/node_modules/.pnpm/n8n-core@file+packages+core_@opentelemetry+api@1.9.0_@opentelemetry+sdk-trace-base@1.30_08b575bec2313d5d8a4cc75358971443/node_modules/n8n-core/src/execution-engine/node-execution-context/utils/request-helper-functions.ts:695:20)\n    at Object.request (/usr/local/lib/node_modules/n8n/node_modules/.pnpm/n8n-core@file+packages+core_@opentelemetry+api@1.9.0_@opentelemetry+sdk-trace-base@1.30_08b575bec2313d5d8a4cc75358971443/node_modules/n8n-core/src/execution-engine/node-execution-context/utils/request-helper-functions.ts:1749:4)",
+                                "status": 400,
+                                "message": "400 - \"{\\\"error\\\":\\\"Failed to fetch URL\\\",\\\"details\\\":\\\"Request timeout after 5000ms for URL: https://tokopedia.com\\\"}\""
+                            },
+                            "status": "executing",
+                            "details": "Request timeout after 5000ms for URL: https://tokopedia.com",
+                            "metadata": null,
+                            "header_id": "185c4f74-7ac6-46c2-b6a4-3554332c248c",
+                            "created_at": "2025-12-11T06:24:01.027Z",
+                            "updated_at": "2025-12-11T06:24:01.027Z",
+                            "error_metadata": null
+                        }
+                    },
+                    "header_id": "185c4f74-7ac6-46c2-b6a4-3554332c248c",
+                    "created_at": "2025-12-11T06:24:01.027877+00:00",
+                    "updated_at": "2025-12-11T06:24:32.045317+00:00",
+                    "error_metadata": {
+                        "id": "f4e20cf3-3d08-4712-92d8-f54ab7c988a7",
+                        "type": "schema",
+                        "error": {
+                            "code": "ERR_BAD_REQUEST",
+                            "name": "AxiosError",
+                            "stack": "AxiosError: Request failed with status code 400\n    at settle (/usr/local/lib/node_modules/n8n/node_modules/.pnpm/axios@1.12.0/node_modules/axios/lib/core/settle.js:19:12)\n    at RedirectableRequest.handleResponse (/usr/local/lib/node_modules/n8n/node_modules/.pnpm/axios@1.12.0/node_modules/axios/lib/adapters/http.js:565:9)\n    at RedirectableRequest.emit (node:events:531:35)\n    at RedirectableRequest._processResponse (/usr/local/lib/node_modules/n8n/node_modules/.pnpm/follow-redirects@1.15.11/node_modules/follow-redirects/index.js:409:10)\n    at ClientRequest.RedirectableRequest._onNativeResponse (/usr/local/lib/node_modules/n8n/node_modules/.pnpm/follow-redirects@1.15.11/node_modules/follow-redirects/index.js:102:12)\n    at Object.onceWrapper (node:events:634:26)\n    at ClientRequest.emit (node:events:519:28)\n    at HTTPParser.parserOnIncomingClient [as onIncoming] (node:_http_client:716:27)\n    at HTTPParser.parserOnHeadersComplete (node:_http_common:117:17)\n    at TLSSocket.socketOnData (node:_http_client:558:22)\n    at Axios.request (/usr/local/lib/node_modules/n8n/node_modules/.pnpm/axios@1.12.0/node_modules/axios/lib/core/Axios.js:45:41)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at invokeAxios (/usr/local/lib/node_modules/n8n/node_modules/.pnpm/n8n-core@file+packages+core_@opentelemetry+api@1.9.0_@opentelemetry+sdk-trace-base@1.30_08b575bec2313d5d8a4cc75358971443/node_modules/n8n-core/src/execution-engine/node-execution-context/utils/request-helper-functions.ts:313:10)\n    at proxyRequestToAxios (/usr/local/lib/node_modules/n8n/node_modules/.pnpm/n8n-core@file+packages+core_@opentelemetry+api@1.9.0_@opentelemetry+sdk-trace-base@1.30_08b575bec2313d5d8a4cc75358971443/node_modules/n8n-core/src/execution-engine/node-execution-context/utils/request-helper-functions.ts:695:20)\n    at Object.request (/usr/local/lib/node_modules/n8n/node_modules/.pnpm/n8n-core@file+packages+core_@opentelemetry+api@1.9.0_@opentelemetry+sdk-trace-base@1.30_08b575bec2313d5d8a4cc75358971443/node_modules/n8n-core/src/execution-engine/node-execution-context/utils/request-helper-functions.ts:1749:4)",
+                            "status": 400,
+                            "message": "400 - \"{\\\"error\\\":\\\"Failed to fetch URL\\\",\\\"details\\\":\\\"Request timeout after 5000ms for URL: https://tokopedia.com\\\"}\""
+                        },
+                        "status": "executing",
+                        "details": "Request timeout after 5000ms for URL: https://tokopedia.com",
+                        "metadata": null,
+                        "header_id": "185c4f74-7ac6-46c2-b6a4-3554332c248c",
+                        "created_at": "2025-12-11T06:24:01.027Z",
+                        "updated_at": "2025-12-11T06:24:01.027Z",
+                        "error_metadata": null
+                    }
+                },
+                {
+                    "id": "fbe2d1e5-8f98-4be5-929e-92e07dcfa644",
+                    "type": "ai_cite_ranking",
+                    "status": "finished",
+                    "metadata": {
+                        "per_iterasi": {
+                            "1": {
+                                "rank": null,
+                                "hasMatch": false
+                            },
+                            "2": {
+                                "rank": null,
+                                "hasMatch": false
+                            }
+                        },
+                        "total_mentions": 0,
+                        "ai_cite_score_rank1": 0,
+                        "total_rank1_mentions": 0
+                    },
+                    "header_id": "185c4f74-7ac6-46c2-b6a4-3554332c248c",
+                    "created_at": "2025-12-11T06:24:01.433555+00:00",
+                    "updated_at": "2025-12-11T06:24:39.61785+00:00",
+                    "error_metadata": null
+                },
+                {
+                    "id": "4ba091f9-6b7f-48bf-9e73-0d5075530138",
+                    "type": "cwv",
+                    "status": "finished",
+                    "metadata": {
+                        "url": "https://www.tokopedia.com/",
+                        "seo_score": 92,
+                        "final_score": 69,
+                        "performance_score": 47,
+                        "accessibility_score": 68,
+                        "best_practices_score": 69
+                    },
+                    "header_id": "185c4f74-7ac6-46c2-b6a4-3554332c248c",
+                    "created_at": "2025-12-11T06:24:00.530152+00:00",
+                    "updated_at": "2025-12-11T06:24:40.011012+00:00",
+                    "error_metadata": null
+                }
+            ]
+        },
+        "pairedItem": {
+            "item": 0
+        }
+    }
+}

@@ -1,10 +1,31 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import svgPaths from "../imports/svg-cvpwbi0swb";
+import { usePost } from '../../../src/hooks/api';
+import { storageUtils } from '../../../src/utils/storage';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "./ui/alert-dialog";
 // import imgPattern from "figma:asset/e777a57b939162b876418f1793283d92d18bafa0.png";
 
 interface LandingViewProps {
   onStartAnalysis: (domain: string) => void;
+}
+
+interface AnalysisResponse {
+  data: {
+    url: string;
+    id: string;
+    [key: string]: any;
+  };
 }
 
 export function LandingView({ onStartAnalysis }: LandingViewProps) {
@@ -12,6 +33,9 @@ export function LandingView({ onStartAnalysis }: LandingViewProps) {
   const [error, setError] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
+
+  const { trigger } = usePost<AnalysisResponse>('/process-N8N-AVQ');
 
   const validateDomain = (value: string) => {
     const trimmedDomain = value.trim();
@@ -19,6 +43,13 @@ export function LandingView({ onStartAnalysis }: LandingViewProps) {
     if (!trimmedDomain) {
       setError(true);
       setErrorMessage('Please enter your domain name');
+      return false;
+    }
+
+    // Check if domain starts with http:// or https://
+    if (/^https?:\/\//i.test(trimmedDomain)) {
+      setError(true);
+      setErrorMessage('Please enter domain without http:// or https:// (e.g. tokopedia.com)');
       return false;
     }
     
@@ -35,7 +66,7 @@ export function LandingView({ onStartAnalysis }: LandingViewProps) {
     return true;
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!validateDomain(domain)) {
       setTimeout(() => {
         setError(false);
@@ -43,8 +74,44 @@ export function LandingView({ onStartAnalysis }: LandingViewProps) {
       }, 3000);
       return;
     }
+
     setIsLoading(true);
-    onStartAnalysis(domain.trim());
+    setIsSuccess(false);
+    setError(false);
+    setErrorMessage('');
+
+    try {
+      const result = await trigger({
+        data: {
+          url: domain.trim(),
+          type: 'all'
+        }
+      });
+
+      console.log('Post', {
+        url: domain.trim(),
+        type: 'all'
+      })
+
+      // Extract and save to local storage
+      if (result?.data) {
+        storageUtils.setAvoData({
+          url: result.data.url,
+          id: result.data.id
+        });
+      }
+
+      setIsSuccess(true);
+      // Small delay to let the user perceive the success state before transition
+      setTimeout(() => {
+        onStartAnalysis(domain.trim());
+      }, 500);
+    } catch (err: any) {
+      console.error('Submission error:', err);
+      setIsLoading(false);
+      setError(true);
+      setErrorMessage(err.message || 'An error occurred while processing your request. Please try again.');
+    }
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
@@ -387,10 +454,16 @@ export function LandingView({ onStartAnalysis }: LandingViewProps) {
                               >
                                 <motion.span 
                                   className="inline-block bg-gradient-to-r from-[#6b7280] via-[#ffffff] via-[#ffffff] to-[#6b7280] bg-clip-text text-transparent"
-                                  animate={{
+                                  animate={isSuccess ? {
+                                    backgroundPosition: '0% center',
+                                    color: '#ffffff', // Turn solid white on success
+                                    textShadow: '0 0 8px rgba(255,255,255,0.5)'
+                                  } : {
                                     backgroundPosition: ['0% center', '100% center', '200% center']
                                   }}
-                                  transition={{
+                                  transition={isSuccess ? {
+                                    duration: 0.5
+                                  } : {
                                     duration: 2.5,
                                     repeat: Infinity,
                                     ease: "linear"
@@ -413,10 +486,16 @@ export function LandingView({ onStartAnalysis }: LandingViewProps) {
                               >
                                 <motion.span 
                                   className="inline-block bg-gradient-to-r from-[#008080] via-[#00ffee] via-[#00ffee] to-[#008080] bg-clip-text text-transparent"
-                                  animate={{
+                                  animate={isSuccess ? {
+                                    backgroundPosition: '0% center',
+                                    color: '#00ffee', // Turn solid cyan on success
+                                    textShadow: '0 0 8px rgba(0,255,238,0.5)'
+                                  } : {
                                     backgroundPosition: ['0% center', '100% center', '200% center']
                                   }}
-                                  transition={{
+                                  transition={isSuccess ? {
+                                    duration: 0.5
+                                  } : {
                                     duration: 2.5,
                                     repeat: Infinity,
                                     ease: "linear",
@@ -521,6 +600,37 @@ export function LandingView({ onStartAnalysis }: LandingViewProps) {
         <div className="h-[15.988px] relative shrink-0 w-[190.788px]" data-name="Container">
           <p className="absolute font-['Manrope:Medium',sans-serif] font-medium leading-[16px] left-0 text-[12px] text-[rgba(145,158,171,0.5)] text-nowrap top-[-0.8px] tracking-[1.2px] whitespace-pre">Powered by AVO Intelligence</p>
         </div>
+      </div>
+
+      {/* Storage Management Footer */}
+      <div className="fixed bottom-4 right-4 z-50">
+        <AlertDialog>
+          <AlertDialogTrigger asChild>
+            <button className="text-[12px] text-[#919eab] hover:text-[#00c2b8] transition-colors opacity-50 hover:opacity-100">
+              Clear Storage
+            </button>
+          </AlertDialogTrigger>
+          <AlertDialogContent className="bg-[#16243e] border border-[rgba(252,252,252,0.06)] text-[#fcfcfc]">
+            <AlertDialogHeader>
+              <AlertDialogTitle>Clear Local Storage?</AlertDialogTitle>
+              <AlertDialogDescription className="text-[#919eab]">
+                This will remove all saved analysis data from your browser. This action cannot be undone.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel className="bg-transparent border-[rgba(252,252,252,0.1)] text-[#fcfcfc] hover:bg-[rgba(252,252,252,0.05)]">Cancel</AlertDialogCancel>
+              <AlertDialogAction 
+                onClick={() => {
+                  storageUtils.clearAvoData();
+                  alert("Storage cleared successfully");
+                }}
+                className="bg-[#e3170a] hover:bg-[#c41207] text-white border-none"
+              >
+                Clear Data
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </div>
     </div>
   );

@@ -1,17 +1,22 @@
 import { useEffect, useState } from 'react';
+import { useGet } from '../../../src/hooks/api';
+import { storageUtils } from '../../../src/utils/storage';
+import { timeAgo } from '../../../src/utils/timeUtils';
 import { DashboardHeader } from './DashboardHeader';
 import { InfoContainer } from './InfoContainer';
 import { BenchmarkComparison } from './BenchmarkComparison';
-import svgPaths from "../imports/svg-1zduvpfvng";
+import svgBase from "../imports/svg-1zduvpfvng";
+import svgExtra from "../imports/svg-9xenn4o0xj";
+const svgPaths = { ...svgBase, ...svgExtra };
 import svgPathsInfo from "../imports/svg-7avljcbs5w";
 import svgPathsGenerative from "../imports/svg-v5gyqubm8s";
 // import imgPattern from "figma:asset/e777a57b939162b876418f1793283d92d18bafa0.png";
 
 interface DashboardViewProps {
   domain: string;
-  scores: { opt: number; man: number; gen: number; avg: number };
   onOpenModal: (type: string) => void;
   onReset: () => void;
+  analysisId: string | null;
 }
 
 // Custom Loading Spinner Component
@@ -58,7 +63,75 @@ function LoadingDots({ color = "#a7a7a7" }: { color?: string }) {
   );
 }
 
-export function DashboardView({ domain, scores, onOpenModal, onReset }: DashboardViewProps) {
+export function DashboardView({ domain, onOpenModal, onReset, analysisId }: DashboardViewProps) {
+  const { data: analysisData, isLoading } = useGet<any>(
+    analysisId ? `/findone-main-process?id=${analysisId}` : null
+  );
+
+  const [localScores, setLocalScores] = useState({ opt: 0, man: 0, gen: 0, avg: 0 });
+  const [detailScores, setDetailScores] = useState({
+    cwv: 0,
+    schema: 0,
+    snippet: 0,
+    backlink: 0,
+    newsMention: 0,
+    wikidata: 0,
+    aiCite: 0,
+    aiOverview: 0,
+    authoritySources: 0
+  });
+
+  const [createdAt, setCreatedAt] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (analysisData) {
+      storageUtils.set('avo_analysis_result', analysisData);
+      
+      const resultData = analysisData.data?.json || analysisData; // Handle both wrapped and unwrapped
+      
+      if (resultData.created_at) {
+        setCreatedAt(resultData.created_at);
+      }
+
+      const subProcesses = resultData.sub_processes || [];
+
+      // Helper to extract score from sub_processes
+      const getSubScore = (type: string, key: string) => {
+        const process = subProcesses.find((p: any) => p.type === type);
+        if (!process?.metadata) return 0;
+        
+        const val = process.metadata[key];
+        // Handle nested object like wikidata_score: { data: 100 }
+        if (typeof val === 'object' && val !== null && 'data' in val) {
+          return Number(val.data) || 0;
+        }
+        return Number(val) || 0;
+      };
+
+      // Update local scores from fetched data
+      const newScores = {
+        opt: Number(resultData.optimize) || Number(resultData.opt) || localScores.opt,
+        man: Number(resultData.manifest) || Number(resultData.man) || localScores.man,
+        gen: Number(resultData.generative) || Number(resultData.gen) || localScores.gen,
+        avg: Math.round(Number(resultData.overall_score) || Number(resultData.avg) || localScores.avg)
+      };
+      setLocalScores(newScores);
+
+      // Update detail scores
+      setDetailScores({
+        cwv: getSubScore('cwv', 'final_score'),
+        schema: getSubScore('schema', 'overallScore'),
+        snippet: 0, // Not present in sample, defaulting to 0
+        backlink: getSubScore('backlink', 'backlink_score'),
+        newsMention: getSubScore('news_mentioned', 'news_mention_score'),
+        wikidata: getSubScore('wikidata', 'wikidata_score'),
+        aiCite: getSubScore('ai_cite_score', 'ai_cite_score'),
+        aiOverview: getSubScore('ai_overview', 'ai_overview_score'),
+        authoritySources: 0 // Not clearly mapped in sample
+      });
+    }
+  }, [analysisData]);
+
   const [displayScore, setDisplayScore] = useState(0);
   const [animated, setAnimated] = useState(false);
   
@@ -95,40 +168,43 @@ export function DashboardView({ domain, scores, onOpenModal, onReset }: Dashboar
 
   // Sequential loading animation
   useEffect(() => {
+    // Wait for data if we expect it (and have an ID but no data yet)
+    if (analysisId && isLoading && localScores.avg === 0) return;
+
     // Step 1: Load Optimize card after 500ms
     const optimizeTimer = setTimeout(() => {
       setLoadingOptimize(false);
-      animateScore(scores.opt, setDisplayOptScore);
+      animateScore(localScores.opt, setDisplayOptScore);
       // Animate detail scores
-      animateScore(67, setDisplayCWVScore);
-      animateScore(67, setDisplaySchemaScore);
+      animateScore(detailScores.cwv, setDisplayCWVScore);
+      animateScore(detailScores.schema, setDisplaySchemaScore);
       // Animate progress bar
-      animateProgressBar(scores.opt, (val) => setBarWidths(prev => ({ ...prev, opt: val })));
+      animateProgressBar(localScores.opt, (val) => setBarWidths(prev => ({ ...prev, opt: val })));
     }, 500);
 
     // Step 2: Load Manifest card after 1500ms
     const manifestTimer = setTimeout(() => {
       setLoadingManifest(false);
-      animateScore(scores.man, setDisplayManScore);
+      animateScore(localScores.man, setDisplayManScore);
       // Animate detail scores
-      animateScore(142, setDisplaySnippet);
-      animateScore(67, setDisplayBacklinkScore);
-      animateScore(67, setDisplayNewsMentionScore);
-      animateScore(67, setDisplayWikidataScore);
+      animateScore(detailScores.snippet, setDisplaySnippet);
+      animateScore(detailScores.backlink, setDisplayBacklinkScore);
+      animateScore(detailScores.newsMention, setDisplayNewsMentionScore);
+      animateScore(detailScores.wikidata, setDisplayWikidataScore);
       // Animate progress bar
-      animateProgressBar(scores.man, (val) => setBarWidths(prev => ({ ...prev, man: val })));
+      animateProgressBar(localScores.man, (val) => setBarWidths(prev => ({ ...prev, man: val })));
     }, 1500);
 
     // Step 3: Load Generative card after 2500ms
     const generativeTimer = setTimeout(() => {
       setLoadingGenerative(false);
-      animateScore(scores.gen, setDisplayGenScore);
+      animateScore(localScores.gen, setDisplayGenScore);
       // Animate detail scores
-      animateScore(67, setDisplayAICiteScore);
-      animateScore(67, setDisplayAIOverviewScore);
-      animateScore(67, setDisplayAuthoritySourcesScore);
+      animateScore(detailScores.aiCite, setDisplayAICiteScore);
+      animateScore(detailScores.aiOverview, setDisplayAIOverviewScore);
+      animateScore(detailScores.authoritySources, setDisplayAuthoritySourcesScore);
       // Animate progress bar
-      animateProgressBar(scores.gen, (val) => setBarWidths(prev => ({ ...prev, gen: val })));
+      animateProgressBar(localScores.gen, (val) => setBarWidths(prev => ({ ...prev, gen: val })));
     }, 2500);
 
     // Step 4: Load Authority Score after 3500ms
@@ -148,7 +224,7 @@ export function DashboardView({ domain, scores, onOpenModal, onReset }: Dashboar
       clearTimeout(authorityTimer);
       clearTimeout(infoTimer);
     };
-  }, [scores]);
+  }, [localScores, detailScores, isLoading, analysisId]);
 
   // Helper function to animate score counting
   const animateScore = (targetScore: number, setFunction: (score: number) => void) => {
@@ -185,13 +261,13 @@ export function DashboardView({ domain, scores, onOpenModal, onReset }: Dashboar
     if (loadingAuthority) return;
     
     let current = 0;
-    const increment = scores.avg / 100;
+    const increment = localScores.avg / 100;
     
     const timer = setInterval(() => {
       current += increment;
-      if (current >= scores.avg) {
-        setDisplayScore(scores.avg);
-        setProgressStroke(scores.avg);
+      if (current >= localScores.avg) {
+        setDisplayScore(localScores.avg);
+        setProgressStroke(localScores.avg);
         clearInterval(timer);
       } else {
         setDisplayScore(Math.ceil(current));
@@ -200,7 +276,7 @@ export function DashboardView({ domain, scores, onOpenModal, onReset }: Dashboar
     }, 10);
 
     return () => clearInterval(timer);
-  }, [scores.avg, loadingAuthority]);
+  }, [localScores.avg, loadingAuthority]);
 
   // Fade in animation
   useEffect(() => {
@@ -286,7 +362,7 @@ export function DashboardView({ domain, scores, onOpenModal, onReset }: Dashboar
                 {/* Time Period Indicator */}
                 <div className="box-border content-stretch flex items-center justify-center px-[16px] py-[8px] relative rounded-[2.68435e+07px] shrink-0" data-name="Container">
                   <div aria-hidden="true" className="absolute border border-[rgba(0,194,184,0.4)] border-solid inset-0 pointer-events-none rounded-[2.68435e+07px]" />
-                  <p className="font-['Manrope:Medium',sans-serif] font-medium leading-[16px] relative shrink-0 text-[#00c2b8] text-[14px] text-nowrap whitespace-pre">Last 20 Days</p>
+                  <p className="font-['Manrope:Medium',sans-serif] font-medium leading-[16px] relative shrink-0 text-[#00c2b8] text-[14px] text-nowrap whitespace-pre">{createdAt ? timeAgo(createdAt) : '-'}</p>
                 </div>
               </div>
             </div>
@@ -302,7 +378,7 @@ export function DashboardView({ domain, scores, onOpenModal, onReset }: Dashboar
             transform: loadingInfo ? 'translateX(50px)' : 'translateX(0)'
           }}
         >
-          <InfoContainer domain={domain} loading={loadingInfo} score={scores.avg} />
+          <InfoContainer domain={domain} loading={loadingInfo} score={localScores.avg} />
         </div>
 
         {/* Three Cards */}
@@ -638,8 +714,8 @@ export function DashboardView({ domain, scores, onOpenModal, onReset }: Dashboar
         <div className="absolute content-stretch flex items-start justify-center left-1/2 top-[700px] translate-x-[-50%] w-[871px]">
           <BenchmarkComparison 
             userDomain={domain}
-            userScore={scores.avg}
-            userScores={scores}
+            userScore={localScores.avg}
+            userScores={localScores}
           />
         </div>
       </div>

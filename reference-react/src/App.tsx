@@ -7,8 +7,7 @@ import { PreLoader } from './components/PreLoader';
 import { LoadingTransition } from './components/LoadingTransition';
 import { Modal } from './components/Modal';
 import { ThemeProvider } from './components/ThemeContext';
-// import bgElement from 'figma:asset/fa04912264ef8a7178cb6901fd42f5f37418f7d9.png';
-// import bgElement from './assets/fa04912264ef8a7178cb6901fd42f5f37418f7d9.png';
+import { storageUtils } from '../../src/utils/storage';
 
 export default function App() {
   const [view, setView] = useState<'landing' | 'preloader' | 'loading' | 'dashboard'>('landing');
@@ -16,11 +15,37 @@ export default function App() {
   const [scores, setScores] = useState({ opt: 0, man: 0, gen: 0, avg: 0 });
   const [modalOpen, setModalOpen] = useState(false);
   const [modalType, setModalType] = useState<string>('');
+  const [analysisId, setAnalysisId] = useState<string | null>(null);
+
+  useEffect(() => {
+    const avoData = storageUtils.getAvoData();
+    if (avoData?.id) {
+      if (avoData.url) {
+        setDomain(avoData.url);
+      }
+      setAnalysisId(avoData.id);
+      setView('dashboard');
+    }
+  }, []);
 
   const handleStartAnalysis = (inputDomain: string) => {
+    // Check local storage for ID
+    const avoData = storageUtils.getAvoData();
+    
+    // If ID is missing, redirect to landing and stop
+    if (!avoData?.id) {
+      console.warn('No Analysis ID found in storage');
+      setView('landing');
+      return;
+    }
+
+    // Set ID to trigger useGet hook
+    setAnalysisId(avoData.id);
+
     // Check for dummy domains and assign specific scores
     const domainBase = inputDomain.toLowerCase().split('.')[0];
     let scoreOpt, scoreMan, scoreGen, avgScore;
+
     
     if (domainBase === 'authority1') {
       // Very Poorly: score < 55
@@ -64,10 +89,7 @@ export default function App() {
     setScores({ opt: scoreOpt, man: scoreMan, gen: scoreGen, avg: avgScore });
     // Stay on landing view - preloader is now embedded in the input field
     
-    // Transition directly to loading after 8 seconds
-    setTimeout(() => {
-      setView('loading');
-    }, 8000);
+    setView('loading');
     
     // Transition to dashboard after loading completes
     const totalLoadingTime = 8000 + 16500; // 8s preloader + 16.5s loading = 24.5s total
@@ -138,9 +160,10 @@ export default function App() {
           {view === 'dashboard' && (
             <DashboardView 
               domain={domain} 
-              scores={scores} 
+              // scores={scores} 
               onOpenModal={handleOpenModal}
               onReset={handleReset}
+              analysisId={analysisId}
             />
           )}
         </div>

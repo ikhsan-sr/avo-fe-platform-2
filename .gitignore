@@ -2,6 +2,8 @@
 
 # dependencies
 /node_modules
+/reference-react/node_modules
+/reference-react/build
 /.pnp
 .pnp.*
 .yarn/*
