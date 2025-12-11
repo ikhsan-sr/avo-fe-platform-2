@@ -464,7 +464,7 @@ export function DashboardView({ domain, onOpenModal, onReset, analysisId }: Dash
       <DashboardHeader onReset={onReset} />
 
       {/* Main Content */}
-    <div className={`relative flex-1 min-h-screen md:min-h-[1100px] fade-enter ${animated ? 'fade-enter-active' : ''}`} style={{ transitionDelay: '100ms' }}>
+    <div className={`relative mt-15 xl:mt-0 flex-1 min-h-screen md:min-h-[1100px] fade-enter ${animated ? 'fade-enter-active' : ''}`} style={{ transitionDelay: '100ms' }}>
         {/* Authority Score Circle - desktop absolute, mobile centered */}
         <div
           className={isMd ? "absolute top-[60px] left-1/2" : "flex justify-center px-4"}
