@@ -1,5 +1,6 @@
 import useSWR, { SWRConfiguration } from 'swr'
 import useSWRMutation from 'swr/mutation'
+import { useCallback, useEffect, useRef, useState } from 'react'
 
 type ApiError = {
   status: number
@@ -83,4 +84,118 @@ export function useDelete<T, B = unknown>(path: string) {
   return useSWRMutation<T, ApiError, string, B>(path, async (url, { arg }) => {
     return apiFetch<T>(url, { method: 'DELETE', body: arg as any })
   })
+}
+
+export function usePollingGet<T>(
+  path: string | null,
+  options?: {
+    interval?: number
+    shouldStopPolling?: (data: T | undefined) => boolean
+    initialLoading?: boolean
+    init?: RequestInit & { baseUrl?: string }
+  },
+) {
+  const { interval = 2000, shouldStopPolling, initialLoading = false, init } = options ?? {}
+  const [data, setData] = useState<T | undefined>(undefined)
+  const [error, setError] = useState<ApiError | undefined>(undefined)
+  const [isLoading, setIsLoading] = useState<boolean>(Boolean(initialLoading && path))
+  const intervalRef = useRef<number | null>(null)
+  const mountedRef = useRef<boolean>(false)
+  const prevStrRef = useRef<string>('')
+
+  const fetchOnce = useCallback(async () => {
+    if (!path) return undefined
+    try {
+      const res = await apiFetch<T>(path, init)
+      const str = (() => {
+        try {
+          return JSON.stringify(res)
+        } catch {
+          return ''
+        }
+      })()
+      if (mountedRef.current) {
+        if (str !== prevStrRef.current) {
+          setData(res)
+          prevStrRef.current = str
+        }
+        setError(undefined)
+      }
+      return res
+    } catch (err) {
+      if (mountedRef.current) {
+        setError(err as ApiError)
+      }
+      return undefined
+    } finally {
+      if (mountedRef.current) {
+        setIsLoading(false)
+      }
+    }
+  }, [path, init])
+
+  useEffect(() => {
+    mountedRef.current = true
+    if (!path) {
+      setIsLoading(false)
+      return () => {
+        mountedRef.current = false
+        if (intervalRef.current !== null) {
+          clearInterval(intervalRef.current as any)
+          intervalRef.current = null
+        }
+      }
+    }
+
+    let cancelled = false
+    ;(async () => {
+      const res = await fetchOnce()
+      if (cancelled) return
+      const shouldStop = shouldStopPolling ? shouldStopPolling(res) : false
+      if (shouldStop) return
+      if (intervalRef.current === null) {
+        intervalRef.current = (setInterval(async () => {
+          try {
+            const nextRes = await apiFetch<T>(path, init)
+            const str = (() => {
+              try {
+                return JSON.stringify(nextRes)
+              } catch {
+                return ''
+              }
+            })()
+            if (mountedRef.current) {
+              if (str !== prevStrRef.current) {
+                setData(nextRes)
+                prevStrRef.current = str
+              }
+              setError(undefined)
+            }
+            if (shouldStopPolling) {
+              const stop = shouldStopPolling(nextRes)
+              if (stop && intervalRef.current !== null) {
+                clearInterval(intervalRef.current as any)
+                intervalRef.current = null
+              }
+            }
+          } catch (err) {
+            if (mountedRef.current) {
+              setError(err as ApiError)
+            }
+          }
+        }, interval) as unknown as number)
+      }
+    })()
+
+    return () => {
+      cancelled = true
+      mountedRef.current = false
+      if (intervalRef.current !== null) {
+        clearInterval(intervalRef.current as any)
+        intervalRef.current = null
+      }
+    }
+  }, [path, interval, shouldStopPolling, init, fetchOnce])
+
+  return { data, isLoading, error }
 }

@@ -1,5 +1,5 @@
 import { useEffect, useMemo } from 'react';
-import { useGet } from '../../../src/hooks/api';
+import { usePollingGet } from '../../../src/hooks/api';
 import { storageUtils } from '../../../src/utils/storage';
 import { timeAgo } from '../../../src/utils/timeUtils';
 import { DashboardHeader } from './DashboardHeader';
@@ -63,20 +63,18 @@ function LoadingDots({ color = "#a7a7a7" }: { color?: string }) {
   );
 }
 
-type ScoreSet = { opt: number; man: number; gen: number; avg: number };
+type ScoreSet = { opt?: number; man?: number; gen?: number; avg?: number };
 type DetailScoreSet = {
-  cwv: number;
-  schema: number;
-  snippet: number;
-  backlink: number;
-  newsMention: number;
-  wikidata: number;
-  aiCite: number;
-  aiOverview: number;
-  authoritySources: number;
+  cwv?: number;
+  schema?: number;
+  snippet?: number;
+  backlink?: number;
+  newsMention?: number;
+  wikidata?: number;
+  aiCite?: number;
+  aiOverview?: number;
+  authoritySources?: number;
 };
-
- 
 
 function useAnalysisData(analysisData: any) {
   const resultData = useMemo(() => (analysisData ? analysisData.data?.json || analysisData : null), [analysisData]);
@@ -84,49 +82,47 @@ function useAnalysisData(analysisData: any) {
   const createdAt = useMemo(() => (resultData?.created_at ?? null), [resultData]);
 
   const localScores = useMemo<ScoreSet>(() => {
-    if (!resultData) return { opt: 0, man: 0, gen: 0, avg: 0 };
+    if (!resultData) return {} as ScoreSet;
+    const num = (v: any) => (v === null || v === undefined ? undefined : Number(v));
+    const firstValid = (...vals: any[]) => {
+      for (const v of vals) {
+        const n = num(v);
+        if (Number.isFinite(n)) return n as number;
+      }
+      return undefined;
+    };
+    const overall = firstValid(resultData.overall_score, resultData.avg);
     return {
-      opt: Number(resultData.optimize) || Number(resultData.opt) || 0,
-      man: Number(resultData.manifest) || Number(resultData.man) || 0,
-      gen: Number(resultData.generative) || Number(resultData.gen) || 0,
-      avg: Math.round(Number(resultData.overall_score) || Number(resultData.avg) || 0),
+      opt: (() => { const v = firstValid(resultData.optimize, resultData.opt); return v !== undefined ? Math.round(v) : undefined; })(),
+      man: (() => { const v = firstValid(resultData.manifest, resultData.man); return v !== undefined ? Math.round(v) : undefined; })(),
+      gen: (() => { const v = firstValid(resultData.generative, resultData.gen); return v !== undefined ? Math.round(v) : undefined; })(),
+      avg: overall !== undefined ? Math.round(overall) : undefined,
     };
   }, [resultData]);
 
   const detailScores = useMemo<DetailScoreSet>(() => {
     if (!resultData) {
-      return {
-        cwv: 0,
-        schema: 0,
-        snippet: 0,
-        backlink: 0,
-        newsMention: 0,
-        wikidata: 0,
-        aiCite: 0,
-        aiOverview: 0,
-        authoritySources: 0,
-      };
+      return {} as DetailScoreSet;
     }
     const subProcesses = resultData.sub_processes || [];
-    const getSubScore = (type: string, key: string) => {
+    const getSubScore = (type: string, key: string): number | undefined => {
       const process = subProcesses.find((p: any) => p.type === type);
-      if (!process?.metadata) return 0;
+      if (!process?.metadata) return undefined;
       const val = process.metadata[key];
-      if (typeof val === 'object' && val !== null && 'data' in val) {
-        return Number((val as any).data) || 0;
-      }
-      return Number(val) || 0;
+      const n = typeof val === 'object' && val !== null && 'data' in val ? Number((val as any).data) : Number(val);
+      return Number.isFinite(n) ? n : undefined;
     };
+    const round = (n: number | undefined): number | undefined => (typeof n === 'number' && Number.isFinite(n) ? Math.round(n) : undefined);
     return {
-      cwv: getSubScore('cwv', 'final_score'),
-      schema: getSubScore('schema', 'overallScore'),
-      snippet: 0,
-      backlink: getSubScore('backlink', 'backlink_score'),
-      newsMention: getSubScore('news_mentioned', 'news_mention_score'),
-      wikidata: getSubScore('wikidata', 'wikidata_score'),
-      aiCite: getSubScore('ai_cite_score', 'ai_cite_score'),
-      aiOverview: getSubScore('ai_overview', 'ai_overview_score'),
-      authoritySources: 0,
+      cwv: round(getSubScore('cwv', 'final_score')),
+      schema: round(getSubScore('schema', 'overallScore')),
+      snippet: undefined,
+      backlink: round(getSubScore('backlink', 'backlink_score')),
+      newsMention: round(getSubScore('news_mentioned', 'news_mention_score')),
+      wikidata: round(getSubScore('wikidata', 'wikidata_score')),
+      aiCite: round(getSubScore('ai_cite_score', 'ai_cite_score')),
+      aiOverview: round(getSubScore('ai_overview', 'ai_overview_score')),
+      authoritySources: undefined,
     };
   }, [resultData]);
 
@@ -153,12 +149,12 @@ function useDashboardAnimation(
   );
 
   const barWidths = useMemo(
-    () => ({ opt: localScores.opt, man: localScores.man, gen: localScores.gen }),
+    () => ({ opt: localScores.opt ?? 0, man: localScores.man ?? 0, gen: localScores.gen ?? 0 }),
     [localScores]
   );
 
   const displayScore = localScores.avg;
-  const progressStroke = localScores.avg;
+  const progressStroke = localScores.avg ?? 0;
 
   return { loading, displayScore, progressStroke, barWidths, display };
 }
@@ -170,7 +166,7 @@ function AuthorityScoreCircle({
   createdAt,
 }: {
   loading: boolean;
-  displayScore: number;
+  displayScore?: number;
   progressStroke: number;
   createdAt: string | null;
 }) {
@@ -207,7 +203,11 @@ function AuthorityScoreCircle({
             {loading ? (
               <LoadingSpinner size={48} />
             ) : (
-              <p className="[text-shadow:rgba(50,255,4,0.15)_0px_4px_60px,rgba(4,11,23,0.3)_0px_10px_25px] font-['Satoshi:Bold',sans-serif] leading-[96px] not-italic text-[#defcd7] text-[96px] text-nowrap tracking-[-4.8px] whitespace-pre">{displayScore}</p>
+              typeof displayScore === 'number' && Number.isFinite(displayScore) ? (
+                <p className="[text-shadow:rgba(50,255,4,0.15)_0px_4px_60px,rgba(4,11,23,0.3)_0px_10px_25px] font-['Satoshi:Bold',sans-serif] leading-[96px] not-italic text-[#defcd7] text-[96px] text-nowrap tracking-[-4.8px] whitespace-pre">{Math.round(displayScore)}</p>
+              ) : (
+                <p className="[text-shadow:rgba(50,255,4,0.15)_0px_4px_60px,rgba(4,11,23,0.3)_0px_10px_25px] font-['Satoshi:Bold',sans-serif] leading-[96px] not-italic text-[#defcd7] text-[96px] text-nowrap tracking-[-4.8px] whitespace-pre">-</p>
+              )
             )}
           </div>
           <div className="box-border content-stretch flex items-center justify-center px-[16px] py-[8px] relative rounded-[2.68435e+07px] shrink-0" data-name="Container">
@@ -229,11 +229,11 @@ function ScoreCardContent({
   details,
 }: {
   loading: boolean;
-  score: number;
+  score?: number;
   barColor: string;
-  barWidth: number;
+  barWidth?: number;
   scoreLabel: string;
-  details: Array<{ label: string; value: number }>;
+  details: Array<{ label: string; value?: number }>;
 }) {
   return (
     <div className="bg-[rgba(22,36,62,0.5)] relative rounded-bl-[12px] rounded-br-[12px] shrink-0 w-full" data-name="Card - Testimoni">
@@ -245,17 +245,21 @@ function ScoreCardContent({
                 {loading ? (
                   <LoadingSpinner size={32} />
                 ) : (
-                  <>
-                    <p className="relative shrink-0 text-[36px] text-white">{score}</p>
-                    <p className="relative shrink-0 text-[#919eab] text-[24px]">/100</p>
-                  </>
+                  typeof score === 'number' && Number.isFinite(score) ? (
+                    <>
+                      <p className="relative shrink-0 text-[36px] text-white">{Math.round(score)}</p>
+                      <p className="relative shrink-0 text-[#919eab] text-[24px]">/100</p>
+                    </>
+                  ) : (
+                    <p className="relative shrink-0 text-[36px] text-white">-</p>
+                  )
                 )}
               </div>
               <p className="font-['Manrope:Regular',sans-serif] font-normal leading-[16px] relative shrink-0 text-[#919eab] text-[12px]">{scoreLabel}</p>
             </div>
             <div className="bg-neutral-600 h-[6px] relative rounded-[2.68435e+07px] shrink-0 w-full" data-name="Container">
               <div className="overflow-clip rounded-[inherit] size-full">
-                <div className="box-border content-stretch flex flex-col h-[6px] items-start pl-0 py-0 relative w-full" style={{ paddingRight: `${100 - barWidth}%` }}>
+                <div className="box-border content-stretch flex flex-col h-[6px] items-start pl-0 py-0 relative w-full" style={{ paddingRight: `${100 - (barWidth ?? 0)}%` }}>
                   <div className="h-[6px] rounded-[2.68435e+07px] shrink-0 w-full" style={{ backgroundColor: barColor }} data-name="Container" />
                 </div>
               </div>
@@ -271,7 +275,7 @@ function ScoreCardContent({
               {details.map((d, idx) => (
                 <div key={idx} className="content-stretch flex font-['Manrope:Regular',sans-serif] font-normal items-center justify-between leading-[normal] relative shrink-0 text-nowrap w-full whitespace-pre" data-name="Detail Item">
                   <p className="relative shrink-0 text-[#a7a7a7] text-[14px]">{d.label}</p>
-                  <p className="relative shrink-0 text-[16px] text-white">{loading ? <LoadingDots color="#ffffff" /> : d.value}</p>
+                  <p className="relative shrink-0 text-[16px] text-white">{loading ? <LoadingDots color="#ffffff" /> : (typeof d.value === 'number' && Number.isFinite(d.value) ? Math.round(d.value) : '-')}</p>
                 </div>
               ))}
             </div>
@@ -283,8 +287,13 @@ function ScoreCardContent({
 }
 
 export function DashboardView({ domain, onOpenModal, onReset, analysisId }: DashboardViewProps) {
-  const { data: analysisData, isLoading } = useGet<any>(
-    analysisId ? `/findone-main-process?id=${analysisId}` : null
+  const { data: analysisData, isLoading } = usePollingGet<any>(
+    analysisId ? `/findone-main-process?id=${analysisId}` : null,
+    {
+      interval: 2000,
+      shouldStopPolling: (data) => (data as any)?.data?.json?.status === 'finished',
+      initialLoading: true,
+    }
   );
   const { localScores, detailScores, createdAt } = useAnalysisData(analysisData);
   const { loading, displayScore, progressStroke, barWidths, display } = useDashboardAnimation(
@@ -331,7 +340,7 @@ export function DashboardView({ domain, onOpenModal, onReset, analysisId }: Dash
           className="absolute top-[60px]"
           style={{ left: 'calc(50% - 8px)', opacity: 1, transform: 'translateX(0)' }}
         >
-          <InfoContainer domain={domain} loading={loading.info} score={localScores.avg} />
+          <InfoContainer domain={domain} loading={loading.info} score={localScores.avg ?? 0} />
         </div>
 
         {/* Three Cards */}
@@ -538,8 +547,13 @@ export function DashboardView({ domain, onOpenModal, onReset, analysisId }: Dash
         <div className="absolute content-stretch flex items-start justify-center left-1/2 top-[700px] translate-x-[-50%] w-[871px]">
           <BenchmarkComparison 
             userDomain={domain}
-            userScore={localScores.avg}
-            userScores={localScores}
+            userScore={localScores.avg ?? 0}
+            userScores={{
+              opt: localScores.opt ?? 0,
+              man: localScores.man ?? 0,
+              gen: localScores.gen ?? 0,
+              avg: localScores.avg ?? 0,
+            }}
           />
         </div>
       </div>
