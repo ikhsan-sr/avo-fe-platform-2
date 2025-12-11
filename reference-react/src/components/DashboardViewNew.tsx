@@ -1,14 +1,14 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useGet } from '../../../src/hooks/api';
 import { storageUtils } from '../../../src/utils/storage';
 import { timeAgo } from '../../../src/utils/timeUtils';
 import { DashboardHeader } from './DashboardHeader';
 import { InfoContainer } from './InfoContainer';
 import { BenchmarkComparison } from './BenchmarkComparison';
+import { ImageWithFallback } from './figma/ImageWithFallback';
 import svgBase from "../imports/svg-1zduvpfvng";
 import svgExtra from "../imports/svg-9xenn4o0xj";
 const svgPaths = { ...svgBase, ...svgExtra };
-import svgPathsInfo from "../imports/svg-7avljcbs5w";
 import svgPathsGenerative from "../imports/svg-v5gyqubm8s";
 // import imgPattern from "figma:asset/e777a57b939162b876418f1793283d92d18bafa0.png";
 
@@ -63,232 +63,243 @@ function LoadingDots({ color = "#a7a7a7" }: { color?: string }) {
   );
 }
 
+type ScoreSet = { opt: number; man: number; gen: number; avg: number };
+type DetailScoreSet = {
+  cwv: number;
+  schema: number;
+  snippet: number;
+  backlink: number;
+  newsMention: number;
+  wikidata: number;
+  aiCite: number;
+  aiOverview: number;
+  authoritySources: number;
+};
+
+ 
+
+function useAnalysisData(analysisData: any) {
+  const resultData = useMemo(() => (analysisData ? analysisData.data?.json || analysisData : null), [analysisData]);
+
+  const createdAt = useMemo(() => (resultData?.created_at ?? null), [resultData]);
+
+  const localScores = useMemo<ScoreSet>(() => {
+    if (!resultData) return { opt: 0, man: 0, gen: 0, avg: 0 };
+    return {
+      opt: Number(resultData.optimize) || Number(resultData.opt) || 0,
+      man: Number(resultData.manifest) || Number(resultData.man) || 0,
+      gen: Number(resultData.generative) || Number(resultData.gen) || 0,
+      avg: Math.round(Number(resultData.overall_score) || Number(resultData.avg) || 0),
+    };
+  }, [resultData]);
+
+  const detailScores = useMemo<DetailScoreSet>(() => {
+    if (!resultData) {
+      return {
+        cwv: 0,
+        schema: 0,
+        snippet: 0,
+        backlink: 0,
+        newsMention: 0,
+        wikidata: 0,
+        aiCite: 0,
+        aiOverview: 0,
+        authoritySources: 0,
+      };
+    }
+    const subProcesses = resultData.sub_processes || [];
+    const getSubScore = (type: string, key: string) => {
+      const process = subProcesses.find((p: any) => p.type === type);
+      if (!process?.metadata) return 0;
+      const val = process.metadata[key];
+      if (typeof val === 'object' && val !== null && 'data' in val) {
+        return Number((val as any).data) || 0;
+      }
+      return Number(val) || 0;
+    };
+    return {
+      cwv: getSubScore('cwv', 'final_score'),
+      schema: getSubScore('schema', 'overallScore'),
+      snippet: 0,
+      backlink: getSubScore('backlink', 'backlink_score'),
+      newsMention: getSubScore('news_mentioned', 'news_mention_score'),
+      wikidata: getSubScore('wikidata', 'wikidata_score'),
+      aiCite: getSubScore('ai_cite_score', 'ai_cite_score'),
+      aiOverview: getSubScore('ai_overview', 'ai_overview_score'),
+      authoritySources: 0,
+    };
+  }, [resultData]);
+
+  useEffect(() => {
+    if (analysisData) storageUtils.set('avo_analysis_result', analysisData);
+  }, [analysisData]);
+
+  return { localScores, detailScores, createdAt };
+}
+
+function useDashboardAnimation(
+  localScores: ScoreSet,
+  detailScores: DetailScoreSet,
+  isLoading: boolean,
+) {
+  const loading = useMemo(
+    () => ({ optimize: isLoading, manifest: isLoading, generative: isLoading, authority: isLoading, info: isLoading }),
+    [isLoading]
+  );
+
+  const display = useMemo(
+    () => ({ opt: localScores.opt, man: localScores.man, gen: localScores.gen, details: detailScores }),
+    [localScores, detailScores]
+  );
+
+  const barWidths = useMemo(
+    () => ({ opt: localScores.opt, man: localScores.man, gen: localScores.gen }),
+    [localScores]
+  );
+
+  const displayScore = localScores.avg;
+  const progressStroke = localScores.avg;
+
+  return { loading, displayScore, progressStroke, barWidths, display };
+}
+
+function AuthorityScoreCircle({
+  loading,
+  displayScore,
+  progressStroke,
+  createdAt,
+}: {
+  loading: boolean;
+  displayScore: number;
+  progressStroke: number;
+  createdAt: string | null;
+}) {
+  return (
+    <div className="relative shrink-0 size-[256px]" data-name="Container">
+      <div className="absolute border-[0.8px] border-[rgba(207,255,4,0.2)] border-solid left-0 rounded-[2.68435e+07px] size-[256px] top-0" data-name="Container" />
+      <div className={`absolute left-0 size-[256px] top-0`}>
+        <svg className="size-full" viewBox="0 0 256 256" style={{ transform: 'rotate(-90deg)' }}>
+          <circle
+            cx="128"
+            cy="128"
+            r="125"
+            fill="none"
+            stroke={
+              progressStroke < 50 ? '#EF4444' :
+              progressStroke <= 75 ? '#F8B400' :
+              '#22c55e'
+            }
+            strokeWidth="6"
+            strokeLinecap="round"
+            strokeDasharray="785.4"
+            strokeDashoffset={785.4 - (progressStroke / 100) * 785.4}
+            opacity="1"
+          />
+        </svg>
+      </div>
+      <div className="absolute border-[0.8px] border-[rgba(0,194,184,0.1)] border-solid left-[-16px] opacity-[0.74] rounded-[2.68435e+07px] size-[288px] top-[-16px] animate-pulse-slow" data-name="Container" />
+      <div className="absolute bg-[rgba(22,36,62,0.6)] border-[0.8px] border-[rgba(252,252,252,0.06)] border-solid left-[16px] rounded-[2.68435e+07px] shadow-[0px_10px_25px_0px_rgba(4,11,23,0.4),0px_4px_60px_0px_rgba(240,241,244,0.15)] size-[224px] top-[16px]" data-name="Container">
+        <div className="absolute h-[15.988px] left-[40.39px] top-[34.41px] w-[141.613px]" data-name="Text">
+          <p className="absolute font-['Manrope:Bold',sans-serif] font-bold leading-[16px] left-[calc(50%-64.34px)] text-[#F8B400] text-[12px] text-nowrap top-[-0.8px] tracking-[1.2px] whitespace-pre">AUTHORITY SCORE</p>
+        </div>
+        <div className="absolute content-stretch flex flex-col gap-[12px] items-center left-[55.46px] top-[56.4px] w-[111.463px]">
+          <div className="h-[96px] relative shrink-0 w-full flex items-center justify-center" data-name="Heading 1">
+            {loading ? (
+              <LoadingSpinner size={48} />
+            ) : (
+              <p className="[text-shadow:rgba(50,255,4,0.15)_0px_4px_60px,rgba(4,11,23,0.3)_0px_10px_25px] font-['Satoshi:Bold',sans-serif] leading-[96px] not-italic text-[#defcd7] text-[96px] text-nowrap tracking-[-4.8px] whitespace-pre">{displayScore}</p>
+            )}
+          </div>
+          <div className="box-border content-stretch flex items-center justify-center px-[16px] py-[8px] relative rounded-[2.68435e+07px] shrink-0" data-name="Container">
+            <div aria-hidden="true" className="absolute border border-[rgba(0,194,184,0.4)] border-solid inset-0 pointer-events-none rounded-[2.68435e+07px]" />
+            <p className="font-['Manrope:Medium',sans-serif] font-medium leading-[16px] relative shrink-0 text-[#00c2b8] text-[14px] text-nowrap whitespace-pre">{createdAt ? timeAgo(createdAt) : '-'}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function ScoreCardContent({
+  loading,
+  score,
+  barColor,
+  barWidth,
+  scoreLabel,
+  details,
+}: {
+  loading: boolean;
+  score: number;
+  barColor: string;
+  barWidth: number;
+  scoreLabel: string;
+  details: Array<{ label: string; value: number }>;
+}) {
+  return (
+    <div className="bg-[rgba(22,36,62,0.5)] relative rounded-bl-[12px] rounded-br-[12px] shrink-0 w-full" data-name="Card - Testimoni">
+      <div className="flex flex-col items-center size-full">
+        <div className="box-border content-stretch flex flex-col gap-[16px] items-center pb-[16px] pt-[24px] px-[20px] relative size-full">
+          <div className="content-stretch flex flex-col gap-[14px] items-start relative shrink-0 w-full">
+            <div className="content-stretch flex flex-col gap-[10px] items-start relative shrink-0 text-nowrap whitespace-pre" data-name="Card Content">
+              <div className="content-stretch flex font-['Satoshi:Bold',sans-serif] items-end leading-[normal] not-italic relative shrink-0" data-name="Score Container">
+                {loading ? (
+                  <LoadingSpinner size={32} />
+                ) : (
+                  <>
+                    <p className="relative shrink-0 text-[36px] text-white">{score}</p>
+                    <p className="relative shrink-0 text-[#919eab] text-[24px]">/100</p>
+                  </>
+                )}
+              </div>
+              <p className="font-['Manrope:Regular',sans-serif] font-normal leading-[16px] relative shrink-0 text-[#919eab] text-[12px]">{scoreLabel}</p>
+            </div>
+            <div className="bg-neutral-600 h-[6px] relative rounded-[2.68435e+07px] shrink-0 w-full" data-name="Container">
+              <div className="overflow-clip rounded-[inherit] size-full">
+                <div className="box-border content-stretch flex flex-col h-[6px] items-start pl-0 py-0 relative w-full" style={{ paddingRight: `${100 - barWidth}%` }}>
+                  <div className="h-[6px] rounded-[2.68435e+07px] shrink-0 w-full" style={{ backgroundColor: barColor }} data-name="Container" />
+                </div>
+              </div>
+            </div>
+            <div className="h-0 relative shrink-0 w-full">
+              <div className="absolute bottom-[-0.5px] left-0 right-0 top-[-0.5px]">
+                <svg className="block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 237 1">
+                  <path d="M0 0.5H237" id="Vector 1" stroke="var(--stroke-0, white)" strokeOpacity="0.1" />
+                </svg>
+              </div>
+            </div>
+            <div className="content-stretch flex flex-col gap-[6px] items-start relative shrink-0 w-full">
+              {details.map((d, idx) => (
+                <div key={idx} className="content-stretch flex font-['Manrope:Regular',sans-serif] font-normal items-center justify-between leading-[normal] relative shrink-0 text-nowrap w-full whitespace-pre" data-name="Detail Item">
+                  <p className="relative shrink-0 text-[#a7a7a7] text-[14px]">{d.label}</p>
+                  <p className="relative shrink-0 text-[16px] text-white">{loading ? <LoadingDots color="#ffffff" /> : d.value}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export function DashboardView({ domain, onOpenModal, onReset, analysisId }: DashboardViewProps) {
   const { data: analysisData, isLoading } = useGet<any>(
     analysisId ? `/findone-main-process?id=${analysisId}` : null
   );
+  const { localScores, detailScores, createdAt } = useAnalysisData(analysisData);
+  const { loading, displayScore, progressStroke, barWidths, display } = useDashboardAnimation(
+    localScores,
+    detailScores,
+    isLoading,
+  );
 
-  const [localScores, setLocalScores] = useState({ opt: 0, man: 0, gen: 0, avg: 0 });
-  const [detailScores, setDetailScores] = useState({
-    cwv: 0,
-    schema: 0,
-    snippet: 0,
-    backlink: 0,
-    newsMention: 0,
-    wikidata: 0,
-    aiCite: 0,
-    aiOverview: 0,
-    authoritySources: 0
-  });
-
-  const [createdAt, setCreatedAt] = useState<string | null>(null);
-
-  useEffect(() => {
-    if (analysisData) {
-      storageUtils.set('avo_analysis_result', analysisData);
-      
-      const resultData = analysisData.data?.json || analysisData; // Handle both wrapped and unwrapped
-      
-      if (resultData.created_at) {
-        setCreatedAt(resultData.created_at);
-      }
-
-      const subProcesses = resultData.sub_processes || [];
-
-      // Helper to extract score from sub_processes
-      const getSubScore = (type: string, key: string) => {
-        const process = subProcesses.find((p: any) => p.type === type);
-        if (!process?.metadata) return 0;
-        
-        const val = process.metadata[key];
-        // Handle nested object like wikidata_score: { data: 100 }
-        if (typeof val === 'object' && val !== null && 'data' in val) {
-          return Number(val.data) || 0;
-        }
-        return Number(val) || 0;
-      };
-
-      // Update local scores from fetched data
-      const newScores = {
-        opt: Number(resultData.optimize) || Number(resultData.opt) || localScores.opt,
-        man: Number(resultData.manifest) || Number(resultData.man) || localScores.man,
-        gen: Number(resultData.generative) || Number(resultData.gen) || localScores.gen,
-        avg: Math.round(Number(resultData.overall_score) || Number(resultData.avg) || localScores.avg)
-      };
-      setLocalScores(newScores);
-
-      // Update detail scores
-      setDetailScores({
-        cwv: getSubScore('cwv', 'final_score'),
-        schema: getSubScore('schema', 'overallScore'),
-        snippet: 0, // Not present in sample, defaulting to 0
-        backlink: getSubScore('backlink', 'backlink_score'),
-        newsMention: getSubScore('news_mentioned', 'news_mention_score'),
-        wikidata: getSubScore('wikidata', 'wikidata_score'),
-        aiCite: getSubScore('ai_cite_score', 'ai_cite_score'),
-        aiOverview: getSubScore('ai_overview', 'ai_overview_score'),
-        authoritySources: 0 // Not clearly mapped in sample
-      });
-    }
-  }, [analysisData]);
-
-  const [displayScore, setDisplayScore] = useState(0);
-  const [animated, setAnimated] = useState(false);
-  
-  // Progress bar animation widths
-  const [barWidths, setBarWidths] = useState({ opt: 0, man: 0, gen: 0 });
-  
-  // Loading states for sequential animation
-  const [loadingOptimize, setLoadingOptimize] = useState(true);
-  const [loadingManifest, setLoadingManifest] = useState(true);
-  const [loadingGenerative, setLoadingGenerative] = useState(true);
-  const [loadingAuthority, setLoadingAuthority] = useState(true);
-  const [loadingInfo, setLoadingInfo] = useState(true);
-  const [progressStroke, setProgressStroke] = useState(0);
-  
-  // Display scores for each card (for counter animation)
-  const [displayOptScore, setDisplayOptScore] = useState(0);
-  const [displayManScore, setDisplayManScore] = useState(0);
-  const [displayGenScore, setDisplayGenScore] = useState(0);
-  
-  // Detail scores for OPTIMIZE card
-  const [displayCWVScore, setDisplayCWVScore] = useState(0);
-  const [displaySchemaScore, setDisplaySchemaScore] = useState(0);
-  
-  // Detail scores for MANIFEST card
-  const [displaySnippet, setDisplaySnippet] = useState(0);
-  const [displayBacklinkScore, setDisplayBacklinkScore] = useState(0);
-  const [displayNewsMentionScore, setDisplayNewsMentionScore] = useState(0);
-  const [displayWikidataScore, setDisplayWikidataScore] = useState(0);
-  
-  // Detail scores for GENERATIVE card
-  const [displayAICiteScore, setDisplayAICiteScore] = useState(0);
-  const [displayAIOverviewScore, setDisplayAIOverviewScore] = useState(0);
-  const [displayAuthoritySourcesScore, setDisplayAuthoritySourcesScore] = useState(0);
-
-  // Sequential loading animation
-  useEffect(() => {
-    // Wait for data if we expect it (and have an ID but no data yet)
-    if (analysisId && isLoading && localScores.avg === 0) return;
-
-    // Step 1: Load Optimize card after 500ms
-    const optimizeTimer = setTimeout(() => {
-      setLoadingOptimize(false);
-      animateScore(localScores.opt, setDisplayOptScore);
-      // Animate detail scores
-      animateScore(detailScores.cwv, setDisplayCWVScore);
-      animateScore(detailScores.schema, setDisplaySchemaScore);
-      // Animate progress bar
-      animateProgressBar(localScores.opt, (val) => setBarWidths(prev => ({ ...prev, opt: val })));
-    }, 500);
-
-    // Step 2: Load Manifest card after 1500ms
-    const manifestTimer = setTimeout(() => {
-      setLoadingManifest(false);
-      animateScore(localScores.man, setDisplayManScore);
-      // Animate detail scores
-      animateScore(detailScores.snippet, setDisplaySnippet);
-      animateScore(detailScores.backlink, setDisplayBacklinkScore);
-      animateScore(detailScores.newsMention, setDisplayNewsMentionScore);
-      animateScore(detailScores.wikidata, setDisplayWikidataScore);
-      // Animate progress bar
-      animateProgressBar(localScores.man, (val) => setBarWidths(prev => ({ ...prev, man: val })));
-    }, 1500);
-
-    // Step 3: Load Generative card after 2500ms
-    const generativeTimer = setTimeout(() => {
-      setLoadingGenerative(false);
-      animateScore(localScores.gen, setDisplayGenScore);
-      // Animate detail scores
-      animateScore(detailScores.aiCite, setDisplayAICiteScore);
-      animateScore(detailScores.aiOverview, setDisplayAIOverviewScore);
-      animateScore(detailScores.authoritySources, setDisplayAuthoritySourcesScore);
-      // Animate progress bar
-      animateProgressBar(localScores.gen, (val) => setBarWidths(prev => ({ ...prev, gen: val })));
-    }, 2500);
-
-    // Step 4: Load Authority Score after 3500ms
-    const authorityTimer = setTimeout(() => {
-      setLoadingAuthority(false);
-    }, 3500);
-
-    // Step 5: Load Info Container after 4500ms (after authority score finishes animating)
-    const infoTimer = setTimeout(() => {
-      setLoadingInfo(false);
-    }, 4500);
-
-    return () => {
-      clearTimeout(optimizeTimer);
-      clearTimeout(manifestTimer);
-      clearTimeout(generativeTimer);
-      clearTimeout(authorityTimer);
-      clearTimeout(infoTimer);
-    };
-  }, [localScores, detailScores, isLoading, analysisId]);
-
-  // Helper function to animate score counting
-  const animateScore = (targetScore: number, setFunction: (score: number) => void) => {
-    let current = 0;
-    const increment = targetScore / 50;
-    const timer = setInterval(() => {
-      current += increment;
-      if (current >= targetScore) {
-        setFunction(targetScore);
-        clearInterval(timer);
-      } else {
-        setFunction(Math.ceil(current));
-      }
-    }, 20);
-  };
-
-  // Helper function to animate progress bars
-  const animateProgressBar = (targetWidth: number, setFunction: (width: number) => void) => {
-    let current = 0;
-    const increment = targetWidth / 60; // 60 steps for smooth animation
-    const timer = setInterval(() => {
-      current += increment;
-      if (current >= targetWidth) {
-        setFunction(targetWidth);
-        clearInterval(timer);
-      } else {
-        setFunction(current);
-      }
-    }, 16); // ~60fps
-  };
-
-  // Animate the authority score counter (only when not loading)
-  useEffect(() => {
-    if (loadingAuthority) return;
-    
-    let current = 0;
-    const increment = localScores.avg / 100;
-    
-    const timer = setInterval(() => {
-      current += increment;
-      if (current >= localScores.avg) {
-        setDisplayScore(localScores.avg);
-        setProgressStroke(localScores.avg);
-        clearInterval(timer);
-      } else {
-        setDisplayScore(Math.ceil(current));
-        setProgressStroke(Math.ceil(current));
-      }
-    }, 10);
-
-    return () => clearInterval(timer);
-  }, [localScores.avg, loadingAuthority]);
-
-  // Fade in animation
-  useEffect(() => {
-    setTimeout(() => setAnimated(true), 100);
-  }, []);
 
   return (
     <div className="bg-[#0c192c] relative size-full flex flex-col" data-name="AVQ">
       {/* Pattern Background */}
       <div className="absolute h-[777px] left-0 opacity-10 top-0 w-full pointer-events-none" data-name="Pattern">
         <div aria-hidden="true" className="absolute inset-0">
-          <img alt="" className="absolute max-w-none object-50%-50% object-cover opacity-30 size-full" src="./assets/e777a57b939162b876418f1793283d92d18bafa0.png" />
+          <ImageWithFallback alt="" className="absolute max-w-none object-50%-50% object-cover opacity-30 size-full" src="./assets/e777a57b939162b876418f1793283d92d18bafa0.png" />
           <div className="absolute inset-0" style={{ backgroundImage: "url('data:image/svg+xml;utf8,<svg viewBox=\\'0 0 1440 777\\' xmlns=\\'http://www.w3.org/2000/svg\\' preserveAspectRatio=\\'none\\'><rect x=\\'0\\' y=\\'0\\' height=\\'100%\\' width=\\'100%\\' fill=\\'url(%23grad)\\' opacity=\\'0.8999999761581421\\'/><defs><radialGradient id=\\'grad\\' gradientUnits=\\'userSpaceOnUse\\' cx=\\'0\\' cy=\\'0\\' r=\\'10\\' gradientTransform=\\'matrix(4.4087e-15 38.85 -72 2.3789e-15 720 388.5)\\'><stop stop-color=\\'rgba(13,31,49,0)\\' offset=\\'0\\'/><stop stop-color=\\'rgba(13,31,49,1)\\' offset=\\'1\\'/></radialGradient></defs></svg>')" }} />
         </div>
       </div>
@@ -301,84 +312,26 @@ export function DashboardView({ domain, onOpenModal, onReset, analysisId }: Dash
       <DashboardHeader onReset={onReset} />
 
       {/* Main Content */}
-      <div className={`relative flex-1 fade-enter ${animated ? 'fade-enter-active' : ''}`} style={{ transitionDelay: '100ms' }}>
+      <div className={`relative flex-1`}>
         {/* Authority Score Circle - Slides from center to left */}
         <div 
-          className="absolute top-[60px] left-1/2 transition-all duration-1000 ease-out"
-          style={{
-            transform: loadingInfo ? 'translateX(-50%)' : 'translateX(calc(-50% - 200px))'
-          }}
+          className="absolute top-[60px] left-1/2"
+          style={{ transform: 'translateX(calc(-50% - 200px))' }}
         >
-          {/* Score Circle Container */}
-          <div className="relative shrink-0 size-[256px]" data-name="Container">
-            {/* Outer decorative ring */}
-            <div className="absolute border-[0.8px] border-[rgba(207,255,4,0.2)] border-solid left-0 rounded-[2.68435e+07px] size-[256px] top-0" data-name="Container" />
-            
-            {/* Progress loader stroke - fills based on score with color conditions */}
-            <div className={`absolute left-0 size-[256px] top-0 transition-opacity duration-1000 ease-in-out ${progressStroke > 0 ? 'opacity-100' : 'opacity-0'}`}>
-              <svg className="size-full" viewBox="0 0 256 256" style={{ transform: 'rotate(-90deg)' }}>
-                {/* Calculate circumference: 2 * π * r = 2 * π * 125 ≈ 785.4 */}
-                <circle
-                  cx="128"
-                  cy="128"
-                  r="125"
-                  fill="none"
-                  stroke={
-                    progressStroke < 50 ? '#EF4444' : // Red for under 50
-                    progressStroke <= 75 ? '#F8B400' : // Orange for 50-75
-                    '#22c55e' // Green for 76-100
-                  }
-                  strokeWidth="6"
-                  strokeLinecap="round"
-                  strokeDasharray="785.4"
-                  strokeDashoffset={785.4 - (progressStroke / 100) * 785.4}
-                  style={{ transition: 'stroke-dashoffset 1s ease-out, stroke 0.3s ease-out' }}
-                  opacity="1"
-                />
-              </svg>
-            </div>
-            
-            {/* Outer pulse ring */}
-            <div className="absolute border-[0.8px] border-[rgba(0,194,184,0.1)] border-solid left-[-16px] opacity-[0.74] rounded-[2.68435e+07px] size-[288px] top-[-16px] animate-pulse-slow" data-name="Container" />
-            
-            {/* Inner score display */}
-            <div className="absolute bg-[rgba(22,36,62,0.6)] border-[0.8px] border-[rgba(252,252,252,0.06)] border-solid left-[16px] rounded-[2.68435e+07px] shadow-[0px_10px_25px_0px_rgba(4,11,23,0.4),0px_4px_60px_0px_rgba(240,241,244,0.15)] size-[224px] top-[16px]" data-name="Container">
-              {/* Authority Score Label */}
-              <div className="absolute h-[15.988px] left-[40.39px] top-[34.41px] w-[141.613px]" data-name="Text">
-                <p className="absolute font-['Manrope:Bold',sans-serif] font-bold leading-[16px] left-[calc(50%-64.34px)] text-[#F8B400] text-[12px] text-nowrap top-[-0.8px] tracking-[1.2px] whitespace-pre">AUTHORITY SCORE</p>
-              </div>
-              
-              {/* Score Number and Growth */}
-              <div className="absolute content-stretch flex flex-col gap-[12px] items-center left-[55.46px] top-[56.4px] w-[111.463px]">
-                {/* Score Number */}
-                <div className="h-[96px] relative shrink-0 w-full flex items-center justify-center" data-name="Heading 1">
-                  {loadingAuthority ? (
-                    <LoadingSpinner size={48} />
-                  ) : (
-                    <p className="[text-shadow:rgba(50,255,4,0.15)_0px_4px_60px,rgba(4,11,23,0.3)_0px_10px_25px] font-['Satoshi:Bold',sans-serif] leading-[96px] not-italic text-[#defcd7] text-[96px] text-nowrap tracking-[-4.8px] whitespace-pre">{displayScore}</p>
-                  )}
-                </div>
-                
-                {/* Time Period Indicator */}
-                <div className="box-border content-stretch flex items-center justify-center px-[16px] py-[8px] relative rounded-[2.68435e+07px] shrink-0" data-name="Container">
-                  <div aria-hidden="true" className="absolute border border-[rgba(0,194,184,0.4)] border-solid inset-0 pointer-events-none rounded-[2.68435e+07px]" />
-                  <p className="font-['Manrope:Medium',sans-serif] font-medium leading-[16px] relative shrink-0 text-[#00c2b8] text-[14px] text-nowrap whitespace-pre">{createdAt ? timeAgo(createdAt) : '-'}</p>
-                </div>
-              </div>
-            </div>
-          </div>
+          <AuthorityScoreCircle 
+            loading={loading.authority}
+            displayScore={displayScore}
+            progressStroke={progressStroke}
+            createdAt={createdAt}
+          />
         </div>
 
         {/* Info Container - Appears after Authority Score slides left */}
         <div 
-          className="absolute top-[60px] transition-all duration-1000 ease-out"
-          style={{
-            left: loadingInfo ? 'calc(50% + 400px)' : 'calc(50% - 8px)',
-            opacity: loadingInfo ? 0 : 1,
-            transform: loadingInfo ? 'translateX(50px)' : 'translateX(0)'
-          }}
+          className="absolute top-[60px]"
+          style={{ left: 'calc(50% - 8px)', opacity: 1, transform: 'translateX(0)' }}
         >
-          <InfoContainer domain={domain} loading={loadingInfo} score={localScores.avg} />
+          <InfoContainer domain={domain} loading={loading.info} score={localScores.avg} />
         </div>
 
         {/* Three Cards */}
@@ -441,58 +394,17 @@ export function DashboardView({ domain, onOpenModal, onReset, analysisId }: Dash
             </div>
 
             {/* Content */}
-            <div className="bg-[rgba(22,36,62,0.5)] relative rounded-bl-[12px] rounded-br-[12px] shrink-0 w-full" data-name="Card - Testimoni">
-              <div className="flex flex-col items-center size-full">
-                <div className="box-border content-stretch flex flex-col gap-[16px] items-center pb-[16px] pt-[24px] px-[20px] relative size-full">
-                  <div className="content-stretch flex flex-col gap-[14px] items-start relative shrink-0 w-full">
-                    {/* Score */}
-                    <div className="content-stretch flex flex-col gap-[10px] items-start relative shrink-0 text-nowrap whitespace-pre" data-name="Card Content">
-                      <div className="content-stretch flex font-['Satoshi:Bold',sans-serif] items-end leading-[normal] not-italic relative shrink-0" data-name="Score Container">
-                        {loadingOptimize ? (
-                          <LoadingSpinner size={32} />
-                        ) : (
-                          <>
-                            <p className="relative shrink-0 text-[36px] text-white">{displayOptScore}</p>
-                            <p className="relative shrink-0 text-[#919eab] text-[24px]">/100</p>
-                          </>
-                        )}
-                      </div>
-                      <p className="font-['Manrope:Regular',sans-serif] font-normal leading-[16px] relative shrink-0 text-[#919eab] text-[12px]">Clarity System</p>
-                    </div>
-                    
-                    {/* Progress Bar */}
-                    <div className="bg-neutral-600 h-[6px] relative rounded-[2.68435e+07px] shrink-0 w-full" data-name="Container">
-                      <div className="overflow-clip rounded-[inherit] size-full">
-                        <div className="box-border content-stretch flex flex-col h-[6px] items-start pl-0 py-0 relative w-full transition-all duration-1000" style={{ paddingRight: `${100 - barWidths.opt}%` }}>
-                          <div className="bg-[#00c2b8] h-[6px] rounded-[2.68435e+07px] shrink-0 w-full" data-name="Container" />
-                        </div>
-                      </div>
-                    </div>
-                    
-                    {/* Divider */}
-                    <div className="h-0 relative shrink-0 w-full">
-                      <div className="absolute bottom-[-0.5px] left-0 right-0 top-[-0.5px]">
-                        <svg className="block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 237 1">
-                          <path d="M0 0.5H237" id="Vector 1" stroke="var(--stroke-0, white)" strokeOpacity="0.1" />
-                        </svg>
-                      </div>
-                    </div>
-
-                    {/* Details */}
-                    <div className="content-stretch flex flex-col gap-[6px] items-start relative shrink-0 w-full">
-                      <div className="content-stretch flex font-['Manrope:Regular',sans-serif] font-normal items-center justify-between leading-[normal] relative shrink-0 text-nowrap w-full whitespace-pre" data-name="Detail Item">
-                        <p className="relative shrink-0 text-[#a7a7a7] text-[14px]">CWV Score</p>
-                        <p className="relative shrink-0 text-[16px] text-white">{loadingOptimize ? <LoadingDots color="#ffffff" /> : displayCWVScore}</p>
-                      </div>
-                      <div className="content-stretch flex font-['Manrope:Regular',sans-serif] font-normal items-center justify-between leading-[normal] relative shrink-0 text-nowrap w-full whitespace-pre" data-name="Detail Item">
-                        <p className="relative shrink-0 text-[#a7a7a7] text-[14px]">Schema Score</p>
-                        <p className="relative shrink-0 text-[16px] text-white">{loadingOptimize ? <LoadingDots color="#ffffff" /> : displaySchemaScore}</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+            <ScoreCardContent
+              loading={loading.optimize}
+              score={display.opt}
+              barColor="#00c2b8"
+              barWidth={barWidths.opt}
+              scoreLabel="Clarity System"
+              details={[
+                { label: 'CWV Score', value: display.details.cwv },
+                { label: 'Schema Score', value: display.details.schema },
+              ]}
+            />
           </div>
 
           {/* MANIFEST Card */}
@@ -540,62 +452,18 @@ export function DashboardView({ domain, onOpenModal, onReset, analysisId }: Dash
             </div>
 
             {/* Content */}
-            <div className="bg-[rgba(22,36,62,0.5)] relative rounded-bl-[12px] rounded-br-[12px] shrink-0 w-full" data-name="Card - Testimoni">
-              <div className="flex flex-col items-center size-full">
-                <div className="box-border content-stretch flex flex-col gap-[16px] items-center pb-[16px] pt-[24px] px-[20px] relative w-full">
-                  <div className="content-stretch flex flex-col gap-[14px] items-start relative shrink-0 w-full">
-                    {/* Score */}
-                    <div className="content-stretch flex flex-col gap-[10px] items-start relative shrink-0 text-nowrap whitespace-pre" data-name="Card Content">
-                      <div className="content-stretch flex font-['Satoshi:Bold',sans-serif] items-end leading-[normal] not-italic relative shrink-0" data-name="Score Container">
-                        {loadingManifest ? (
-                          <LoadingSpinner size={32} />
-                        ) : (
-                          <>
-                            <p className="relative shrink-0 text-[36px] text-white">{displayManScore}</p>
-                            <p className="relative shrink-0 text-[#919eab] text-[24px]">/100</p>
-                          </>
-                        )}
-                      </div>
-                      <p className="font-['Manrope:Regular',sans-serif] font-normal leading-[16px] relative shrink-0 text-[#919eab] text-[12px]">Answer Source</p>
-                    </div>
-                    
-                    {/* Progress Bar */}
-                    <div className="bg-neutral-600 h-[6px] relative rounded-[2.68435e+07px] shrink-0 w-full" data-name="Container">
-                      <div className="overflow-clip rounded-[inherit] size-full">
-                        <div className="box-border content-stretch flex flex-col h-[6px] items-start pl-0 py-0 relative w-full transition-all duration-1000" style={{ paddingRight: `${100 - barWidths.man}%` }}>
-                          <div className="bg-[#cfff04] h-[6px] rounded-[2.68435e+07px] shrink-0 w-full" data-name="Container" />
-                        </div>
-                      </div>
-                    </div>
-                    
-                    {/* Divider */}
-                    <div className="h-0 relative shrink-0 w-full">
-                      <div className="absolute bottom-[-0.5px] left-0 right-0 top-[-0.5px]">
-                        <svg className="block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 237 1">
-                          <path d="M0 0.5H237" id="Vector 1" stroke="var(--stroke-0, white)" strokeOpacity="0.1" />
-                        </svg>
-                      </div>
-                    </div>
-
-                    {/* Details */}
-                    <div className="content-stretch flex flex-col gap-[6px] items-start relative shrink-0 w-full">
-                      <div className="content-stretch flex font-['Manrope:Regular',sans-serif] font-normal items-center justify-between leading-[normal] relative shrink-0 text-nowrap w-full whitespace-pre" data-name="Detail Item">
-                        <p className="relative shrink-0 text-[#a7a7a7] text-[14px]">Backlink Score</p>
-                        <p className="relative shrink-0 text-[16px] text-white">{loadingManifest ? <LoadingDots color="#ffffff" /> : displayBacklinkScore}</p>
-                      </div>
-                      <div className="content-stretch flex font-['Manrope:Regular',sans-serif] font-normal items-center justify-between leading-[normal] relative shrink-0 text-nowrap w-full whitespace-pre" data-name="Detail Item">
-                        <p className="relative shrink-0 text-[#a7a7a7] text-[14px]">News Mention Score</p>
-                        <p className="relative shrink-0 text-[16px] text-white">{loadingManifest ? <LoadingDots color="#ffffff" /> : displayNewsMentionScore}</p>
-                      </div>
-                      <div className="content-stretch flex font-['Manrope:Regular',sans-serif] font-normal items-center justify-between leading-[normal] relative shrink-0 text-nowrap w-full whitespace-pre" data-name="Detail Item">
-                        <p className="relative shrink-0 text-[#a7a7a7] text-[14px]">Wikidata Score</p>
-                        <p className="relative shrink-0 text-[16px] text-white">{loadingManifest ? <LoadingDots color="#ffffff" /> : displayWikidataScore}</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+            <ScoreCardContent
+              loading={loading.manifest}
+              score={display.man}
+              barColor="#cfff04"
+              barWidth={barWidths.man}
+              scoreLabel="Answer Source"
+              details={[
+                { label: 'Backlink Score', value: display.details.backlink },
+                { label: 'News Mention Score', value: display.details.newsMention },
+                { label: 'Wikidata Score', value: display.details.wikidata },
+              ]}
+            />
           </div>
 
           {/* GENERATIVE Card */}
@@ -651,62 +519,18 @@ export function DashboardView({ domain, onOpenModal, onReset, analysisId }: Dash
             </div>
 
             {/* Content */}
-            <div className="bg-[rgba(22,36,62,0.5)] relative rounded-bl-[12px] rounded-br-[12px] shrink-0 w-full" data-name="Card - Testimoni">
-              <div className="flex flex-col items-center size-full">
-                <div className="box-border content-stretch flex flex-col gap-[16px] items-center pb-[16px] pt-[24px] px-[20px] relative w-full">
-                  <div className="content-stretch flex flex-col gap-[14px] items-start relative shrink-0 w-full">
-                    {/* Score */}
-                    <div className="content-stretch flex flex-col gap-[10px] items-start relative shrink-0 text-nowrap whitespace-pre" data-name="Card Content">
-                      <div className="content-stretch flex font-['Satoshi:Bold',sans-serif] items-end leading-[normal] not-italic relative shrink-0" data-name="Score Container">
-                        {loadingGenerative ? (
-                          <LoadingSpinner size={32} />
-                        ) : (
-                          <>
-                            <p className="relative shrink-0 text-[36px] text-white">{displayGenScore}</p>
-                            <p className="relative shrink-0 text-[#919eab] text-[24px]">/100</p>
-                          </>
-                        )}
-                      </div>
-                      <p className="font-['Manrope:Regular',sans-serif] font-normal leading-[16px] relative shrink-0 text-[#919eab] text-[12px]">Influence Origin</p>
-                    </div>
-                    
-                    {/* Progress Bar */}
-                    <div className="bg-neutral-600 h-[6px] relative rounded-[2.68435e+07px] shrink-0 w-full" data-name="Container">
-                      <div className="overflow-clip rounded-[inherit] size-full">
-                        <div className="box-border content-stretch flex flex-col h-[6px] items-start pl-0 py-0 relative w-full transition-all duration-1000" style={{ paddingRight: `${100 - barWidths.gen}%` }}>
-                          <div className="bg-[#f8b400] h-[6px] rounded-[2.68435e+07px] shrink-0 w-full" data-name="Container" />
-                        </div>
-                      </div>
-                    </div>
-                    
-                    {/* Divider */}
-                    <div className="h-0 relative shrink-0 w-full">
-                      <div className="absolute bottom-[-0.5px] left-0 right-0 top-[-0.5px]">
-                        <svg className="block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 237 1">
-                          <path d="M0 0.5H237" id="Vector 1" stroke="var(--stroke-0, white)" strokeOpacity="0.1" />
-                        </svg>
-                      </div>
-                    </div>
-
-                    {/* Details */}
-                    <div className="content-stretch flex flex-col gap-[6px] items-start relative shrink-0 w-full">
-                      <div className="content-stretch flex font-['Manrope:Regular',sans-serif] font-normal items-center justify-between leading-[normal] relative shrink-0 text-nowrap w-full whitespace-pre" data-name="Detail Item">
-                        <p className="relative shrink-0 text-[#a7a7a7] text-[14px]">AI Cite Score</p>
-                        <p className="relative shrink-0 text-[16px] text-white">{loadingGenerative ? <LoadingDots color="#ffffff" /> : displayAICiteScore}</p>
-                      </div>
-                      <div className="content-stretch flex font-['Manrope:Regular',sans-serif] font-normal items-center justify-between leading-[normal] relative shrink-0 w-full" data-name="Detail Item">
-                        <p className="relative shrink-0 text-[#a7a7a7] text-[14px] w-[173px]">AI Overview Appearance</p>
-                        <p className="relative shrink-0 text-[16px] text-nowrap text-white whitespace-pre">{loadingGenerative ? <LoadingDots color="#ffffff" /> : displayAIOverviewScore}</p>
-                      </div>
-                      <div className="content-stretch flex font-['Manrope:Regular',sans-serif] font-normal items-center justify-between leading-[normal] relative shrink-0 w-full" data-name="Detail Item">
-                        <p className="relative shrink-0 text-[#a7a7a7] text-[14px] w-[173px]">Authority Sources Score</p>
-                        <p className="relative shrink-0 text-[16px] text-nowrap text-white whitespace-pre">{loadingGenerative ? <LoadingDots color="#ffffff" /> : displayAuthoritySourcesScore}</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+            <ScoreCardContent
+              loading={loading.generative}
+              score={display.gen}
+              barColor="#f8b400"
+              barWidth={barWidths.gen}
+              scoreLabel="Influence Origin"
+              details={[
+                { label: 'AI Cite Score', value: display.details.aiCite },
+                { label: 'AI Overview Appearance', value: display.details.aiOverview },
+                { label: 'Authority Sources Score', value: display.details.authoritySources },
+              ]}
+            />
           </div>
         </div>
 
