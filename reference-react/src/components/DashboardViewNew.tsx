@@ -11,7 +11,163 @@ import svgExtra from "../imports/svg-9xenn4o0xj";
 const svgPaths = { ...svgBase, ...svgExtra };
 import svgPathsGenerative from "../imports/svg-v5gyqubm8s";
 import Image from 'next/image';
-// import imgPattern from "figma:asset/e777a57b939162b876418f1793283d92d18bafa0.png";
+
+type SubProcess = {
+  id: string;
+  type: string;
+  status: string;
+  metadata: Record<string, any>;
+  header_id?: string;
+  created_at?: string;
+  updated_at?: string;
+  error_metadata?: any;
+};
+
+type AnalysisJSON = {
+  id: string;
+  status: string;
+  url?: string;
+  created_at: string;
+  updated_at?: string;
+  overall_score?: number;
+  avg?: number;
+  optimize?: number;
+  opt?: number;
+  manifest?: number;
+  man?: number;
+  generative?: number;
+  gen?: number;
+  sub_processes: SubProcess[];
+};
+
+type AnalysisResponse = { data: { json: AnalysisJSON } };
+
+const DUMMY_ANALYSIS_DATA: AnalysisResponse = {
+  data: {
+    json: {
+      id: 'sample-id',
+      status: 'finished',
+      url: 'example.com',
+      created_at: '2025-12-11T10:44:00.000Z',
+      updated_at: '2025-12-11T10:48:00.000Z',
+      overall_score: 86,
+      optimize: 82,
+      manifest: 72,
+      generative: 91,
+      sub_processes: [
+        {
+          id: 'sp-cwv-01',
+          type: 'cwv',
+          status: 'finished',
+          metadata: {
+            final_score: 88,
+            performance_score: 85,
+            accessibility_score: 90,
+            best_practices_score: 87,
+            seo_score: 89,
+          },
+          header_id: 'hdr-001',
+          created_at: '2025-12-11T10:44:01.000Z',
+          updated_at: '2025-12-11T10:44:05.000Z',
+          error_metadata: null,
+        },
+        {
+          id: 'sp-schema-01',
+          type: 'schema',
+          status: 'finished',
+          metadata: {
+            overallScore: 84,
+            errors: 0,
+            warnings: 2,
+          },
+          header_id: 'hdr-001',
+          created_at: '2025-12-11T10:44:02.000Z',
+          updated_at: '2025-12-11T10:44:06.000Z',
+          error_metadata: null,
+        },
+        {
+          id: 'sp-backlink-01',
+          type: 'backlink',
+          status: 'finished',
+          metadata: {
+            backlink_score: 76,
+            total_backlinks: 1240,
+            authoritative_backlinks: 328,
+          },
+          header_id: 'hdr-001',
+          created_at: '2025-12-11T10:44:03.000Z',
+          updated_at: '2025-12-11T10:44:07.000Z',
+          error_metadata: null,
+        },
+        {
+          id: 'sp-news-01',
+          type: 'news_mentioned',
+          status: 'finished',
+          metadata: {
+            total_mentions: 24,
+            news_mention_score: 69,
+          },
+          header_id: 'hdr-001',
+          created_at: '2025-12-11T10:44:03.500Z',
+          updated_at: '2025-12-11T10:44:07.500Z',
+          error_metadata: null,
+        },
+        {
+          id: 'sp-wikidata-01',
+          type: 'wikidata',
+          status: 'finished',
+          metadata: {
+            wikidata_score: { data: 93 },
+          },
+          header_id: 'hdr-001',
+          created_at: '2025-12-11T10:44:04.000Z',
+          updated_at: '2025-12-11T10:44:08.000Z',
+          error_metadata: null,
+        },
+        {
+          id: 'sp-ai-cite-01',
+          type: 'ai_cite_score',
+          status: 'finished',
+          metadata: {
+            ai_cite_score: 74,
+            sources_count: 11,
+          },
+          header_id: 'hdr-001',
+          created_at: '2025-12-11T10:44:04.500Z',
+          updated_at: '2025-12-11T10:44:08.500Z',
+          error_metadata: null,
+        },
+        {
+          id: 'sp-ai-overview-01',
+          type: 'ai_overview',
+          status: 'finished',
+          metadata: {
+            total_hits: 2,
+            ai_overview_score: 100,
+            total_appearances: 2,
+          },
+          header_id: 'hdr-001',
+          created_at: '2025-12-11T10:44:05.000Z',
+          updated_at: '2025-12-11T10:44:09.000Z',
+          error_metadata: null,
+        },
+        {
+          id: 'sp-ai-cite-rank-01',
+          type: 'ai_cite_ranking',
+          status: 'finished',
+          metadata: {
+            ai_cite_score_rank1: 81,
+          },
+          header_id: 'hdr-001',
+          created_at: '2025-12-11T10:44:05.500Z',
+          updated_at: '2025-12-11T10:44:09.500Z',
+          error_metadata: null,
+        },
+      ],
+    },
+  },
+};
+
 
 interface DashboardViewProps {
   domain: string;
@@ -324,7 +480,11 @@ function AuthorityScoreCircle({
       <div className="absolute border-[0.8px] border-[rgba(0,194,184,0.1)] border-solid left-[-16px] opacity-[0.74] rounded-[2.68435e+07px] size-[288px] top-[-16px] animate-pulse-slow" data-name="Container" />
       <div className="absolute bg-[rgba(22,36,62,0.6)] border-[0.8px] border-[rgba(252,252,252,0.06)] border-solid left-[16px] rounded-[2.68435e+07px] shadow-[0px_10px_25px_0px_rgba(4,11,23,0.4),0px_4px_60px_0px_rgba(240,241,244,0.15)] size-[224px] top-[16px]" data-name="Container">
         <div className="absolute h-[15.988px] left-[40.39px] top-[34.41px] w-[141.613px]" data-name="Text">
-          <p className="absolute font-['Manrope:Bold',sans-serif] font-bold leading-[16px] left-[calc(50%-64.34px)] text-[#F8B400] text-[12px] text-nowrap top-[-0.8px] tracking-[1.2px] whitespace-pre">AUTHORITY SCORE</p>
+          <p 
+            className="absolute leading-[16px] left-[calc(50%-64.34px)] text-[#F8B400] text-[12px] text-nowrap top-[-0.8px] tracking-[1.2px] whitespace-pre"
+          >
+            AUTHORITY SCORE
+          </p>
         </div>
         <div className="absolute content-stretch flex flex-col gap-[12px] items-center left-[55.46px] top-[56.4px] w-[111.463px]">
           <div className="h-[96px] relative shrink-0 w-full flex items-center justify-center" data-name="Heading 1">
@@ -332,7 +492,7 @@ function AuthorityScoreCircle({
               <LoadingSpinner size={48} />
             ) : (
               typeof displayScore === 'number' && Number.isFinite(displayScore) ? (
-                <p className="[text-shadow:rgba(50,255,4,0.15)_0px_4px_60px,rgba(4,11,23,0.3)_0px_10px_25px] font-['Satoshi:Bold',sans-serif] not-italic text-[#defcd7] text-[48px] sm:text-[64px] md:text-[96px] leading-[60px] md:leading-[96px] text-nowrap tracking-[-2px] md:tracking-[-4.8px] whitespace-pre">{Math.round(displayScore)}</p>
+                <p className="[text-shadow:rgba(50,255,4,0.15)_0px_4px_60px,rgba(4,11,23,0.3)_0px_10px_25px] font-satoshi font-bold not-italic text-[#defcd7] text-[48px] sm:text-[64px] md:text-[96px] leading-[60px] md:leading-[96px] text-nowrap tracking-[-2px] md:tracking-[-4.8px] whitespace-pre">{Math.round(displayScore)}</p>
               ) : (
                 <LoadingSpinner size={48} />
               )
@@ -369,13 +529,13 @@ function ScoreCardContent({
         <div className="box-border content-stretch flex flex-col gap-[16px] items-center pb-[16px] pt-[24px] px-[20px] relative size-full">
           <div className="content-stretch flex flex-col gap-[14px] items-start relative shrink-0 w-full">
             <div className="content-stretch flex flex-col gap-[10px] items-start relative shrink-0 text-nowrap whitespace-pre" data-name="Card Content">
-              <div className="content-stretch flex font-['Satoshi:Bold',sans-serif] items-end leading-[normal] not-italic relative shrink-0" data-name="Score Container">
+              <div className="content-stretch flex font-satoshi font-bold items-end leading-[normal] not-italic relative shrink-0" data-name="Score Container">
                 {loading ? (
                   <LoadingSpinner size={32} />
                 ) : (
                   typeof score === 'number' && Number.isFinite(score) ? (
                     <>
-                      <p className="relative shrink-0 text-[28px] md:text-[36px] text-white">{Math.round(score)}</p>
+                      <p className="relative shrink-0 text-[28px] md:text-[36px] text-white mb-[-3px] mr-[2px]">{Math.round(score)}</p>
                       <p className="relative shrink-0 text-[#919eab] text-[18px] md:text-[24px]">/100</p>
                     </>
                   ) : (
@@ -383,7 +543,7 @@ function ScoreCardContent({
                   )
                 )}
               </div>
-              <p className="font-['Manrope:Regular',sans-serif] font-normal leading-[16px] relative shrink-0 text-[#919eab] text-[12px]">{scoreLabel}</p>
+              <p className=" font-normal leading-[16px] relative shrink-0 text-[#919eab] text-[12px]">{scoreLabel}</p>
             </div>
             <div className="bg-neutral-600 h-[6px] relative rounded-[2.68435e+07px] shrink-0 w-full" data-name="Container">
               <div className="overflow-clip rounded-[inherit] size-full">
@@ -401,7 +561,7 @@ function ScoreCardContent({
             </div>
             <div className="content-stretch flex flex-col gap-[6px] items-start relative shrink-0 w-full">
               {details.map((d, idx) => (
-                <div key={idx} className="content-stretch flex font-['Manrope:Regular',sans-serif] font-normal items-center justify-between leading-[normal] relative shrink-0 text-nowrap w-full whitespace-pre" data-name="Detail Item">
+                <div key={idx} className="content-stretch flex  font-normal items-center justify-between leading-[normal] relative shrink-0 text-nowrap w-full whitespace-pre" data-name="Detail Item">
                   <p className="relative shrink-0 text-[#a7a7a7] text-[14px]">{d.label}</p>
                   <p className="relative shrink-0 text-[16px] text-white">{loading ? <LoadingDots color="#ffffff" /> : (typeof d.value === 'number' && Number.isFinite(d.value) ? Math.round(d.value) : '-' )}</p>
                 </div>
@@ -416,14 +576,23 @@ function ScoreCardContent({
 
 export function DashboardView({ domain, onOpenModal, onReset, analysisId }: DashboardViewProps) {
   const shouldStopPolling = useCallback((data: any) => (data as any)?.data?.json?.status === 'finished', []);
-  const { data: analysisData, isLoading } = usePollingGet<any>(
-    analysisId ? `/findone-main-process?id=${analysisId}` : null,
-    {
-      interval: 2000,
-      shouldStopPolling,
-      initialLoading: true,
-    }
-  );
+  
+  const withDummy = false;
+
+   const { data: analysisData, isLoading } =
+    withDummy
+      ? { data: DUMMY_ANALYSIS_DATA, isLoading: false }
+      : usePollingGet<any>(
+          analysisId ? `/findone-main-process?id=${analysisId}` : null,
+          {
+            interval: 2000,
+            shouldStopPolling,
+            initialLoading: true,
+          }
+        );
+
+      
+
   const { localScores, detailScores, createdAt } = useAnalysisData(analysisData);
   const { loading, displayScore, progressStroke, barWidths, display } = useDashboardAnimation(
     localScores,
@@ -509,26 +678,9 @@ export function DashboardView({ domain, onOpenModal, onReset, analysisId }: Dash
                 <div className="box-border content-stretch flex h-[48px] items-center justify-between px-[20px] py-[16px] relative w-full">
                   <div className="content-stretch flex gap-[8px] h-[16px] items-center relative shrink-0" data-name="Container">
                     <div className="relative shrink-0 size-[16px]" data-name="Icon">
-                      <svg className="block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 16 16">
-                        <g clipPath="url(#clip0_4029_136)" id="Icon">
-                          <path d={svgPaths.p19aa0680} id="Vector" stroke="var(--stroke-0, #00C2B8)" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.33333" />
-                          <path d={svgPaths.p2b561900} id="Vector_2" stroke="var(--stroke-0, #00C2B8)" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.33333" />
-                          <path d={svgPaths.p35abdf80} id="Vector_3" stroke="var(--stroke-0, #00C2B8)" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.33333" />
-                          <path d={svgPaths.p3fe85180} id="Vector_4" stroke="var(--stroke-0, #00C2B8)" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.33333" />
-                          <path d="M1.33333 10.6667H1.34" id="Vector_5" stroke="var(--stroke-0, #00C2B8)" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.33333" />
-                          <path d={svgPaths.p32d5a6be} id="Vector_6" stroke="var(--stroke-0, #00C2B8)" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.33333" />
-                          <path d={svgPaths.p5096bc0} id="Vector_7" stroke="var(--stroke-0, #00C2B8)" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.33333" />
-                          <path d={svgPaths.p2a7a680} id="Vector_8" stroke="var(--stroke-0, #00C2B8)" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.33333" />
-                          <path d={svgPaths.p12c93300} id="Vector_9" stroke="var(--stroke-0, #00C2B8)" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.33333" />
-                        </g>
-                        <defs>
-                          <clipPath id="clip0_4029_136">
-                            <rect fill="white" height="16" width="16" />
-                          </clipPath>
-                        </defs>
-                      </svg>
+                      <Image src="icons/fingerprint.svg" alt="Optimize Icon" width={16} height={16} />
                     </div>
-                    <p className="font-['Manrope:SemiBold',sans-serif] font-semibold leading-[normal] relative shrink-0 text-[#00c2b8] text-[14px] text-nowrap tracking-[0.6px] uppercase whitespace-pre">OPTIMIZE</p>
+                    <p className="font-manrope font-semibold leading-[normal] relative shrink-0 text-[#00c2b8] text-[14px] text-nowrap tracking-[0.6px] uppercase whitespace-pre">OPTIMIZE</p>
                   </div>
                   <div className="relative shrink-0 size-[18px]">
                     <Image src="icons/exclamation.svg" alt="Exclamation Icon" width={18} height={18} />
@@ -565,13 +717,9 @@ export function DashboardView({ domain, onOpenModal, onReset, analysisId }: Dash
                 <div className="box-border content-stretch flex h-[48px] items-center justify-between px-[20px] py-[16px] relative w-full">
                   <div className="content-stretch flex gap-[8px] h-[16px] items-center relative shrink-0" data-name="Container">
                     <div className="relative shrink-0 size-[16px]" data-name="Icon">
-                      <svg className="block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 16 16">
-                        <g id="Icon">
-                          <path d={svgPaths.p1bb15080} id="Vector" stroke="var(--stroke-0, #CFFF04)" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.33333" />
-                        </g>
-                      </svg>
+                      <Image src="icons/chat.svg" alt="Manifest Icon" width={16} height={16} />
                     </div>
-                    <p className="font-['Manrope:SemiBold',sans-serif] font-semibold leading-[normal] relative shrink-0 text-[#c6f558] text-[14px] text-nowrap tracking-[0.6px] uppercase whitespace-pre">MANIFEST</p>
+                    <p className="font-manrope font-semibold leading-[normal] relative shrink-0 text-[#c6f558] text-[14px] text-nowrap tracking-[0.6px] uppercase whitespace-pre">MANIFEST</p>
                   </div>
                  <div className="relative shrink-0 size-[18px]">
                     <Image src="icons/exclamation.svg" alt="Exclamation Icon" width={18} height={18} />
@@ -621,7 +769,7 @@ export function DashboardView({ domain, onOpenModal, onReset, analysisId }: Dash
                         </defs>
                       </svg>
                     </div>
-                    <p className="font-['Manrope:SemiBold',sans-serif] font-semibold leading-[normal] relative shrink-0 text-[#f8b400] text-[14px] text-nowrap tracking-[0.6px] uppercase whitespace-pre">GENERATIVE</p>
+                    <p className="font-manrope font-semibold leading-[normal] relative shrink-0 text-[#f8b400] text-[14px] text-nowrap tracking-[0.6px] uppercase whitespace-pre">GENERATIVE</p>
                   </div>
                   <div className="relative shrink-0 size-[18px]">
                     <Image src="icons/exclamation.svg" alt="Exclamation Icon" width={18} height={18} />

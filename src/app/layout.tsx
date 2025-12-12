@@ -1,16 +1,47 @@
 import type { Metadata, Viewport } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
-import "./globals.css";
-import { Providers } from "./providers";
+import { Manrope, Space_Grotesk } from "next/font/google";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+import localFont from "next/font/local";
+import { Providers } from "./providers";
+import "./globals.css";
+
+const manrope = Manrope({
   subsets: ["latin"],
+  variable: "--font-manrope",
+  weight: ["300", "400", "500", "600", "700"],
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+// const sansation = Sansation({
+//   subsets: ["latin"],
+//   variable: "--font-sansation",
+//   weight: ["400", "700"],
+//   adjustFontFallback: false,
+//   display: "swap",
+// });
+
+const spaceGrotesk = Space_Grotesk({
   subsets: ["latin"],
+  variable: "--font-space-grotesk",
+  weight: ["500", "700"],
+});
+
+const satoshi = localFont({
+  variable: "--font-satoshi",
+  display: "swap",
+  src: [
+    { path: "../../public/fonts/satoshi/Satoshi-Variable.woff2", style: "normal", weight: "100 900" },
+    { path: "../../public/fonts/satoshi/Satoshi-VariableItalic.woff2", style: "italic", weight: "100 900" },
+    { path: "../../public/fonts/satoshi/Satoshi-Bold.woff2", style: "normal", weight: "700" },
+    { path: "../../public/fonts/satoshi/Satoshi-BoldItalic.woff2", style: "italic", weight: "700" },
+  ],
+});
+
+const sansation = localFont({
+  variable: "--font-sansation",
+  display: "swap",
+  src: [
+    { path: "../../public/fonts/sansation/Sansation-Regular.woff2", style: "normal", weight: "100 900" },
+  ],
 });
 
 export const metadata: Metadata = {
@@ -34,7 +65,6 @@ export const viewport: Viewport = {
   initialScale: 1,
 };
 
-
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -43,7 +73,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${manrope.variable} ${spaceGrotesk.variable} ${satoshi.variable} ${sansation.variable} antialiased font-sans`}
       >
         <Providers>{children}</Providers>
       </body>

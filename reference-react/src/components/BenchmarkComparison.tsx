@@ -4,9 +4,9 @@ import { motion, AnimatePresence } from 'motion/react';
 import pathsA from "../imports/svg-2kr7bspzf9";
 import pathsB from "../imports/svg-uaoyunhbeu";
 const svgPaths = { ...pathsA, ...pathsB };
-import Vector from "../imports/Vector";
 import { usePollingGet, usePost } from '../../../src/hooks/api';
 import { storageUtils } from '../../../src/utils/storage';
+import Image from 'next/image';
 
 const DUMMY_RESPONSE = {
   "status": "ok",
@@ -806,7 +806,6 @@ export function BenchmarkComparison({ userDomain, userScore, userScores }: Bench
   const [apiUserDetail, setApiUserDetail] = useState<{ cwv?: number; schema?: number; backlink?: number; newsMention?: number; wikidata?: number; aiCite?: number; aiOverview?: number; aiCiteRanking?: number } | null>(null);
 
   useEffect(() => {
-
     const payload = comparisonsData?.data ?? (Array.isArray(comparisonsData) ? comparisonsData : null);
     // const payload = DUMMY_RESPONSE?.data
 
@@ -1021,10 +1020,10 @@ export function BenchmarkComparison({ userDomain, userScore, userScores }: Bench
         <div className="content-stretch flex items-center justify-between relative shrink-0 w-full">
           <div className="content-stretch flex gap-[8px] h-[16px] items-center relative shrink-0">
             {icon}
-            <p className="font-['Manrope:SemiBold',sans-serif] font-semibold leading-[normal] relative shrink-0 text-[14px] text-nowrap text-white tracking-[0.6px] uppercase whitespace-pre">{label}</p>
+            <p className=" font-semibold leading-[normal] relative shrink-0 text-[14px] text-nowrap text-white tracking-[0.6px] uppercase whitespace-pre">{label}</p>
           </div>
-          <div className="content-stretch flex font-['Satoshi:Bold',sans-serif] items-end leading-[normal] not-italic relative shrink-0 text-nowrap whitespace-pre">
-            <p className="relative shrink-0 text-[20px] text-white">{score}</p>
+          <div className="content-stretch flex font-satoshi font-bold items-end leading-[normal] not-italic relative shrink-0 text-nowrap whitespace-pre">
+            <p className="relative shrink-0 text-[20px] text-white mb-[-2px] mr-[1px]">{score}</p>
             <p className="relative shrink-0 text-[#919eab] text-[14px]">/100</p>
           </div>
         </div>
@@ -1032,9 +1031,9 @@ export function BenchmarkComparison({ userDomain, userScore, userScores }: Bench
           <div className={`h-[6px] rounded-[2.68435e+07px] shrink-0`} style={{ width: `${score}%`, backgroundColor: barColor }} />
         </div>
       </div>
-      <div className="content-stretch flex flex-col gap-[6px] items-end justify-center relative shrink-0 w-full">
+      <div className="content-stretch flex flex-col gap-[6px] items-end justify-center relative shrink-0 w-full pl-5">
         {details.map((d, i) => (
-          <div key={`${label}-detail-${i}`} className="content-stretch flex font-['Manrope:Regular',sans-serif] font-normal items-center justify-between leading-[normal] relative shrink-0 text-nowrap w-full whitespace-pre">
+          <div key={`${label}-detail-${i}`} className="content-stretch flex  font-normal items-center justify-between leading-[normal] relative shrink-0 text-nowrap w-full whitespace-pre">
             <p className="relative shrink-0 text-[#a7a7a7] text-[14px]">{d.label}</p>
             <p className="relative shrink-0 text-[#cfd1d4] text-[16px]">{typeof d.value === 'number' && Number.isFinite(d.value) ? Math.round(d.value) : 0}</p>
           </div>
@@ -1062,21 +1061,21 @@ export function BenchmarkComparison({ userDomain, userScore, userScores }: Bench
                     </g>
                   </svg>
                 </div>
-                <p className="font-['Manrope:SemiBold',sans-serif] font-semibold leading-[normal] relative shrink-0 text-[20px] text-nowrap text-white whitespace-pre">
+                <p className=" font-semibold leading-[normal] relative shrink-0 text-[20px] text-nowrap text-white whitespace-pre">
                   Benchmark Comparison
                 </p>
               </div>
-              <p className="font-['Manrope:Regular',sans-serif] font-normal leading-[normal] relative shrink-0 text-[#939393] text-[14px] text-nowrap whitespace-pre">
+              <p className=" font-normal leading-[normal] relative shrink-0 text-[#939393] text-[14px] text-nowrap whitespace-pre">
                 See how your score against the other brands
               </p>
             </div>
             
             <div className="content-stretch flex flex-col gap-[10px] items-end justify-center relative shrink-0">
-              <p className="font-['Manrope:Regular',sans-serif] font-normal leading-[normal] relative shrink-0 text-[#a3a9b7] text-[12px] text-nowrap whitespace-pre">
+              <p className=" font-normal leading-[normal] relative shrink-0 text-[#a3a9b7] text-[12px] text-nowrap whitespace-pre">
                 Your brand
               </p>
               <div className="content-stretch flex h-[16px] items-start relative shrink-0">
-                <p className="font-['Manrope:Regular',sans-serif] font-normal leading-[normal] relative shrink-0 text-[#cfd1d4] text-[16px] text-nowrap whitespace-pre">
+                <p className=" font-normal leading-[normal] relative shrink-0 text-[#cfd1d4] text-[16px] text-nowrap whitespace-pre">
                   {displayUserDomain}
                 </p>
               </div>
@@ -1149,7 +1148,7 @@ export function BenchmarkComparison({ userDomain, userScore, userScores }: Bench
                 }`}
               >
                 <div aria-hidden="true" className="absolute border border-[#006964] border-solid inset-0 pointer-events-none rounded-[10px]" />
-                <p className="font-['Manrope:SemiBold',sans-serif] font-semibold leading-[normal] relative shrink-0 text-[#00c2b8] text-[16px] text-center text-nowrap whitespace-pre">
+                <p className=" font-semibold leading-[normal] relative shrink-0 text-[#00c2b8] text-[16px] text-center text-nowrap whitespace-pre">
                   {isSubmitting ? 'Submitting...' : 'Add Competitor'}
                 </p>
               </button>
@@ -1164,7 +1163,7 @@ export function BenchmarkComparison({ userDomain, userScore, userScores }: Bench
                   className="w-full"
                 >
                   <div className="bg-red-500/10 border border-red-500/30 rounded-[8px] px-[16px] py-[12px]">
-                    <p className="font-['Manrope:Regular',sans-serif] text-[14px] text-red-500">
+                    <p className=" text-[14px] text-red-500">
                       {errorMessage}
                     </p>
                   </div>
@@ -1178,7 +1177,7 @@ export function BenchmarkComparison({ userDomain, userScore, userScores }: Bench
                   className="w-full"
                 >
                   <div className="bg-[rgba(0,194,184,0.1)] border border-[#006964]/50 rounded-[8px] px-[16px] py-[12px]">
-                    <p className="font-['Manrope:Regular',sans-serif] text-[14px] text-[#00c2b8]">Submitting competitor...</p>
+                    <p className=" text-[14px] text-[#00c2b8]">Submitting competitor...</p>
                   </div>
                 </motion.div>
               )}
@@ -1190,7 +1189,7 @@ export function BenchmarkComparison({ userDomain, userScore, userScores }: Bench
                   className="w-full"
                 >
                   <div className="bg-[#00c2b8]/10 border border-[#00c2b8]/50 rounded-[8px] px-[16px] py-[12px]">
-                    <p className="font-['Manrope:Regular',sans-serif] text-[14px] text-[#00c2b8]">{submitMessage}</p>
+                    <p className=" text-[14px] text-[#00c2b8]">{submitMessage}</p>
                   </div>
                 </motion.div>
               )}
@@ -1202,7 +1201,7 @@ export function BenchmarkComparison({ userDomain, userScore, userScores }: Bench
                   className="w-full"
                 >
                   <div className="bg-red-500/10 border border-red-500/30 rounded-[8px] px-[16px] py-[12px]">
-                    <p className="font-['Manrope:Regular',sans-serif] text-[14px] text-red-500">{submitMessage}</p>
+                    <p className=" text-[14px] text-red-500">{submitMessage}</p>
                   </div>
                 </motion.div>
               )}
@@ -1214,7 +1213,7 @@ export function BenchmarkComparison({ userDomain, userScore, userScores }: Bench
                   className="w-full"
                 >
                   <div className="bg-[rgba(0,194,184,0.1)] border border-[#006964]/50 rounded-[8px] px-[16px] py-[12px]">
-                    <p className="font-['Manrope:Regular',sans-serif] text-[14px] text-[#00c2b8]">Loading comparisons...</p>
+                    <p className=" text-[14px] text-[#00c2b8]">Loading comparisons...</p>
                   </div>
                 </motion.div>
               )}
@@ -1226,7 +1225,7 @@ export function BenchmarkComparison({ userDomain, userScore, userScores }: Bench
                   className="w-full"
                 >
                   <div className="bg-red-500/10 border border-red-500/30 rounded-[8px] px-[16px] py-[12px]">
-                    <p className="font-['Manrope:Regular',sans-serif] text-[14px] text-red-500">Failed to load comparisons</p>
+                    <p className=" text-[14px] text-red-500">Failed to load comparisons</p>
                   </div>
                 </motion.div>
               )}
@@ -1269,7 +1268,7 @@ export function BenchmarkComparison({ userDomain, userScore, userScores }: Bench
                           >
                             <div className={`flex-none transition-transform duration-300 ${isExpanded ? '' : 'rotate-180'}`}>
                               <div className="bg-[rgba(0,194,184,0.05)] content-stretch flex items-center justify-center p-[8.105px] relative rounded-[7.368px] size-[28px]">
-                                <div aria-hidden="true" className="absolute border-[0.737px] border-solid border-white inset-0 pointer-events-none rounded-[7.368px]" />
+                                <div aria-hidden="true" className="absolute border-[0.737px] border-solid border-[#00C2B8] inset-0 pointer-events-none rounded-[7.368px]" />
                                 <div className="relative shrink-0 size-[11.789px]">
                                   <svg className="block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 12 12">
                                     <g>
@@ -1281,7 +1280,7 @@ export function BenchmarkComparison({ userDomain, userScore, userScores }: Bench
                             </div>
                           </button>
                           <div className="content-stretch flex gap-[10px] items-center relative shrink-0">
-                            <p className="font-['Manrope:SemiBold',sans-serif] font-semibold leading-[normal] relative shrink-0 text-[20px] text-nowrap text-white whitespace-pre">
+                            <p className="font-semibold leading-[normal] relative shrink-0 text-[20px] text-nowrap text-white whitespace-pre">
                               {competitor.domain}
                             </p>
                             <div className="relative shrink-0 size-[4px]">
@@ -1289,7 +1288,7 @@ export function BenchmarkComparison({ userDomain, userScore, userScores }: Bench
                                 <circle cx="2" cy="2" fill="#6D6D6D" r="2" />
                               </svg>
                             </div>
-                            <p className="font-['Manrope:Regular',sans-serif] font-normal leading-[normal] relative shrink-0 text-[#6a6a6b] text-[14px] text-nowrap whitespace-pre">
+                            <p className=" font-normal leading-[normal] relative shrink-0 text-[#6a6a6b] text-[14px] text-nowrap whitespace-pre">
                               {getTimeSince(competitor.addedAt)}
                             </p>
                           </div>
@@ -1381,20 +1380,20 @@ export function BenchmarkComparison({ userDomain, userScore, userScores }: Bench
                                           </defs>
                                         </svg>
                                         <div className="absolute content-stretch flex flex-col gap-[6px] items-center justify-center left-[calc(50%-0.5px)] text-nowrap top-[calc(50%+5.5px)] translate-x-[-50%] translate-y-[-50%] whitespace-pre">
-                                          <p className="font-['Satoshi:Bold',sans-serif] leading-[normal] not-italic relative shrink-0 text-[#fef0cc] text-[48px] tracking-[-0.96px]">{displayUserAvg}</p>
-                                          <p className="font-['Manrope:Regular',sans-serif] font-normal leading-[26px] relative shrink-0 text-[#cfd1d4] text-[14px] tracking-[0.07px]">Overall</p>
+                                          <p className="font-satoshi font-bold leading-[normal] not-italic relative shrink-0 text-[#fef0cc] text-[48px] tracking-[-0.96px]">{displayUserAvg}</p>
+                                          <p className=" font-normal leading-[26px] relative shrink-0 text-[#cfd1d4] text-[14px] tracking-[0.07px]">Overall</p>
                                         </div>
                                       </div>
                                       <div className="content-stretch flex h-[16px] items-start relative shrink-0">
-                                        <p className="font-['Manrope:Regular',sans-serif] font-normal leading-[normal] relative shrink-0 text-[16px] text-nowrap text-white whitespace-pre">Your score</p>
+                                        <p className=" font-normal leading-[normal] relative shrink-0 text-[16px] text-nowrap text-white whitespace-pre">Your score</p>
                                       </div>
                                     </div>
 
                                     {/* Center Text */}
                                     <div className="content-stretch flex flex-col gap-[10px] items-center justify-center relative shrink-0">
-                                      <p className="font-['Sansation:Regular',sans-serif] leading-[normal] not-italic relative shrink-0 text-[24px] text-nowrap text-white whitespace-pre">Score Comparisson</p>
-                                      <div className="content-stretch flex font-['Manrope:SemiBold',sans-serif] font-semibold gap-[6px] items-center leading-[normal] relative shrink-0 text-nowrap whitespace-pre">
-                                        <p className="relative shrink-0 text-[#cfd1d4] text-[16px]">{`Delta : `}</p>
+                                      <p className="font-sansation leading-[normal] not-italic relative shrink-0 text-[24px] text-nowrap text-white whitespace-pre">Score Comparison</p>
+                                      <div className="content-stretch flex  font-semibold gap-[6px] items-center leading-[normal] relative shrink-0 text-nowrap whitespace-pre">
+                                        <p className="relative shrink-0 text-[#cfd1d4] text-[16px] mt-[2px]">{`Delta : `}</p>
                                         <p className={`relative shrink-0 text-[24px] ${scoreDelta >= 0 ? 'text-[#00c2b8]' : 'text-[#EF4444]'}`}>
                                           {scoreDelta > 0 ? '+' : ''}{scoreDelta}
                                         </p>
@@ -1453,11 +1452,11 @@ export function BenchmarkComparison({ userDomain, userScore, userScores }: Bench
                                           </defs>
                                         </svg>
                                         <div className="absolute content-stretch flex flex-col gap-[6px] items-center justify-center left-[calc(50%-0.5px)] text-nowrap top-[calc(50%+5.5px)] translate-x-[-50%] translate-y-[-50%] whitespace-pre">
-                                          <p className="font-['Satoshi:Bold',sans-serif] leading-[normal] not-italic relative shrink-0 text-[#fef0cc] text-[48px] tracking-[-0.96px]">{competitor.score}</p>
-                                          <p className="font-['Manrope:Regular',sans-serif] font-normal leading-[26px] relative shrink-0 text-[#cfd1d4] text-[14px] tracking-[0.07px]">Overall</p>
+                                          <p className="font-satoshi font-bold leading-[normal] not-italic relative shrink-0 text-[#fef0cc] text-[48px] tracking-[-0.96px]">{competitor.score}</p>
+                                          <p className=" font-normal leading-[26px] relative shrink-0 text-[#cfd1d4] text-[14px] tracking-[0.07px]">Overall</p>
                                         </div>
                                       </div>
-                                      <p className="font-['Manrope:Regular',sans-serif] font-normal leading-[normal] relative shrink-0 text-[16px] text-nowrap text-white whitespace-pre">Competitor score</p>
+                                      <p className=" font-normal leading-[normal] relative shrink-0 text-[16px] text-nowrap text-white whitespace-pre">Competitor score</p>
                                     </div>
                                   </div>
                                 </div>
@@ -1483,7 +1482,7 @@ export function BenchmarkComparison({ userDomain, userScore, userScores }: Bench
                                       <div aria-hidden="true" className="absolute border-[0px_0px_1px] border-[rgba(240,241,244,0.05)] border-solid inset-0 pointer-events-none rounded-tl-[12px] rounded-tr-[12px]" />
                                       <div className="flex flex-row items-center size-full">
                                         <div className="content-stretch flex h-[48px] items-center justify-between px-[20px] py-[16px] relative w-full">
-                                          <p className="font-['Manrope:SemiBold',sans-serif] font-semibold leading-[normal] relative shrink-0 text-[#00c2b8] text-[14px] text-nowrap tracking-[0.6px] uppercase whitespace-pre">Your brand</p>
+                                          <p className="font-semibold leading-[normal] relative shrink-0 text-[#00c2b8] text-[14px] text-nowrap tracking-[0.6px] uppercase whitespace-pre text-center w-full">Your brand</p>
                                         </div>
                                       </div>
                                     </div>
@@ -1562,11 +1561,13 @@ export function BenchmarkComparison({ userDomain, userScore, userScores }: Bench
                                           label="GENERATIVE" 
                                           icon={
                                             <div className="relative shrink-0 size-[16px]">
-                                              <svg className="block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 16 16">
-                                                <g>
-                                                  <path d={svgPaths.p17134c00} stroke="white" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.33333" />
-                                                </g>
-                                              </svg>
+                                              <Image 
+                                                src="/icons/checkmark-white.svg"
+                                                alt="AI Icon"
+                                                width={16}
+                                                height={16}
+                                                className="block size-full"
+                                              />
                                             </div>
                                           } 
                                           score={displayUserScores.gen} 
@@ -1583,7 +1584,7 @@ export function BenchmarkComparison({ userDomain, userScore, userScores }: Bench
 
                                   {/* Center Text */}
                                   <div className="flex items-center justify-center mt-[28%]">
-                                    <p className="font-['Sansation:Regular',sans-serif] leading-[normal] not-italic relative shrink-0 text-[20px] text-center text-nowrap text-white whitespace-pre">
+                                    <p className="font-sansation leading-[normal] not-italic relative shrink-0 text-[20px] text-center text-nowrap text-white whitespace-pre">
                                       {`OMG `}
                                       <br aria-hidden="true" />
                                       Comparison
@@ -1598,7 +1599,7 @@ export function BenchmarkComparison({ userDomain, userScore, userScores }: Bench
                                       <div aria-hidden="true" className="absolute border-[0px_0px_1px] border-[rgba(240,241,244,0.05)] border-solid inset-0 pointer-events-none rounded-tl-[12px] rounded-tr-[12px]" />
                                       <div className="flex flex-row items-center justify-center size-full">
                                         <div className="content-stretch flex h-[48px] items-center justify-center px-[20px] py-[16px] relative w-full">
-                                          <p className="font-['Manrope:SemiBold',sans-serif] font-semibold leading-[normal] relative shrink-0 text-[#e3170a] text-[14px] text-nowrap tracking-[0.6px] uppercase whitespace-pre">competitor</p>
+                                          <p className=" font-semibold leading-[normal] relative shrink-0 text-[#e3170a] text-[14px] text-nowrap tracking-[0.6px] uppercase whitespace-pre">competitor</p>
                                         </div>
                                       </div>
                                     </div>
@@ -1677,11 +1678,13 @@ export function BenchmarkComparison({ userDomain, userScore, userScores }: Bench
                                           label="GENERATIVE" 
                                           icon={
                                             <div className="relative shrink-0 size-[16px]">
-                                              <svg className="block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 16 16">
-                                                <g>
-                                                  <path d={svgPaths.p17134c00} stroke="white" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.33333" />
-                                                </g>
-                                              </svg>
+                                              <Image 
+                                                src="/icons/checkmark-white.svg"
+                                                alt="AI Icon"
+                                                width={16}
+                                                height={16}
+                                                className="block size-full"
+                                              />
                                             </div>
                                           } 
                                           score={competitor.gen} 
@@ -1738,9 +1741,9 @@ export function BenchmarkComparison({ userDomain, userScore, userScores }: Bench
           <div className="flex flex-col justify-center size-full">
             <div className="content-stretch flex flex-col items-center justify-center px-[32px] py-[64px] relative w-full gap-[16px]">
               <div className="relative shrink-0 size-[48px]">
-                <Vector />
+                <Image src="icons/growth.svg" alt="Manifest Icon" width={48} height={48} />
               </div>
-              <p className="font-['Manrope:Regular',sans-serif] font-normal leading-[normal] relative shrink-0 text-[16px] text-[rgba(140,140,140,0.4)] text-center max-w-[629px]">
+              <p className=" font-normal leading-[normal] relative shrink-0 text-[16px] text-[rgba(140,140,140,0.4)] text-center max-w-[629px]">
                 {isComparisonsLoading
                   ? 'Loading comparisons...'
                   : (comparisonsError ? 'Error loading comparisons' : 'Add competitor above to view deep-dive analysis comparison')}
