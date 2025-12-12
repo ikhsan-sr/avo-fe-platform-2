@@ -214,13 +214,13 @@ export function LandingView({ onStartAnalysis }: LandingViewProps) {
                       marginBottom: { duration: 0.4, delay: 0.2 }
                     }}
                   >
-                    <p className="font-['Satoshi:Bold',sans-serif] leading-[normal] not-italic relative shrink-0 text-[#fcfcfc] text-[30px] text-center text-nowrap whitespace-pre">Check Your Brand Authority</p>
+                    <p className="font-satoshi font-bold leading-[normal] not-italic relative shrink-0 text-[#fcfcfc] text-[30px] text-center text-nowrap whitespace-pre">Check Your Brand Authority</p>
                     <div className="content-stretch flex h-[20px] items-start relative shrink-0 w-full" data-name="Paragraph">
-                      <p className="basis-0 font-['Manrope:Regular',sans-serif] font-normal grow leading-[20px] min-h-px min-w-px relative shrink-0 text-[#919eab] text-[14px] text-center">
+                      <p className="basis-0  font-normal grow leading-[20px] min-h-px min-w-px relative shrink-0 text-[#919eab] text-[14px] text-center">
                         <span>{`See how your brand appears to `}</span>
-                        <span className="font-['Manrope:Medium',sans-serif] font-medium text-[#c6f558]">search engines</span>
+                        <span className=" font-medium text-[#c6f558]">search engines</span>
                         <span>{` and `}</span>
-                        <span className="font-['Manrope:Medium',sans-serif] font-medium text-[#c6f558]">AI Platform</span>
+                        <span className=" font-medium text-[#c6f558]">AI Platform</span>
                       </p>
                     </div>
                   </motion.div>
@@ -270,7 +270,7 @@ export function LandingView({ onStartAnalysis }: LandingViewProps) {
                             value={domain}
                             onChange={(e) => setDomain(e.target.value)}
                             onKeyPress={handleKeyPress}
-                            className="w-full bg-transparent font-['Manrope:Medium',sans-serif] font-medium leading-[normal] text-[#fcfcfc] text-[16px] outline-none placeholder-[#919eab]"
+                            className="w-full bg-transparent  font-medium leading-[normal] text-[#fcfcfc] text-[16px] outline-none placeholder-[#919eab]"
                             placeholder="yourcompany.com"
                             autoComplete="off"
                             disabled={isLoading}
@@ -436,7 +436,7 @@ export function LandingView({ onStartAnalysis }: LandingViewProps) {
                             <div className="content-stretch flex flex-col gap-[4px] items-start justify-center relative flex-1 min-w-0">
                               {/* Top text with animated gradient fill */}
                               <motion.p 
-                                className="relative font-['Manrope:Regular',sans-serif] font-normal leading-[normal] shrink-0 text-[12px] text-nowrap whitespace-pre"
+                                className="relative  font-normal leading-[normal] shrink-0 text-[12px] text-nowrap whitespace-pre"
                                 initial={{ opacity: 0, x: -10 }}
                                 animate={{ opacity: 1, x: 0 }}
                                 transition={{ delay: 0.3, duration: 0.4 }}
@@ -468,7 +468,7 @@ export function LandingView({ onStartAnalysis }: LandingViewProps) {
                               
                               {/* Domain with animated gradient fill */}
                               <motion.p 
-                                className="relative font-['Manrope:Medium',sans-serif] font-medium shrink-0 text-[18px] max-w-full truncate"
+                                className="relative  font-medium shrink-0 text-[18px] max-w-full truncate"
                                 initial={{ opacity: 0, x: -10 }}
                                 animate={{ opacity: 1, x: 0 }}
                                 transition={{ delay: 0.5, duration: 0.4 }}
@@ -535,7 +535,7 @@ export function LandingView({ onStartAnalysis }: LandingViewProps) {
                       animate={{ opacity: 1, height: 'auto' }}
                       exit={{ opacity: 0, height: 0 }}
                       transition={{ duration: 0.2 }}
-                      className="font-['Manrope:Regular',sans-serif] font-normal leading-[16px] text-[#e3170a] text-[12px] text-nowrap whitespace-pre"
+                      className=" font-normal leading-[16px] text-[#e3170a] text-[12px] text-nowrap whitespace-pre"
                     >
                       {errorMessage}
                     </motion.p>
@@ -563,14 +563,14 @@ export function LandingView({ onStartAnalysis }: LandingViewProps) {
                   <div className="box-border content-stretch flex gap-[8px] h-[56px] items-center justify-center pl-0 pr-[0.012px] py-0 relative w-full">
                     <div className="h-[24px] relative shrink-0 w-[100.188px]" data-name="Text">
                       <div className="bg-clip-padding border-0 border-[transparent] border-solid box-border h-[24px] relative w-[100.188px]">
-                        <p className={`absolute font-['Satoshi:Bold',sans-serif] leading-[normal] left-[50.5px] not-italic text-[16px] text-center text-nowrap top-[0.6px] translate-x-[-50%] whitespace-pre transition-colors duration-300 ${
+                        <p className={`absolute font-satoshi font-bold leading-[normal] left-[50.5px] not-italic text-[16px] text-center text-nowrap top-[0.6px] translate-x-[-50%] whitespace-pre transition-colors duration-300 ${
                           isLoading ? 'text-[rgba(145,158,171,0.6)]' : 'text-[#0c192d]'
                         }`}>
                           Start Analysis
                         </p>
                       </div>
                     </div>
-                    <div className={`relative shrink-0 size-[20px] transition-all duration-300 ${!isLoading ? 'group-hover:translate-x-1' : 'opacity-40'}`} data-name="Icon">
+                    <div className={`relative mt-[1px] shrink-0 size-[20px] transition-all duration-300 ${!isLoading ? 'group-hover:translate-x-1' : 'opacity-40'}`} data-name="Icon">
                       <svg className="block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 20 20">
                         <g id="Icon">
                           <path d="M4.16626 10H15.8329" id="Vector" stroke={isLoading ? "rgba(145,158,171,0.6)" : "#0C192C"} strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.66667" />
@@ -587,7 +587,7 @@ export function LandingView({ onStartAnalysis }: LandingViewProps) {
 
         {/* Powered by text */}
         <div className="h-[15.988px] relative shrink-0 w-[190.788px]" data-name="Container">
-          <p className="absolute font-['Manrope:Medium',sans-serif] font-medium leading-[16px] left-0 text-[12px] text-[rgba(145,158,171,0.5)] text-nowrap top-[-0.8px] tracking-[1.2px] whitespace-pre">Powered by AVO Intelligence</p>
+          <p className="absolute  font-medium leading-[16px] left-0 text-[12px] text-[rgba(145,158,171,0.5)] text-nowrap top-[-0.8px] tracking-[1.2px] whitespace-pre">Powered by AVO Intelligence</p>
         </div>
       </div>
 
