@@ -618,9 +618,11 @@ export function DashboardView({ domain, onOpenModal, onReset, analysisId }: Dash
 
 
   return (
-    <div className="bg-[#0c192c] relative size-full flex flex-col overflow-x-hidden" data-name="AVQ">
+    <div className="bg-[#0c192c] relative size-full flex flex-col pb-14" data-name="AVQ">
       {/* Pattern Background */}
-      <div className="absolute h-[777px] left-0 opacity-10 top-0 w-full pointer-events-none" data-name="Pattern">
+      {/* <div className="absolute h-[777px] left-0 opacity-10 top-0 w-full pointer-events-none" data-name="Pattern"> */}
+      {/* <div className="fixed inset-0 opacity-10 pointer-events-none -z-10" data-name="Pattern"> */}
+      <div className="fixed inset-0 opacity-10 pointer-events-none z-0" data-name="Pattern">
         <div aria-hidden="true" className="absolute inset-0">
           <ImageWithFallback alt="" className="absolute max-w-none object-50%-50% object-cover opacity-30 size-full" src="./assets/e777a57b939162b876418f1793283d92d18bafa0.png" />
           <div className="absolute inset-0" style={{ backgroundImage: "url('data:image/svg+xml;utf8,<svg viewBox=\\'0 0 1440 777\\' xmlns=\\'http://www.w3.org/2000/svg\\' preserveAspectRatio=\\'none\\'><rect x=\\'0\\' y=\\'0\\' height=\\'100%\\' width=\\'100%\\' fill=\\'url(%23grad)\\' opacity=\\'0.8999999761581421\\'/><defs><radialGradient id=\\'grad\\' gradientUnits=\\'userSpaceOnUse\\' cx=\\'0\\' cy=\\'0\\' r=\\'10\\' gradientTransform=\\'matrix(4.4087e-15 38.85 -72 2.3789e-15 720 388.5)\\'><stop stop-color=\\'rgba(13,31,49,0)\\' offset=\\'0\\'/><stop stop-color=\\'rgba(13,31,49,1)\\' offset=\\'1\\'/></radialGradient></defs></svg>')" }} />
