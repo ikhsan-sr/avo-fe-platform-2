@@ -234,6 +234,17 @@ type DetailScoreSet = {
   aiCiteRanking?: number;
 };
 
+type DetailStatusSet = {
+  cwv?: boolean;
+  schema?: boolean;
+  backlink?: boolean;
+  newsMention?: boolean;
+  wikidata?: boolean;
+  aiCite?: boolean;
+  aiOverview?: boolean;
+  aiCiteRanking?: boolean;
+};
+
 function useAnalysisData(analysisData: any) {
   const resultData = useMemo(() => (analysisData ? analysisData.data?.json || analysisData : null), [analysisData]);
 
@@ -285,16 +296,39 @@ function useAnalysisData(analysisData: any) {
     };
   }, [resultData]);
 
+  const detailStatuses = useMemo<DetailStatusSet>(() => {
+    if (!resultData) {
+      return {} as DetailStatusSet;
+    }
+    const subProcesses = resultData.sub_processes || [];
+    const status = (type: string): boolean | undefined => {
+      const p = subProcesses.find((sp: any) => sp?.type === type);
+      if (!p || typeof p.status !== 'string') return undefined;
+      return p.status !== 'finished';
+    };
+    return {
+      cwv: status('cwv'),
+      schema: status('schema'),
+      backlink: status('backlink'),
+      newsMention: status('news_mentioned'),
+      wikidata: status('wikidata'),
+      aiCite: status('ai_cite_score'),
+      aiOverview: status('ai_overview'),
+      aiCiteRanking: status('ai_cite_ranking'),
+    };
+  }, [resultData]);
+
   useEffect(() => {
     if (analysisData) storageUtils.set('avo_analysis_result', analysisData);
   }, [analysisData]);
 
-  return { localScores, detailScores, createdAt };
+  return { localScores, detailScores, detailStatuses, createdAt };
 }
 
 function useDashboardAnimation(
   localScores: ScoreSet,
   detailScores: DetailScoreSet,
+  detailStatuses: DetailStatusSet,
   isLoading: boolean,
 ) {
   const [loadingOptimize, setLoadingOptimize] = useState(true);
@@ -429,8 +463,8 @@ function useDashboardAnimation(
   );
 
   const display = useMemo(
-    () => ({ opt: displayOpt, man: displayMan, gen: displayGen, details: detailScores }),
-    [displayOpt, displayMan, displayGen, detailScores]
+    () => ({ opt: displayOpt, man: displayMan, gen: displayGen, details: detailScores, detailsStatus: detailStatuses }),
+    [displayOpt, displayMan, displayGen, detailScores, detailStatuses]
   );
 
   const barWidths = useMemo(
@@ -521,7 +555,7 @@ function ScoreCardContent({
   barColor: string;
   barWidth?: number;
   scoreLabel: string;
-  details: Array<{ label: string; value?: number }>;
+  details: Array<{ label: string; value?: number; loading?: boolean }>;
 }) {
   return (
     <div className="bg-[rgba(22,36,62,0.5)] relative rounded-bl-[12px] rounded-br-[12px] shrink-0 w-full" data-name="Card - Testimoni">
@@ -563,7 +597,7 @@ function ScoreCardContent({
               {details.map((d, idx) => (
                 <div key={idx} className="content-stretch flex  font-normal items-center justify-between leading-[normal] relative shrink-0 text-nowrap w-full whitespace-pre" data-name="Detail Item">
                   <p className="relative shrink-0 text-[#a7a7a7] text-[14px]">{d.label}</p>
-                  <p className="relative shrink-0 text-[16px] text-white">{loading ? <LoadingDots color="#ffffff" /> : (typeof d.value === 'number' && Number.isFinite(d.value) ? Math.round(d.value) : '-' )}</p>
+                  <p className="relative shrink-0 text-[16px] text-white">{(loading || d.loading) ? <LoadingDots color="#ffffff" /> : (typeof d.value === 'number' && Number.isFinite(d.value) ? Math.round(d.value) : '-' )}</p>
                 </div>
               ))}
             </div>
@@ -591,12 +625,11 @@ export function DashboardView({ domain, onOpenModal, onReset, analysisId }: Dash
           }
         );
 
-      
-
-  const { localScores, detailScores, createdAt } = useAnalysisData(analysisData);
+  const { localScores, detailScores, detailStatuses, createdAt } = useAnalysisData(analysisData);
   const { loading, displayScore, progressStroke, barWidths, display } = useDashboardAnimation(
     localScores,
     detailScores,
+    detailStatuses,
     isLoading,
   );
   const [animated, setAnimated] = useState(false);
@@ -697,8 +730,8 @@ export function DashboardView({ domain, onOpenModal, onReset, analysisId }: Dash
               barWidth={barWidths.opt}
               scoreLabel="Clarity System"
               details={[
-                { label: 'CWV Score', value: display.details.cwv },
-                { label: 'Schema Score', value: display.details.schema },
+                { label: 'CWV Score', value: display.details.cwv, loading: !!display.detailsStatus?.cwv },
+                { label: 'Schema Score', value: display.details.schema, loading: !!display.detailsStatus?.schema },
               ]}
             />
           </div>
@@ -736,9 +769,9 @@ export function DashboardView({ domain, onOpenModal, onReset, analysisId }: Dash
               barWidth={barWidths.man}
               scoreLabel="Answer Source"
               details={[
-                { label: 'Backlink Score', value: display.details.backlink },
-                { label: 'News Mention Score', value: display.details.newsMention },
-                { label: 'Wikidata Score', value: display.details.wikidata },
+                { label: 'Backlink Score', value: display.details.backlink, loading: !!display.detailsStatus?.backlink },
+                { label: 'News Mention Score', value: display.details.newsMention, loading: !!display.detailsStatus?.newsMention },
+                { label: 'Wikidata Score', value: display.details.wikidata, loading: !!display.detailsStatus?.wikidata },
               ]}
             />
           </div>
@@ -786,9 +819,9 @@ export function DashboardView({ domain, onOpenModal, onReset, analysisId }: Dash
               barWidth={barWidths.gen}
               scoreLabel="Influence Origin"
               details={[
-                { label: 'AI Cite Score', value: display.details.aiCite },
-                { label: 'AI Overview Appearance', value: display.details.aiOverview },
-                { label: 'AI Cite Ranking Score', value: display.details.aiCiteRanking },
+                { label: 'AI Cite Score', value: display.details.aiCite, loading: !!display.detailsStatus?.aiCite },
+                { label: 'AI Overview Appearance', value: display.details.aiOverview, loading: !!display.detailsStatus?.aiOverview },
+                { label: 'AI Cite Ranking Score', value: display.details.aiCiteRanking, loading: !!display.detailsStatus?.aiCiteRanking },
               ]}
             />
           </div>
