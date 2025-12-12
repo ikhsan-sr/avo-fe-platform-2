@@ -1,10 +1,728 @@
-import { useState } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import type { JSX } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import pathsA from "../imports/svg-2kr7bspzf9";
 import pathsB from "../imports/svg-uaoyunhbeu";
 const svgPaths = { ...pathsA, ...pathsB };
 import Vector from "../imports/Vector";
+import { usePollingGet, usePost } from '../../../src/hooks/api';
+import { storageUtils } from '../../../src/utils/storage';
+
+const DUMMY_RESPONSE = {
+  "status": "ok",
+  "message": "Data successfully fetched",
+  "data": [
+    {
+      "json": {
+        "header_id": "b00efb15-ed7e-40df-897f-d6112a41938f",
+        "competitor_id": "37294341-4661-4ba8-8bb6-2b09b7d0d324",
+        "created_at": "2025-12-11T04:55:25.806Z",
+        "updated_at": "2025-12-11T04:55:25.806Z",
+        "id": "a03e4155-75c5-4a80-9a12-40db80b21b73",
+        "parent_data": {
+          "id": "b00efb15-ed7e-40df-897f-d6112a41938f",
+          "url": "sribu.com",
+          "status": "finished",
+          "payload": {
+            "data": {
+              "url": "sribu.com",
+              "type": "all",
+              "questions": [
+                "What are the best freelance graphic designers for a small business?",
+                "How can I hire a logo designer online?",
+                "Where can I find affordable web design services for a startup?"
+              ]
+            }
+          },
+          "executor": null,
+          "manifest": 40.3333333333333,
+          "optimize": 79.5,
+          "questions": [
+            "What are the best freelance graphic designers for a small business?",
+            "How can I hire a logo designer online?",
+            "Where can I find affordable web design services for a startup?"
+          ],
+          "created_at": "2025-12-11T04:55:11.219266+00:00",
+          "generative": 0,
+          "updated_at": "2025-12-11T04:56:00.587297+00:00",
+          "sub_process": [
+            {
+              "id": "508f7d1b-f81d-404d-aa34-6a52bf6c02a4",
+              "type": "news_mentioned",
+              "status": "finished",
+              "metadata": {
+                "total_mentions": 2,
+                "news_mention_score": 20
+              },
+              "header_id": "b00efb15-ed7e-40df-897f-d6112a41938f",
+              "created_at": "2025-12-11T04:55:12.248762+00:00",
+              "updated_at": "2025-12-11T04:55:14.280981+00:00",
+              "error_metadata": null
+            },
+            {
+              "id": "0aaab383-f910-420f-85ca-6784ef14dc0c",
+              "type": "backlink",
+              "status": "finished",
+              "metadata": {
+                "backlink_score": 1,
+                "total_backlinks": 243,
+                "authoritative_backlinks": 3
+              },
+              "header_id": "b00efb15-ed7e-40df-897f-d6112a41938f",
+              "created_at": "2025-12-11T04:55:11.783044+00:00",
+              "updated_at": "2025-12-11T04:55:14.32194+00:00",
+              "error_metadata": null
+            },
+            {
+              "id": "650b7961-5035-42a3-bcc4-8c211c8e7dfa",
+              "type": "wikidata",
+              "status": "finished",
+              "metadata": {
+                "wikidata_score": {
+                  "data": 100
+                }
+              },
+              "header_id": "b00efb15-ed7e-40df-897f-d6112a41938f",
+              "created_at": "2025-12-11T04:55:11.980037+00:00",
+              "updated_at": "2025-12-11T04:55:14.980761+00:00",
+              "error_metadata": null
+            },
+            {
+              "id": "d9f053fb-46cb-45dc-9a65-e3999f2f83ec",
+              "type": "schema",
+              "status": "finished",
+              "metadata": {
+                "overallScore": 85
+              },
+              "header_id": "b00efb15-ed7e-40df-897f-d6112a41938f",
+              "created_at": "2025-12-11T04:55:13.055832+00:00",
+              "updated_at": "2025-12-11T04:55:19.834807+00:00",
+              "error_metadata": null
+            },
+            {
+              "id": "3ed9abdd-7315-49e5-855b-501306faa48f",
+              "type": "ai_overview",
+              "status": "finished",
+              "metadata": {
+                "total_hits": 2,
+                "ai_overview_score": 0,
+                "total_appearances": 0
+              },
+              "header_id": "b00efb15-ed7e-40df-897f-d6112a41938f",
+              "created_at": "2025-12-11T04:55:17.664442+00:00",
+              "updated_at": "2025-12-11T04:55:23.806362+00:00",
+              "error_metadata": null
+            },
+            {
+              "id": "fc53b820-5fe6-4b54-8edd-4435178b70f3",
+              "type": "ai_cite_score",
+              "status": "finished",
+              "metadata": {
+                "total_hits": 2,
+                "per_iterasi": {
+                  "1": {
+                    "rank": null,
+                    "hasMatch": false
+                  },
+                  "2": {
+                    "rank": null,
+                    "hasMatch": false
+                  }
+                },
+                "ai_cite_score": 0,
+                "total_appearances": 0
+              },
+              "header_id": "b00efb15-ed7e-40df-897f-d6112a41938f",
+              "created_at": "2025-12-11T04:55:17.528441+00:00",
+              "updated_at": "2025-12-11T04:55:39.573951+00:00",
+              "error_metadata": null
+            },
+            {
+              "id": "b34f9336-ec89-4cad-9a43-8a74560f4b44",
+              "type": "ai_cite_ranking",
+              "status": "finished",
+              "metadata": {
+                "per_iterasi": {
+                  "1": {
+                    "rank": null,
+                    "hasMatch": false
+                  },
+                  "2": {
+                    "rank": null,
+                    "hasMatch": false
+                  }
+                },
+                "total_mentions": 0,
+                "ai_cite_score_rank1": 0,
+                "total_rank1_mentions": 0
+              },
+              "header_id": "b00efb15-ed7e-40df-897f-d6112a41938f",
+              "created_at": "2025-12-11T04:55:12.162326+00:00",
+              "updated_at": "2025-12-11T04:55:45.365957+00:00",
+              "error_metadata": null
+            },
+            {
+              "id": "e0a5b41b-304e-413c-9821-30b3797aa4c4",
+              "type": "cwv",
+              "status": "finished",
+              "metadata": {
+                "url": "https://www.sribu.com/id",
+                "seo_score": 100,
+                "final_score": 74,
+                "performance_score": 27,
+                "accessibility_score": 92,
+                "best_practices_score": 77
+              },
+              "header_id": "b00efb15-ed7e-40df-897f-d6112a41938f",
+              "created_at": "2025-12-11T04:55:11.595061+00:00",
+              "updated_at": "2025-12-11T04:56:00.309466+00:00",
+              "error_metadata": null
+            }
+          ],
+          "overall_score": 39.9444444444444
+        },
+        "competitor_data": {
+          "id": "37294341-4661-4ba8-8bb6-2b09b7d0d324",
+          "url": "projects.co.id",
+          "status": "finished",
+          "payload": {
+            "data": {
+              "url": "projects.co.id",
+              "type": "all",
+              "header_id": "b00efb15-ed7e-40df-897f-d6112a41938f",
+              "questions": [
+                "What are the best freelance project platforms in Indonesia?",
+                "How can I hire a web developer online for a small business?",
+                "Where can I find a graphic designer for a startup logo?"
+              ]
+            }
+          },
+          "executor": null,
+          "manifest": 33.6666666666667,
+          "optimize": 39.5,
+          "questions": [
+            "What are the best freelance project platforms in Indonesia?",
+            "How can I hire a web developer online for a small business?",
+            "Where can I find a graphic designer for a startup logo?"
+          ],
+          "created_at": "2025-12-11T04:55:25.641095+00:00",
+          "generative": 33.3333333333333,
+          "updated_at": "2025-12-11T04:56:01.399154+00:00",
+          "sub_process": [
+            {
+              "id": "14be11e4-5f4b-46fb-bbcb-23d734f741f3",
+              "type": "ai_cite_ranking",
+              "status": "finished",
+              "metadata": {
+                "per_iterasi": {
+                  "1": {
+                    "rank": 2,
+                    "hasMatch": true
+                  },
+                  "2": {
+                    "rank": null,
+                    "hasMatch": false
+                  }
+                },
+                "total_mentions": 1,
+                "ai_cite_score_rank1": 0,
+                "total_rank1_mentions": 0
+              },
+              "header_id": "37294341-4661-4ba8-8bb6-2b09b7d0d324",
+              "created_at": "2025-12-11T04:55:26.732352+00:00",
+              "updated_at": "2025-12-11T04:56:01.12104+00:00",
+              "error_metadata": null
+            },
+            {
+              "id": "76000954-c151-46f2-ad81-0a28aff885ad",
+              "type": "news_mentioned",
+              "status": "finished",
+              "metadata": {
+                "total_mentions": 0,
+                "news_mention_score": 0
+              },
+              "header_id": "37294341-4661-4ba8-8bb6-2b09b7d0d324",
+              "created_at": "2025-12-11T04:55:26.35012+00:00",
+              "updated_at": "2025-12-11T04:55:27.262159+00:00",
+              "error_metadata": null
+            },
+            {
+              "id": "9e212c86-ff1c-4dc8-9f98-9f03c3a01a1f",
+              "type": "backlink",
+              "status": "finished",
+              "metadata": {
+                "backlink_score": 1,
+                "total_backlinks": 742,
+                "authoritative_backlinks": 7
+              },
+              "header_id": "37294341-4661-4ba8-8bb6-2b09b7d0d324",
+              "created_at": "2025-12-11T04:55:26.235666+00:00",
+              "updated_at": "2025-12-11T04:55:27.801232+00:00",
+              "error_metadata": null
+            },
+            {
+              "id": "7265b029-b06f-44f2-a1a7-faedbf66c66f",
+              "type": "wikidata",
+              "status": "finished",
+              "metadata": {
+                "wikidata_score": {
+                  "data": 100
+                }
+              },
+              "header_id": "37294341-4661-4ba8-8bb6-2b09b7d0d324",
+              "created_at": "2025-12-11T04:55:26.485879+00:00",
+              "updated_at": "2025-12-11T04:55:28.306648+00:00",
+              "error_metadata": null
+            },
+            {
+              "id": "e86e437c-a581-4cf3-84a1-70f16f75ef75",
+              "type": "ai_overview",
+              "status": "finished",
+              "metadata": {
+                "total_hits": 2,
+                "ai_overview_score": 50,
+                "total_appearances": 1
+              },
+              "header_id": "37294341-4661-4ba8-8bb6-2b09b7d0d324",
+              "created_at": "2025-12-11T04:55:27.107495+00:00",
+              "updated_at": "2025-12-11T04:55:37.652136+00:00",
+              "error_metadata": null
+            },
+            {
+              "id": "55b915ee-3fea-45ad-a101-bf40b6aa82c1",
+              "type": "schema",
+              "status": "finished",
+              "metadata": {
+                "overallScore": 0
+              },
+              "header_id": "37294341-4661-4ba8-8bb6-2b09b7d0d324",
+              "created_at": "2025-12-11T04:55:26.138542+00:00",
+              "updated_at": "2025-12-11T04:55:38.844103+00:00",
+              "error_metadata": null
+            },
+            {
+              "id": "e865cb38-af7c-4c82-b86c-f02e1d6a7aba",
+              "type": "ai_cite_score",
+              "status": "finished",
+              "metadata": {
+                "total_hits": 2,
+                "per_iterasi": {
+                  "1": {
+                    "rank": 2,
+                    "hasMatch": true
+                  },
+                  "2": {
+                    "rank": null,
+                    "hasMatch": false
+                  }
+                },
+                "ai_cite_score": 50,
+                "total_appearances": 1
+              },
+              "header_id": "37294341-4661-4ba8-8bb6-2b09b7d0d324",
+              "created_at": "2025-12-11T04:55:26.618717+00:00",
+              "updated_at": "2025-12-11T04:55:46.135282+00:00",
+              "error_metadata": null
+            },
+            {
+              "id": "50217c09-c81d-4a63-97ed-061cfdd4de16",
+              "type": "cwv",
+              "status": "finished",
+              "metadata": {
+                "url": "https://projects.co.id/",
+                "seo_score": 83,
+                "final_score": 79,
+                "performance_score": 56,
+                "accessibility_score": 83,
+                "best_practices_score": 92
+              },
+              "header_id": "37294341-4661-4ba8-8bb6-2b09b7d0d324",
+              "created_at": "2025-12-11T04:55:26.033725+00:00",
+              "updated_at": "2025-12-11T04:55:55.06408+00:00",
+              "error_metadata": null
+            }
+          ],
+          "overall_score": 35.5
+        }
+      },
+      "pairedItem": {
+        "item": 0
+      }
+    },
+    {
+      "json": {
+        "header_id": "b00efb15-ed7e-40df-897f-d6112a41938f",
+        "competitor_id": "c82bf08b-0d5c-4472-9256-af85716ceb70",
+        "created_at": "2025-12-11T10:43:55.787Z",
+        "updated_at": "2025-12-11T10:43:55.787Z",
+        "id": "07ec1802-fff1-454e-bdf8-c5bebf2c5dea",
+        "parent_data": {
+          "id": "b00efb15-ed7e-40df-897f-d6112a41938f",
+          "url": "sribu.com",
+          "status": "finished",
+          "payload": {
+            "data": {
+              "url": "sribu.com",
+              "type": "all",
+              "questions": [
+                "What are the best freelance graphic designers for a small business?",
+                "How can I hire a logo designer online?",
+                "Where can I find affordable web design services for a startup?"
+              ]
+            }
+          },
+          "executor": null,
+          "manifest": 40.3333333333333,
+          "optimize": 79.5,
+          "questions": [
+            "What are the best freelance graphic designers for a small business?",
+            "How can I hire a logo designer online?",
+            "Where can I find affordable web design services for a startup?"
+          ],
+          "created_at": "2025-12-11T04:55:11.219266+00:00",
+          "generative": 0,
+          "updated_at": "2025-12-11T04:56:00.587297+00:00",
+          "sub_process": [
+            {
+              "id": "508f7d1b-f81d-404d-aa34-6a52bf6c02a4",
+              "type": "news_mentioned",
+              "status": "finished",
+              "metadata": {
+                "total_mentions": 2,
+                "news_mention_score": 20
+              },
+              "header_id": "b00efb15-ed7e-40df-897f-d6112a41938f",
+              "created_at": "2025-12-11T04:55:12.248762+00:00",
+              "updated_at": "2025-12-11T04:55:14.280981+00:00",
+              "error_metadata": null
+            },
+            {
+              "id": "0aaab383-f910-420f-85ca-6784ef14dc0c",
+              "type": "backlink",
+              "status": "finished",
+              "metadata": {
+                "backlink_score": 1,
+                "total_backlinks": 243,
+                "authoritative_backlinks": 3
+              },
+              "header_id": "b00efb15-ed7e-40df-897f-d6112a41938f",
+              "created_at": "2025-12-11T04:55:11.783044+00:00",
+              "updated_at": "2025-12-11T04:55:14.32194+00:00",
+              "error_metadata": null
+            },
+            {
+              "id": "650b7961-5035-42a3-bcc4-8c211c8e7dfa",
+              "type": "wikidata",
+              "status": "finished",
+              "metadata": {
+                "wikidata_score": {
+                  "data": 100
+                }
+              },
+              "header_id": "b00efb15-ed7e-40df-897f-d6112a41938f",
+              "created_at": "2025-12-11T04:55:11.980037+00:00",
+              "updated_at": "2025-12-11T04:55:14.980761+00:00",
+              "error_metadata": null
+            },
+            {
+              "id": "d9f053fb-46cb-45dc-9a65-e3999f2f83ec",
+              "type": "schema",
+              "status": "finished",
+              "metadata": {
+                "overallScore": 85
+              },
+              "header_id": "b00efb15-ed7e-40df-897f-d6112a41938f",
+              "created_at": "2025-12-11T04:55:13.055832+00:00",
+              "updated_at": "2025-12-11T04:55:19.834807+00:00",
+              "error_metadata": null
+            },
+            {
+              "id": "3ed9abdd-7315-49e5-855b-501306faa48f",
+              "type": "ai_overview",
+              "status": "finished",
+              "metadata": {
+                "total_hits": 2,
+                "ai_overview_score": 0,
+                "total_appearances": 0
+              },
+              "header_id": "b00efb15-ed7e-40df-897f-d6112a41938f",
+              "created_at": "2025-12-11T04:55:17.664442+00:00",
+              "updated_at": "2025-12-11T04:55:23.806362+00:00",
+              "error_metadata": null
+            },
+            {
+              "id": "fc53b820-5fe6-4b54-8edd-4435178b70f3",
+              "type": "ai_cite_score",
+              "status": "finished",
+              "metadata": {
+                "total_hits": 2,
+                "per_iterasi": {
+                  "1": {
+                    "rank": null,
+                    "hasMatch": false
+                  },
+                  "2": {
+                    "rank": null,
+                    "hasMatch": false
+                  }
+                },
+                "ai_cite_score": 0,
+                "total_appearances": 0
+              },
+              "header_id": "b00efb15-ed7e-40df-897f-d6112a41938f",
+              "created_at": "2025-12-11T04:55:17.528441+00:00",
+              "updated_at": "2025-12-11T04:55:39.573951+00:00",
+              "error_metadata": null
+            },
+            {
+              "id": "b34f9336-ec89-4cad-9a43-8a74560f4b44",
+              "type": "ai_cite_ranking",
+              "status": "finished",
+              "metadata": {
+                "per_iterasi": {
+                  "1": {
+                    "rank": null,
+                    "hasMatch": false
+                  },
+                  "2": {
+                    "rank": null,
+                    "hasMatch": false
+                  }
+                },
+                "total_mentions": 0,
+                "ai_cite_score_rank1": 0,
+                "total_rank1_mentions": 0
+              },
+              "header_id": "b00efb15-ed7e-40df-897f-d6112a41938f",
+              "created_at": "2025-12-11T04:55:12.162326+00:00",
+              "updated_at": "2025-12-11T04:55:45.365957+00:00",
+              "error_metadata": null
+            },
+            {
+              "id": "e0a5b41b-304e-413c-9821-30b3797aa4c4",
+              "type": "cwv",
+              "status": "finished",
+              "metadata": {
+                "url": "https://www.sribu.com/id",
+                "seo_score": 100,
+                "final_score": 74,
+                "performance_score": 27,
+                "accessibility_score": 92,
+                "best_practices_score": 77
+              },
+              "header_id": "b00efb15-ed7e-40df-897f-d6112a41938f",
+              "created_at": "2025-12-11T04:55:11.595061+00:00",
+              "updated_at": "2025-12-11T04:56:00.309466+00:00",
+              "error_metadata": null
+            }
+          ],
+          "overall_score": 39.9444444444444
+        },
+        "competitor_data": {
+          "id": "c82bf08b-0d5c-4472-9256-af85716ceb70",
+          "url": "upwork.com",
+          "status": "finished",
+          "payload": {
+            "data": {
+              "url": "upwork.com",
+              "type": "all",
+              "header_id": "b00efb15-ed7e-40df-897f-d6112a41938f",
+              "questions": [
+                "What are the best freelance platforms for hiring developers?",
+                "How can I hire a graphic designer online for my startup?",
+                "Where can I find affordable freelance writers for a blog?"
+              ]
+            }
+          },
+          "executor": null,
+          "manifest": 40,
+          "optimize": 77,
+          "questions": [
+            "What are the best freelance platforms for hiring developers?",
+            "How can I hire a graphic designer online for my startup?",
+            "Where can I find affordable freelance writers for a blog?"
+          ],
+          "created_at": "2025-12-11T10:43:55.624454+00:00",
+          "generative": 83.3333333333333,
+          "updated_at": "2025-12-11T10:45:14.968343+00:00",
+          "sub_process": [
+            {
+              "id": "9436d05c-f553-46b7-9bb0-2eb354f0cbc2",
+              "type": "news_mentioned",
+              "status": "finished",
+              "metadata": {
+                "total_mentions": 2,
+                "news_mention_score": 20
+              },
+              "header_id": "c82bf08b-0d5c-4472-9256-af85716ceb70",
+              "created_at": "2025-12-11T10:43:56.712201+00:00",
+              "updated_at": "2025-12-11T10:43:58.858639+00:00",
+              "error_metadata": null
+            },
+            {
+              "id": "36ef1901-a391-4053-b18d-bc769650f40e",
+              "type": "backlink",
+              "status": "finished",
+              "metadata": {
+                "backlink_score": 0,
+                "total_backlinks": 4571,
+                "authoritative_backlinks": 13
+              },
+              "header_id": "c82bf08b-0d5c-4472-9256-af85716ceb70",
+              "created_at": "2025-12-11T10:43:56.23685+00:00",
+              "updated_at": "2025-12-11T10:44:00.420241+00:00",
+              "error_metadata": null
+            },
+            {
+              "id": "ee6e3766-2c84-4ac7-829a-fc0a5886bed8",
+              "type": "ai_cite_ranking",
+              "status": "finished",
+              "metadata": {
+                "per_iterasi": {
+                  "1": {
+                    "rank": 1,
+                    "hasMatch": true
+                  },
+                  "2": {
+                    "rank": 2,
+                    "hasMatch": true
+                  }
+                },
+                "total_mentions": 2,
+                "ai_cite_score_rank1": 50,
+                "total_rank1_mentions": 1
+              },
+              "header_id": "c82bf08b-0d5c-4472-9256-af85716ceb70",
+              "created_at": "2025-12-11T10:43:56.980847+00:00",
+              "updated_at": "2025-12-11T10:44:37.854725+00:00",
+              "error_metadata": null
+            },
+            {
+              "id": "9203d3fa-9ee3-479b-bd9d-00802ef043ec",
+              "type": "wikidata",
+              "status": "finished",
+              "metadata": {
+                "wikidata_score": {
+                  "data": 100
+                }
+              },
+              "header_id": "c82bf08b-0d5c-4472-9256-af85716ceb70",
+              "created_at": "2025-12-11T10:43:56.487254+00:00",
+              "updated_at": "2025-12-11T10:43:59.472568+00:00",
+              "error_metadata": null
+            },
+            {
+              "id": "c9285e6d-55c1-4d02-ac72-c57f29abe71d",
+              "type": "ai_overview",
+              "status": "finished",
+              "metadata": {
+                "total_hits": 2,
+                "ai_overview_score": 100,
+                "total_appearances": 2
+              },
+              "header_id": "c82bf08b-0d5c-4472-9256-af85716ceb70",
+              "created_at": "2025-12-11T10:43:56.688911+00:00",
+              "updated_at": "2025-12-11T10:44:04.329767+00:00",
+              "error_metadata": null
+            },
+            {
+              "id": "89f66396-6d75-4c75-8c28-2c4b82635324",
+              "type": "schema",
+              "status": "finished",
+              "metadata": {
+                "overallScore": 0,
+                "error_metadata": {
+                  "id": "89f66396-6d75-4c75-8c28-2c4b82635324",
+                  "type": "schema",
+                  "error": {
+                    "code": "ERR_BAD_REQUEST",
+                    "name": "AxiosError",
+                    "stack": "AxiosError: Request failed with status code 400\n    at settle (/usr/local/lib/node_modules/n8n/node_modules/.pnpm/axios@1.12.0/node_modules/axios/lib/core/settle.js:19:12)\n    at RedirectableRequest.handleResponse (/usr/local/lib/node_modules/n8n/node_modules/.pnpm/axios@1.12.0/node_modules/axios/lib/adapters/http.js:565:9)\n    at RedirectableRequest.emit (node:events:531:35)\n    at RedirectableRequest._processResponse (/usr/local/lib/node_modules/n8n/node_modules/.pnpm/follow-redirects@1.15.11/node_modules/follow-redirects/index.js:409:10)\n    at ClientRequest.RedirectableRequest._onNativeResponse (/usr/local/lib/node_modules/n8n/node_modules/.pnpm/follow-redirects@1.15.11/node_modules/follow-redirects/index.js:102:12)\n    at Object.onceWrapper (node:events:634:26)\n    at ClientRequest.emit (node:events:519:28)\n    at HTTPParser.parserOnIncomingClient [as onIncoming] (node:_http_client:716:27)\n    at HTTPParser.parserOnHeadersComplete (node:_http_common:117:17)\n    at TLSSocket.socketOnData (node:_http_client:558:22)\n    at Axios.request (/usr/local/lib/node_modules/n8n/node_modules/.pnpm/axios@1.12.0/node_modules/axios/lib/core/Axios.js:45:41)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at invokeAxios (/usr/local/lib/node_modules/n8n/node_modules/.pnpm/n8n-core@file+packages+core_@opentelemetry+api@1.9.0_@opentelemetry+sdk-trace-base@1.30_08b575bec2313d5d8a4cc75358971443/node_modules/n8n-core/src/execution-engine/node-execution-context/utils/request-helper-functions.ts:313:10)\n    at proxyRequestToAxios (/usr/local/lib/node_modules/n8n/node_modules/.pnpm/n8n-core@file+packages+core_@opentelemetry+api@1.9.0_@opentelemetry+sdk-trace-base@1.30_08b575bec2313d5d8a4cc75358971443/node_modules/n8n-core/src/execution-engine/node-execution-context/utils/request-helper-functions.ts:695:20)\n    at Object.request (/usr/local/lib/node_modules/n8n/node_modules/.pnpm/n8n-core@file+packages+core_@opentelemetry+api@1.9.0_@opentelemetry+sdk-trace-base@1.30_08b575bec2313d5d8a4cc75358971443/node_modules/n8n-core/src/execution-engine/node-execution-context/utils/request-helper-functions.ts:1749:4)",
+                    "status": 400,
+                    "message": "400 - \"{\\\"error\\\":\\\"Failed to fetch URL\\\",\\\"details\\\":\\\"HTTP error! status: 403 Forbidden\\\"}\""
+                  },
+                  "status": "executing",
+                  "details": "HTTP error! status: 403 Forbidden",
+                  "metadata": null,
+                  "header_id": "c82bf08b-0d5c-4472-9256-af85716ceb70",
+                  "created_at": "2025-12-11T10:43:56.589Z",
+                  "updated_at": "2025-12-11T10:43:56.589Z",
+                  "error_metadata": null
+                }
+              },
+              "header_id": "c82bf08b-0d5c-4472-9256-af85716ceb70",
+              "created_at": "2025-12-11T10:43:56.589757+00:00",
+              "updated_at": "2025-12-11T10:44:09.964349+00:00",
+              "error_metadata": {
+                "id": "89f66396-6d75-4c75-8c28-2c4b82635324",
+                "type": "schema",
+                "error": {
+                  "code": "ERR_BAD_REQUEST",
+                  "name": "AxiosError",
+                  "stack": "AxiosError: Request failed with status code 400\n    at settle (/usr/local/lib/node_modules/n8n/node_modules/.pnpm/axios@1.12.0/node_modules/axios/lib/core/settle.js:19:12)\n    at RedirectableRequest.handleResponse (/usr/local/lib/node_modules/n8n/node_modules/.pnpm/axios@1.12.0/node_modules/axios/lib/adapters/http.js:565:9)\n    at RedirectableRequest.emit (node:events:531:35)\n    at RedirectableRequest._processResponse (/usr/local/lib/node_modules/n8n/node_modules/.pnpm/follow-redirects@1.15.11/node_modules/follow-redirects/index.js:409:10)\n    at ClientRequest.RedirectableRequest._onNativeResponse (/usr/local/lib/node_modules/n8n/node_modules/.pnpm/follow-redirects@1.15.11/node_modules/follow-redirects/index.js:102:12)\n    at Object.onceWrapper (node:events:634:26)\n    at ClientRequest.emit (node:events:519:28)\n    at HTTPParser.parserOnIncomingClient [as onIncoming] (node:_http_client:716:27)\n    at HTTPParser.parserOnHeadersComplete (node:_http_common:117:17)\n    at TLSSocket.socketOnData (node:_http_client:558:22)\n    at Axios.request (/usr/local/lib/node_modules/n8n/node_modules/.pnpm/axios@1.12.0/node_modules/axios/lib/core/Axios.js:45:41)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at invokeAxios (/usr/local/lib/node_modules/n8n/node_modules/.pnpm/n8n-core@file+packages+core_@opentelemetry+api@1.9.0_@opentelemetry+sdk-trace-base@1.30_08b575bec2313d5d8a4cc75358971443/node_modules/n8n-core/src/execution-engine/node-execution-context/utils/request-helper-functions.ts:313:10)\n    at proxyRequestToAxios (/usr/local/lib/node_modules/n8n/node_modules/.pnpm/n8n-core@file+packages+core_@opentelemetry+api@1.9.0_@opentelemetry+sdk-trace-base@1.30_08b575bec2313d5d8a4cc75358971443/node_modules/n8n-core/src/execution-engine/node-execution-context/utils/request-helper-functions.ts:695:20)\n    at Object.request (/usr/local/lib/node_modules/n8n/node_modules/.pnpm/n8n-core@file+packages+core_@opentelemetry+api@1.9.0_@opentelemetry+sdk-trace-base@1.30_08b575bec2313d5d8a4cc75358971443/node_modules/n8n-core/src/execution-engine/node-execution-context/utils/request-helper-functions.ts:1749:4)",
+                  "status": 400,
+                  "message": "400 - \"{\\\"error\\\":\\\"Failed to fetch URL\\\",\\\"details\\\":\\\"HTTP error! status: 403 Forbidden\\\"}\""
+                },
+                "status": "executing",
+                "details": "HTTP error! status: 403 Forbidden",
+                "metadata": null,
+                "header_id": "c82bf08b-0d5c-4472-9256-af85716ceb70",
+                "created_at": "2025-12-11T10:43:56.589Z",
+                "updated_at": "2025-12-11T10:43:56.589Z",
+                "error_metadata": null
+              }
+            },
+            {
+              "id": "56bbf0a8-f282-4fe0-803a-1666aec63ee8",
+              "type": "ai_cite_score",
+              "status": "finished",
+              "metadata": {
+                "total_hits": 2,
+                "per_iterasi": {
+                  "1": {
+                    "rank": 1,
+                    "hasMatch": true
+                  },
+                  "2": {
+                    "rank": 2,
+                    "hasMatch": true
+                  }
+                },
+                "ai_cite_score": 100,
+                "total_appearances": 2
+              },
+              "header_id": "c82bf08b-0d5c-4472-9256-af85716ceb70",
+              "created_at": "2025-12-11T10:43:57.8596+00:00",
+              "updated_at": "2025-12-11T10:44:21.790237+00:00",
+              "error_metadata": null
+            },
+            {
+              "id": "ad7b5554-47a4-40aa-90fd-9beb3c4ea06f",
+              "type": "cwv",
+              "status": "finished",
+              "metadata": {
+                "url": "https://www.upwork.com/",
+                "seo_score": 100,
+                "final_score": 77,
+                "performance_score": 46,
+                "accessibility_score": 85,
+                "best_practices_score": 77
+              },
+              "header_id": "c82bf08b-0d5c-4472-9256-af85716ceb70",
+              "created_at": "2025-12-11T10:43:56.053742+00:00",
+              "updated_at": "2025-12-11T10:45:13.580602+00:00",
+              "error_metadata": null
+            }
+          ],
+          "overall_score": 66.7777777777778
+        }
+      },
+      "pairedItem": {
+        "item": 0
+      }
+    }
+  ]
+};
 
 interface Competitor {
   domain: string;
@@ -14,6 +732,12 @@ interface Competitor {
   gen: number;
   cwvScore: number;
   schemaScore: number;
+  backlinkScore?: number;
+  newsMentionScore?: number;
+  wikidataScore?: number;
+  aiCiteScore?: number;
+  aiOverviewScore?: number;
+  aiCiteRankingScore?: number;
   addedAt: Date;
 }
 
@@ -30,6 +754,145 @@ export function BenchmarkComparison({ userDomain, userScore, userScores }: Bench
   const [isFocused, setIsFocused] = useState(false);
   const [error, setError] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitSuccess, setSubmitSuccess] = useState<boolean | null>(null);
+  const [submitMessage, setSubmitMessage] = useState('');
+  const [refreshKey, setRefreshKey] = useState(0);
+
+  const avoData = typeof window !== 'undefined' ? storageUtils.getAvoData() : null;
+  const analysisId = avoData?.id ?? null;
+
+  const shouldStopPollingComparisons = useCallback((d: any) => {
+    try {
+      const payload = d?.data ?? d;
+      if (!Array.isArray(payload)) return false;
+      if (payload.length < 1) return true;
+      const isEmptyJsonWithZeroPair = (item: any) => {
+        const j = item?.json ?? item;
+        const isEmptyObj = j && typeof j === 'object' && !Array.isArray(j) && Object.keys(j).length === 0;
+        const p = item?.pairedItem;
+        let hasZeroPair = false;
+        if (Array.isArray(p)) {
+          hasZeroPair = p.some((it) => Number(it?.item) === 0 && Number(it?.input) === 0);
+        } else if (p && typeof p === 'object') {
+          hasZeroPair = Number(p?.item) === 0 && (p?.input === undefined || Number(p?.input) === 0);
+        }
+        return Boolean(isEmptyObj && hasZeroPair);
+      };
+      if (payload.length === 1 && isEmptyJsonWithZeroPair(payload[0])) return true;
+      const allEmptyPattern = payload.every((it: any) => isEmptyJsonWithZeroPair(it));
+      if (allEmptyPattern) return true;
+      const allFinished = payload.every((item: any) => {
+        const j = item?.json ?? item;
+        const ps = j?.parent_data?.status;
+        const cs = j?.competitor_data?.status;
+        return ps === 'finished' && cs === 'finished';
+      });
+      return allFinished;
+    } catch {
+      return false;
+    }
+  }, []);
+
+  const { data: comparisonsData, isLoading: isComparisonsLoading, error: comparisonsError } = usePollingGet<any>(
+    analysisId ? `/getlist-comparisons?id=${analysisId}&rk=${refreshKey}` : null,
+    { interval: 2000, shouldStopPolling: shouldStopPollingComparisons, initialLoading: true }
+  );
+
+  const { trigger: submitCompetitor } = usePost<any>('/process-N8N-AVQ');
+
+  const [apiUserDomain, setApiUserDomain] = useState<string | null>(null);
+  const [apiUserScores, setApiUserScores] = useState<{ opt: number; man: number; gen: number; avg: number } | null>(null);
+  const [apiUserDetail, setApiUserDetail] = useState<{ cwv?: number; schema?: number; backlink?: number; newsMention?: number; wikidata?: number; aiCite?: number; aiOverview?: number; aiCiteRanking?: number } | null>(null);
+
+  useEffect(() => {
+
+    const payload = comparisonsData?.data ?? (Array.isArray(comparisonsData) ? comparisonsData : null);
+    // const payload = DUMMY_RESPONSE?.data
+
+    if (!Array.isArray(payload) || payload.length < 1) return;
+    const first = payload[0];
+    const j0 = first?.json ?? first;
+    const parent = j0?.parent_data ?? null;
+    if (parent) {
+      const avg = Number(parent?.overall_score) || 0;
+      const opt = Number(parent?.optimize) || 0;
+      const man = Number(parent?.manifest) || 0;
+      const gen = Number(parent?.generative) || 0;
+      setApiUserDomain(parent?.url ?? null);
+      setApiUserScores({ opt: Math.round(opt), man: Math.round(man), gen: Math.round(gen), avg: Math.round(avg) });
+      const subs = Array.isArray(parent?.sub_process) ? parent.sub_process : [];
+      const getSubScore = (type: string, key: string): number | undefined => {
+        const p = subs.find((s: any) => s?.type === type);
+        if (!p || typeof p.metadata !== 'object' || p.metadata === null) return undefined;
+        if (!(key in p.metadata)) return undefined;
+        const val = (p.metadata as Record<string, any>)[key];
+        const n = typeof val === 'object' && val !== null && 'data' in val ? Number((val as any).data) : Number(val);
+        return Number.isFinite(n) ? Math.round(n) : undefined;
+      };
+      setApiUserDetail({
+        cwv: getSubScore('cwv', 'final_score'),
+        schema: getSubScore('schema', 'overallScore'),
+        backlink: getSubScore('backlink', 'backlink_score'),
+        newsMention: getSubScore('news_mentioned', 'news_mention_score'),
+        wikidata: getSubScore('wikidata', 'wikidata_score'),
+        aiCite: getSubScore('ai_cite_score', 'ai_cite_score'),
+        aiOverview: getSubScore('ai_overview', 'ai_overview_score'),
+        aiCiteRanking: getSubScore('ai_cite_ranking', 'ai_cite_score_rank1'),
+      });
+    }
+
+    const filtered = payload.filter((item: any) => {
+      const j = item?.json ?? item;
+      const hid = j?.header_id;
+      const cid = j?.competitor_id;
+      return typeof hid === 'string' && hid.length > 0 && typeof cid === 'string' && cid.length > 0;
+    });
+    const mapped: Competitor[] = filtered.map((item: any) => {
+      const j = item?.json ?? item;
+      const comp = j?.competitor_data ?? {};
+      const subs = Array.isArray(comp?.sub_process) ? comp.sub_process : [];
+      const getSubScore = (type: string, key: string): number | undefined => {
+        const p = subs.find((s: any) => s?.type === type);
+        if (!p || typeof p.metadata !== 'object' || p.metadata === null) return undefined;
+        if (!(key in p.metadata)) return undefined;
+        const val = (p.metadata as Record<string, any>)[key];
+        const n = typeof val === 'object' && val !== null && 'data' in val ? Number((val as any).data) : Number(val);
+        return Number.isFinite(n) ? Math.round(n) : undefined;
+      };
+      const cwv = getSubScore('cwv', 'final_score');
+      const schema = getSubScore('schema', 'overallScore');
+      const backlink = getSubScore('backlink', 'backlink_score');
+      const newsMention = getSubScore('news_mentioned', 'news_mention_score');
+      const wikidata = getSubScore('wikidata', 'wikidata_score');
+      const aiCite = getSubScore('ai_cite_score', 'ai_cite_score');
+      const aiOverview = getSubScore('ai_overview', 'ai_overview_score');
+      const aiCiteRanking = getSubScore('ai_cite_ranking', 'ai_cite_score_rank1');
+      const overall = Number(comp?.overall_score);
+      return {
+        domain: comp?.url ?? 'competitor',
+        score: Number.isFinite(overall) ? Math.round(overall) : Math.round(Number(comp?.optimize ?? 0)),
+        opt: Math.round(Number(comp?.optimize ?? 0)),
+        man: Math.round(Number(comp?.manifest ?? 0)),
+        gen: Math.round(Number(comp?.generative ?? 0)),
+        cwvScore: cwv ?? 0,
+        schemaScore: schema ?? 0,
+        backlinkScore: backlink,
+        newsMentionScore: newsMention,
+        wikidataScore: wikidata,
+        aiCiteScore: aiCite,
+        aiOverviewScore: aiOverview,
+        aiCiteRankingScore: aiCiteRanking,
+        addedAt: new Date(comp?.updated_at ?? comp?.created_at ?? new Date().toISOString()),
+      };
+    });
+    setCompetitors(mapped);
+    if (mapped.length > 0) setExpandedCompetitors(new Set([mapped[0].domain]));
+  }, [comparisonsData]);
+
+  const displayUserDomain = apiUserDomain ?? userDomain;
+  const displayUserScores = apiUserScores ?? userScores;
+  const displayUserAvg = (displayUserScores?.avg ?? userScore ?? 0);
 
   const validateDomain = (value: string) => {
     const trimmedDomain = value.trim();
@@ -59,7 +922,7 @@ export function BenchmarkComparison({ userDomain, userScore, userScores }: Bench
     return true;
   };
 
-  const handleAddCompetitor = () => {
+  const handleAddCompetitor = async () => {
     if (!validateDomain(competitorInput)) {
       setTimeout(() => {
         setError(false);
@@ -67,26 +930,42 @@ export function BenchmarkComparison({ userDomain, userScore, userScores }: Bench
       }, 3000);
       return;
     }
+    if (!analysisId) {
+      setError(true);
+      setErrorMessage('No Analysis ID found in storage');
+      setTimeout(() => {
+        setError(false);
+        setErrorMessage('');
+      }, 3000);
+      return;
+    }
 
-    const baseScore = Math.floor(Math.random() * 30) + 70;
-    const newCompetitor: Competitor = {
-      domain: competitorInput.trim().toLowerCase(),
-      score: baseScore,
-      opt: Math.floor(Math.random() * 20) + 80,
-      man: Math.floor(Math.random() * 20) + 80,
-      gen: Math.floor(Math.random() * 20) + 80,
-      cwvScore: Math.floor(Math.random() * 40) + 50,
-      schemaScore: Math.floor(Math.random() * 40) + 40,
-      addedAt: new Date(),
-    };
-
-    setCompetitors([newCompetitor, ...competitors]);
-    setCompetitorInput('');
-    setError(false);
-    setErrorMessage('');
-    
-    if (competitors.length === 0) {
-      setExpandedCompetitors(new Set([newCompetitor.domain]));
+    setIsSubmitting(true);
+    setSubmitSuccess(null);
+    setSubmitMessage('');
+    try {
+      const result = await submitCompetitor({
+        data: {
+          url: competitorInput.trim().toLowerCase(),
+          type: 'all',
+          header_id: analysisId,
+        },
+      });
+      setSubmitSuccess(true);
+      setSubmitMessage('Competitor submitted successfully');
+      setCompetitorInput('');
+      setError(false);
+      setErrorMessage('');
+      setRefreshKey((k) => k + 1);
+    } catch (err: any) {
+      setSubmitSuccess(false);
+      setSubmitMessage(err?.message || 'Failed to submit competitor');
+    } finally {
+      setIsSubmitting(false);
+      setTimeout(() => {
+        setSubmitSuccess(null);
+        setSubmitMessage('');
+      }, 3000);
     }
   };
 
@@ -129,15 +1008,13 @@ export function BenchmarkComparison({ userDomain, userScore, userScores }: Bench
     icon, 
     score, 
     barColor, 
-    cwvScore, 
-    schemaScore 
+    details,
   }: { 
     label: string; 
     icon: JSX.Element; 
     score: number; 
     barColor: string; 
-    cwvScore: number; 
-    schemaScore: number;
+    details: Array<{ label: string; value?: number }>;
   }) => (
     <div className="content-stretch flex flex-col gap-[10px] items-end justify-center relative shrink-0 w-full">
       <div className="content-stretch flex flex-col gap-[14px] items-start relative shrink-0 w-full">
@@ -156,14 +1033,12 @@ export function BenchmarkComparison({ userDomain, userScore, userScores }: Bench
         </div>
       </div>
       <div className="content-stretch flex flex-col gap-[6px] items-end justify-center relative shrink-0 w-full">
-        <div className="content-stretch flex font-['Manrope:Regular',sans-serif] font-normal items-center justify-between leading-[normal] relative shrink-0 text-nowrap w-full whitespace-pre">
-          <p className="relative shrink-0 text-[#a7a7a7] text-[14px]">CWV Score</p>
-          <p className="relative shrink-0 text-[#cfd1d4] text-[16px]">{cwvScore}</p>
-        </div>
-        <div className="content-stretch flex font-['Manrope:Regular',sans-serif] font-normal items-center justify-between leading-[normal] relative shrink-0 text-nowrap w-full whitespace-pre">
-          <p className="relative shrink-0 text-[#a7a7a7] text-[14px]">Schema Score</p>
-          <p className="relative shrink-0 text-[#cfd1d4] text-[16px]">{schemaScore}</p>
-        </div>
+        {details.map((d, i) => (
+          <div key={`${label}-detail-${i}`} className="content-stretch flex font-['Manrope:Regular',sans-serif] font-normal items-center justify-between leading-[normal] relative shrink-0 text-nowrap w-full whitespace-pre">
+            <p className="relative shrink-0 text-[#a7a7a7] text-[14px]">{d.label}</p>
+            <p className="relative shrink-0 text-[#cfd1d4] text-[16px]">{typeof d.value === 'number' && Number.isFinite(d.value) ? Math.round(d.value) : 0}</p>
+          </div>
+        ))}
       </div>
     </div>
   );
@@ -188,7 +1063,7 @@ export function BenchmarkComparison({ userDomain, userScore, userScores }: Bench
                   </svg>
                 </div>
                 <p className="font-['Manrope:SemiBold',sans-serif] font-semibold leading-[normal] relative shrink-0 text-[20px] text-nowrap text-white whitespace-pre">
-                  Benchmark Comparisson
+                  Benchmark Comparison
                 </p>
               </div>
               <p className="font-['Manrope:Regular',sans-serif] font-normal leading-[normal] relative shrink-0 text-[#939393] text-[14px] text-nowrap whitespace-pre">
@@ -202,7 +1077,7 @@ export function BenchmarkComparison({ userDomain, userScore, userScores }: Bench
               </p>
               <div className="content-stretch flex h-[16px] items-start relative shrink-0">
                 <p className="font-['Manrope:Regular',sans-serif] font-normal leading-[normal] relative shrink-0 text-[#cfd1d4] text-[16px] text-nowrap whitespace-pre">
-                  {userDomain}
+                  {displayUserDomain}
                 </p>
               </div>
             </div>
@@ -268,14 +1143,14 @@ export function BenchmarkComparison({ userDomain, userScore, userScores }: Bench
 
               <button
                 onClick={handleAddCompetitor}
-                disabled={!competitorInput.trim()}
+                disabled={!competitorInput.trim() || isSubmitting}
                 className={`bg-[rgba(0,194,184,0.1)] content-stretch flex items-center justify-center px-[15px] py-[9px] relative rounded-[10px] self-stretch shrink-0 transition-all duration-300 ${
-                  competitorInput.trim() ? 'hover:bg-[rgba(0,194,184,0.15)] cursor-pointer' : 'opacity-50 cursor-not-allowed'
+                  competitorInput.trim() && !isSubmitting ? 'hover:bg-[rgba(0,194,184,0.15)] cursor-pointer' : 'opacity-50 cursor-not-allowed'
                 }`}
               >
                 <div aria-hidden="true" className="absolute border border-[#006964] border-solid inset-0 pointer-events-none rounded-[10px]" />
                 <p className="font-['Manrope:SemiBold',sans-serif] font-semibold leading-[normal] relative shrink-0 text-[#00c2b8] text-[16px] text-center text-nowrap whitespace-pre">
-                  Add Competitor
+                  {isSubmitting ? 'Submitting...' : 'Add Competitor'}
                 </p>
               </button>
             </div>
@@ -295,6 +1170,66 @@ export function BenchmarkComparison({ userDomain, userScore, userScores }: Bench
                   </div>
                 </motion.div>
               )}
+              {isSubmitting && (
+                <motion.div
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  className="w-full"
+                >
+                  <div className="bg-[rgba(0,194,184,0.1)] border border-[#006964]/50 rounded-[8px] px-[16px] py-[12px]">
+                    <p className="font-['Manrope:Regular',sans-serif] text-[14px] text-[#00c2b8]">Submitting competitor...</p>
+                  </div>
+                </motion.div>
+              )}
+              {submitSuccess === true && submitMessage && (
+                <motion.div
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  className="w-full"
+                >
+                  <div className="bg-[#00c2b8]/10 border border-[#00c2b8]/50 rounded-[8px] px-[16px] py-[12px]">
+                    <p className="font-['Manrope:Regular',sans-serif] text-[14px] text-[#00c2b8]">{submitMessage}</p>
+                  </div>
+                </motion.div>
+              )}
+              {submitSuccess === false && submitMessage && (
+                <motion.div
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  className="w-full"
+                >
+                  <div className="bg-red-500/10 border border-red-500/30 rounded-[8px] px-[16px] py-[12px]">
+                    <p className="font-['Manrope:Regular',sans-serif] text-[14px] text-red-500">{submitMessage}</p>
+                  </div>
+                </motion.div>
+              )}
+              {isComparisonsLoading && (
+                <motion.div
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  className="w-full"
+                >
+                  <div className="bg-[rgba(0,194,184,0.1)] border border-[#006964]/50 rounded-[8px] px-[16px] py-[12px]">
+                    <p className="font-['Manrope:Regular',sans-serif] text-[14px] text-[#00c2b8]">Loading comparisons...</p>
+                  </div>
+                </motion.div>
+              )}
+              {comparisonsError && (
+                <motion.div
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  className="w-full"
+                >
+                  <div className="bg-red-500/10 border border-red-500/30 rounded-[8px] px-[16px] py-[12px]">
+                    <p className="font-['Manrope:Regular',sans-serif] text-[14px] text-red-500">Failed to load comparisons</p>
+                  </div>
+                </motion.div>
+              )}
             </AnimatePresence>
           </div>
         </div>
@@ -309,9 +1244,10 @@ export function BenchmarkComparison({ userDomain, userScore, userScores }: Bench
             exit={{ opacity: 0, height: 0 }}
             className="w-full flex flex-col"
           >
+            {/* {console.log(competitors)} */}
             {competitors.map((competitor, index) => {
               const isExpanded = expandedCompetitors.has(competitor.domain);
-              const scoreDelta = userScore - competitor.score;
+              const scoreDelta = displayUserAvg - competitor.score;
               
               return (
                 <div key={competitor.domain} className="w-full">
@@ -445,7 +1381,7 @@ export function BenchmarkComparison({ userDomain, userScore, userScores }: Bench
                                           </defs>
                                         </svg>
                                         <div className="absolute content-stretch flex flex-col gap-[6px] items-center justify-center left-[calc(50%-0.5px)] text-nowrap top-[calc(50%+5.5px)] translate-x-[-50%] translate-y-[-50%] whitespace-pre">
-                                          <p className="font-['Satoshi:Bold',sans-serif] leading-[normal] not-italic relative shrink-0 text-[#fef0cc] text-[48px] tracking-[-0.96px]">{userScore}</p>
+                                          <p className="font-['Satoshi:Bold',sans-serif] leading-[normal] not-italic relative shrink-0 text-[#fef0cc] text-[48px] tracking-[-0.96px]">{displayUserAvg}</p>
                                           <p className="font-['Manrope:Regular',sans-serif] font-normal leading-[26px] relative shrink-0 text-[#cfd1d4] text-[14px] tracking-[0.07px]">Overall</p>
                                         </div>
                                       </div>
@@ -578,10 +1514,12 @@ export function BenchmarkComparison({ userDomain, userScore, userScores }: Bench
                                               </svg>
                                             </div>
                                           } 
-                                          score={userScores.opt} 
+                                          score={displayUserScores.opt} 
                                           barColor="#00c2b8" 
-                                          cwvScore={62} 
-                                          schemaScore={47} 
+                                          details={[
+                                            { label: 'CWV Score', value: apiUserDetail?.cwv },
+                                            { label: 'Schema Score', value: apiUserDetail?.schema },
+                                          ]}
                                         />
 
                                         <div className="h-0 relative shrink-0 w-full">
@@ -603,10 +1541,13 @@ export function BenchmarkComparison({ userDomain, userScore, userScores }: Bench
                                               </svg>
                                             </div>
                                           } 
-                                          score={userScores.man} 
+                                          score={displayUserScores.man} 
                                           barColor="#cfff04" 
-                                          cwvScore={62} 
-                                          schemaScore={47} 
+                                          details={[
+                                            { label: 'Backlink Score', value: apiUserDetail?.backlink },
+                                            { label: 'News Mention Score', value: apiUserDetail?.newsMention },
+                                            { label: 'Wikidata Score', value: apiUserDetail?.wikidata },
+                                          ]}
                                         />
 
                                         <div className="h-0 relative shrink-0 w-full">
@@ -628,21 +1569,24 @@ export function BenchmarkComparison({ userDomain, userScore, userScores }: Bench
                                               </svg>
                                             </div>
                                           } 
-                                          score={userScores.gen} 
+                                          score={displayUserScores.gen} 
                                           barColor="#ff9f0a" 
-                                          cwvScore={62} 
-                                          schemaScore={47} 
+                                          details={[
+                                            { label: 'AI Cite Score', value: apiUserDetail?.aiCite },
+                                            { label: 'AI Overview Appearance', value: apiUserDetail?.aiOverview },
+                                            { label: 'AI Cite Ranking Score', value: apiUserDetail?.aiCiteRanking },
+                                          ]}
                                         />
                                       </div>
                                     </div>
                                   </div>
 
                                   {/* Center Text */}
-                                  <div className="flex items-center justify-center">
+                                  <div className="flex items-center justify-center mt-[28%]">
                                     <p className="font-['Sansation:Regular',sans-serif] leading-[normal] not-italic relative shrink-0 text-[20px] text-center text-nowrap text-white whitespace-pre">
                                       {`OMG `}
                                       <br aria-hidden="true" />
-                                      Comparisson
+                                      Comparison
                                     </p>
                                   </div>
 
@@ -687,8 +1631,10 @@ export function BenchmarkComparison({ userDomain, userScore, userScores }: Bench
                                           } 
                                           score={competitor.opt} 
                                           barColor="#00c2b8" 
-                                          cwvScore={competitor.cwvScore} 
-                                          schemaScore={competitor.schemaScore} 
+                                          details={[
+                                            { label: 'CWV Score', value: competitor.cwvScore },
+                                            { label: 'Schema Score', value: competitor.schemaScore },
+                                          ]}
                                         />
 
                                         <div className="h-0 relative shrink-0 w-full">
@@ -712,8 +1658,11 @@ export function BenchmarkComparison({ userDomain, userScore, userScores }: Bench
                                           } 
                                           score={competitor.man} 
                                           barColor="#cfff04" 
-                                          cwvScore={competitor.cwvScore} 
-                                          schemaScore={competitor.schemaScore} 
+                                          details={[
+                                            { label: 'Backlink Score', value: competitor.backlinkScore },
+                                            { label: 'News Mention Score', value: competitor.newsMentionScore },
+                                            { label: 'Wikidata Score', value: competitor.wikidataScore },
+                                          ]}
                                         />
 
                                         <div className="h-0 relative shrink-0 w-full">
@@ -737,8 +1686,11 @@ export function BenchmarkComparison({ userDomain, userScore, userScores }: Bench
                                           } 
                                           score={competitor.gen} 
                                           barColor="#ff9f0a" 
-                                          cwvScore={competitor.cwvScore} 
-                                          schemaScore={competitor.schemaScore} 
+                                          details={[
+                                            { label: 'AI Cite Score', value: competitor.aiCiteScore },
+                                            { label: 'AI Overview Appearance', value: competitor.aiOverviewScore },
+                                            { label: 'AI Cite Ranking Score', value: competitor.aiCiteRankingScore },
+                                          ]}
                                         />
                                       </div>
                                     </div>
@@ -789,7 +1741,9 @@ export function BenchmarkComparison({ userDomain, userScore, userScores }: Bench
                 <Vector />
               </div>
               <p className="font-['Manrope:Regular',sans-serif] font-normal leading-[normal] relative shrink-0 text-[16px] text-[rgba(140,140,140,0.4)] text-center max-w-[629px]">
-                Add competitor above to view deep-dive analysis comparison
+                {isComparisonsLoading
+                  ? 'Loading comparisons...'
+                  : (comparisonsError ? 'Error loading comparisons' : 'Add competitor above to view deep-dive analysis comparison')}
               </p>
             </div>
           </div>

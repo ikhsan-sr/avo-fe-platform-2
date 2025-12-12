@@ -1,0 +1,715 @@
+{
+  "status": "ok",
+  "message": "Data successfully fetched",
+  "data": [
+    {
+      "json": {
+        "header_id": "b00efb15-ed7e-40df-897f-d6112a41938f",
+        "competitor_id": "37294341-4661-4ba8-8bb6-2b09b7d0d324",
+        "created_at": "2025-12-11T04:55:25.806Z",
+        "updated_at": "2025-12-11T04:55:25.806Z",
+        "id": "a03e4155-75c5-4a80-9a12-40db80b21b73",
+        "parent_data": {
+          "id": "b00efb15-ed7e-40df-897f-d6112a41938f",
+          "url": "sribu.com",
+          "status": "finished",
+          "payload": {
+            "data": {
+              "url": "sribu.com",
+              "type": "all",
+              "questions": [
+                "What are the best freelance graphic designers for a small business?",
+                "How can I hire a logo designer online?",
+                "Where can I find affordable web design services for a startup?"
+              ]
+            }
+          },
+          "executor": null,
+          "manifest": 40.3333333333333,
+          "optimize": 79.5,
+          "questions": [
+            "What are the best freelance graphic designers for a small business?",
+            "How can I hire a logo designer online?",
+            "Where can I find affordable web design services for a startup?"
+          ],
+          "created_at": "2025-12-11T04:55:11.219266+00:00",
+          "generative": 0,
+          "updated_at": "2025-12-11T04:56:00.587297+00:00",
+          "sub_process": [
+            {
+              "id": "508f7d1b-f81d-404d-aa34-6a52bf6c02a4",
+              "type": "news_mentioned",
+              "status": "finished",
+              "metadata": {
+                "total_mentions": 2,
+                "news_mention_score": 20
+              },
+              "header_id": "b00efb15-ed7e-40df-897f-d6112a41938f",
+              "created_at": "2025-12-11T04:55:12.248762+00:00",
+              "updated_at": "2025-12-11T04:55:14.280981+00:00",
+              "error_metadata": null
+            },
+            {
+              "id": "0aaab383-f910-420f-85ca-6784ef14dc0c",
+              "type": "backlink",
+              "status": "finished",
+              "metadata": {
+                "backlink_score": 1,
+                "total_backlinks": 243,
+                "authoritative_backlinks": 3
+              },
+              "header_id": "b00efb15-ed7e-40df-897f-d6112a41938f",
+              "created_at": "2025-12-11T04:55:11.783044+00:00",
+              "updated_at": "2025-12-11T04:55:14.32194+00:00",
+              "error_metadata": null
+            },
+            {
+              "id": "650b7961-5035-42a3-bcc4-8c211c8e7dfa",
+              "type": "wikidata",
+              "status": "finished",
+              "metadata": {
+                "wikidata_score": {
+                  "data": 100
+                }
+              },
+              "header_id": "b00efb15-ed7e-40df-897f-d6112a41938f",
+              "created_at": "2025-12-11T04:55:11.980037+00:00",
+              "updated_at": "2025-12-11T04:55:14.980761+00:00",
+              "error_metadata": null
+            },
+            {
+              "id": "d9f053fb-46cb-45dc-9a65-e3999f2f83ec",
+              "type": "schema",
+              "status": "finished",
+              "metadata": {
+                "overallScore": 85
+              },
+              "header_id": "b00efb15-ed7e-40df-897f-d6112a41938f",
+              "created_at": "2025-12-11T04:55:13.055832+00:00",
+              "updated_at": "2025-12-11T04:55:19.834807+00:00",
+              "error_metadata": null
+            },
+            {
+              "id": "3ed9abdd-7315-49e5-855b-501306faa48f",
+              "type": "ai_overview",
+              "status": "finished",
+              "metadata": {
+                "total_hits": 2,
+                "ai_overview_score": 0,
+                "total_appearances": 0
+              },
+              "header_id": "b00efb15-ed7e-40df-897f-d6112a41938f",
+              "created_at": "2025-12-11T04:55:17.664442+00:00",
+              "updated_at": "2025-12-11T04:55:23.806362+00:00",
+              "error_metadata": null
+            },
+            {
+              "id": "fc53b820-5fe6-4b54-8edd-4435178b70f3",
+              "type": "ai_cite_score",
+              "status": "finished",
+              "metadata": {
+                "total_hits": 2,
+                "per_iterasi": {
+                  "1": {
+                    "rank": null,
+                    "hasMatch": false
+                  },
+                  "2": {
+                    "rank": null,
+                    "hasMatch": false
+                  }
+                },
+                "ai_cite_score": 0,
+                "total_appearances": 0
+              },
+              "header_id": "b00efb15-ed7e-40df-897f-d6112a41938f",
+              "created_at": "2025-12-11T04:55:17.528441+00:00",
+              "updated_at": "2025-12-11T04:55:39.573951+00:00",
+              "error_metadata": null
+            },
+            {
+              "id": "b34f9336-ec89-4cad-9a43-8a74560f4b44",
+              "type": "ai_cite_ranking",
+              "status": "finished",
+              "metadata": {
+                "per_iterasi": {
+                  "1": {
+                    "rank": null,
+                    "hasMatch": false
+                  },
+                  "2": {
+                    "rank": null,
+                    "hasMatch": false
+                  }
+                },
+                "total_mentions": 0,
+                "ai_cite_score_rank1": 0,
+                "total_rank1_mentions": 0
+              },
+              "header_id": "b00efb15-ed7e-40df-897f-d6112a41938f",
+              "created_at": "2025-12-11T04:55:12.162326+00:00",
+              "updated_at": "2025-12-11T04:55:45.365957+00:00",
+              "error_metadata": null
+            },
+            {
+              "id": "e0a5b41b-304e-413c-9821-30b3797aa4c4",
+              "type": "cwv",
+              "status": "finished",
+              "metadata": {
+                "url": "https://www.sribu.com/id",
+                "seo_score": 100,
+                "final_score": 74,
+                "performance_score": 27,
+                "accessibility_score": 92,
+                "best_practices_score": 77
+              },
+              "header_id": "b00efb15-ed7e-40df-897f-d6112a41938f",
+              "created_at": "2025-12-11T04:55:11.595061+00:00",
+              "updated_at": "2025-12-11T04:56:00.309466+00:00",
+              "error_metadata": null
+            }
+          ],
+          "overall_score": 39.9444444444444
+        },
+        "competitor_data": {
+          "id": "37294341-4661-4ba8-8bb6-2b09b7d0d324",
+          "url": "projects.co.id",
+          "status": "finished",
+          "payload": {
+            "data": {
+              "url": "projects.co.id",
+              "type": "all",
+              "header_id": "b00efb15-ed7e-40df-897f-d6112a41938f",
+              "questions": [
+                "What are the best freelance project platforms in Indonesia?",
+                "How can I hire a web developer online for a small business?",
+                "Where can I find a graphic designer for a startup logo?"
+              ]
+            }
+          },
+          "executor": null,
+          "manifest": 33.6666666666667,
+          "optimize": 39.5,
+          "questions": [
+            "What are the best freelance project platforms in Indonesia?",
+            "How can I hire a web developer online for a small business?",
+            "Where can I find a graphic designer for a startup logo?"
+          ],
+          "created_at": "2025-12-11T04:55:25.641095+00:00",
+          "generative": 33.3333333333333,
+          "updated_at": "2025-12-11T04:56:01.399154+00:00",
+          "sub_process": [
+            {
+              "id": "14be11e4-5f4b-46fb-bbcb-23d734f741f3",
+              "type": "ai_cite_ranking",
+              "status": "finished",
+              "metadata": {
+                "per_iterasi": {
+                  "1": {
+                    "rank": 2,
+                    "hasMatch": true
+                  },
+                  "2": {
+                    "rank": null,
+                    "hasMatch": false
+                  }
+                },
+                "total_mentions": 1,
+                "ai_cite_score_rank1": 0,
+                "total_rank1_mentions": 0
+              },
+              "header_id": "37294341-4661-4ba8-8bb6-2b09b7d0d324",
+              "created_at": "2025-12-11T04:55:26.732352+00:00",
+              "updated_at": "2025-12-11T04:56:01.12104+00:00",
+              "error_metadata": null
+            },
+            {
+              "id": "76000954-c151-46f2-ad81-0a28aff885ad",
+              "type": "news_mentioned",
+              "status": "finished",
+              "metadata": {
+                "total_mentions": 0,
+                "news_mention_score": 0
+              },
+              "header_id": "37294341-4661-4ba8-8bb6-2b09b7d0d324",
+              "created_at": "2025-12-11T04:55:26.35012+00:00",
+              "updated_at": "2025-12-11T04:55:27.262159+00:00",
+              "error_metadata": null
+            },
+            {
+              "id": "9e212c86-ff1c-4dc8-9f98-9f03c3a01a1f",
+              "type": "backlink",
+              "status": "finished",
+              "metadata": {
+                "backlink_score": 1,
+                "total_backlinks": 742,
+                "authoritative_backlinks": 7
+              },
+              "header_id": "37294341-4661-4ba8-8bb6-2b09b7d0d324",
+              "created_at": "2025-12-11T04:55:26.235666+00:00",
+              "updated_at": "2025-12-11T04:55:27.801232+00:00",
+              "error_metadata": null
+            },
+            {
+              "id": "7265b029-b06f-44f2-a1a7-faedbf66c66f",
+              "type": "wikidata",
+              "status": "finished",
+              "metadata": {
+                "wikidata_score": {
+                  "data": 100
+                }
+              },
+              "header_id": "37294341-4661-4ba8-8bb6-2b09b7d0d324",
+              "created_at": "2025-12-11T04:55:26.485879+00:00",
+              "updated_at": "2025-12-11T04:55:28.306648+00:00",
+              "error_metadata": null
+            },
+            {
+              "id": "e86e437c-a581-4cf3-84a1-70f16f75ef75",
+              "type": "ai_overview",
+              "status": "finished",
+              "metadata": {
+                "total_hits": 2,
+                "ai_overview_score": 50,
+                "total_appearances": 1
+              },
+              "header_id": "37294341-4661-4ba8-8bb6-2b09b7d0d324",
+              "created_at": "2025-12-11T04:55:27.107495+00:00",
+              "updated_at": "2025-12-11T04:55:37.652136+00:00",
+              "error_metadata": null
+            },
+            {
+              "id": "55b915ee-3fea-45ad-a101-bf40b6aa82c1",
+              "type": "schema",
+              "status": "finished",
+              "metadata": {
+                "overallScore": 0
+              },
+              "header_id": "37294341-4661-4ba8-8bb6-2b09b7d0d324",
+              "created_at": "2025-12-11T04:55:26.138542+00:00",
+              "updated_at": "2025-12-11T04:55:38.844103+00:00",
+              "error_metadata": null
+            },
+            {
+              "id": "e865cb38-af7c-4c82-b86c-f02e1d6a7aba",
+              "type": "ai_cite_score",
+              "status": "finished",
+              "metadata": {
+                "total_hits": 2,
+                "per_iterasi": {
+                  "1": {
+                    "rank": 2,
+                    "hasMatch": true
+                  },
+                  "2": {
+                    "rank": null,
+                    "hasMatch": false
+                  }
+                },
+                "ai_cite_score": 50,
+                "total_appearances": 1
+              },
+              "header_id": "37294341-4661-4ba8-8bb6-2b09b7d0d324",
+              "created_at": "2025-12-11T04:55:26.618717+00:00",
+              "updated_at": "2025-12-11T04:55:46.135282+00:00",
+              "error_metadata": null
+            },
+            {
+              "id": "50217c09-c81d-4a63-97ed-061cfdd4de16",
+              "type": "cwv",
+              "status": "finished",
+              "metadata": {
+                "url": "https://projects.co.id/",
+                "seo_score": 83,
+                "final_score": 79,
+                "performance_score": 56,
+                "accessibility_score": 83,
+                "best_practices_score": 92
+              },
+              "header_id": "37294341-4661-4ba8-8bb6-2b09b7d0d324",
+              "created_at": "2025-12-11T04:55:26.033725+00:00",
+              "updated_at": "2025-12-11T04:55:55.06408+00:00",
+              "error_metadata": null
+            }
+          ],
+          "overall_score": 35.5
+        }
+      },
+      "pairedItem": {
+        "item": 0
+      }
+    },
+    {
+      "json": {
+        "header_id": "b00efb15-ed7e-40df-897f-d6112a41938f",
+        "competitor_id": "c82bf08b-0d5c-4472-9256-af85716ceb70",
+        "created_at": "2025-12-11T10:43:55.787Z",
+        "updated_at": "2025-12-11T10:43:55.787Z",
+        "id": "07ec1802-fff1-454e-bdf8-c5bebf2c5dea",
+        "parent_data": {
+          "id": "b00efb15-ed7e-40df-897f-d6112a41938f",
+          "url": "sribu.com",
+          "status": "finished",
+          "payload": {
+            "data": {
+              "url": "sribu.com",
+              "type": "all",
+              "questions": [
+                "What are the best freelance graphic designers for a small business?",
+                "How can I hire a logo designer online?",
+                "Where can I find affordable web design services for a startup?"
+              ]
+            }
+          },
+          "executor": null,
+          "manifest": 40.3333333333333,
+          "optimize": 79.5,
+          "questions": [
+            "What are the best freelance graphic designers for a small business?",
+            "How can I hire a logo designer online?",
+            "Where can I find affordable web design services for a startup?"
+          ],
+          "created_at": "2025-12-11T04:55:11.219266+00:00",
+          "generative": 0,
+          "updated_at": "2025-12-11T04:56:00.587297+00:00",
+          "sub_process": [
+            {
+              "id": "508f7d1b-f81d-404d-aa34-6a52bf6c02a4",
+              "type": "news_mentioned",
+              "status": "finished",
+              "metadata": {
+                "total_mentions": 2,
+                "news_mention_score": 20
+              },
+              "header_id": "b00efb15-ed7e-40df-897f-d6112a41938f",
+              "created_at": "2025-12-11T04:55:12.248762+00:00",
+              "updated_at": "2025-12-11T04:55:14.280981+00:00",
+              "error_metadata": null
+            },
+            {
+              "id": "0aaab383-f910-420f-85ca-6784ef14dc0c",
+              "type": "backlink",
+              "status": "finished",
+              "metadata": {
+                "backlink_score": 1,
+                "total_backlinks": 243,
+                "authoritative_backlinks": 3
+              },
+              "header_id": "b00efb15-ed7e-40df-897f-d6112a41938f",
+              "created_at": "2025-12-11T04:55:11.783044+00:00",
+              "updated_at": "2025-12-11T04:55:14.32194+00:00",
+              "error_metadata": null
+            },
+            {
+              "id": "650b7961-5035-42a3-bcc4-8c211c8e7dfa",
+              "type": "wikidata",
+              "status": "finished",
+              "metadata": {
+                "wikidata_score": {
+                  "data": 100
+                }
+              },
+              "header_id": "b00efb15-ed7e-40df-897f-d6112a41938f",
+              "created_at": "2025-12-11T04:55:11.980037+00:00",
+              "updated_at": "2025-12-11T04:55:14.980761+00:00",
+              "error_metadata": null
+            },
+            {
+              "id": "d9f053fb-46cb-45dc-9a65-e3999f2f83ec",
+              "type": "schema",
+              "status": "finished",
+              "metadata": {
+                "overallScore": 85
+              },
+              "header_id": "b00efb15-ed7e-40df-897f-d6112a41938f",
+              "created_at": "2025-12-11T04:55:13.055832+00:00",
+              "updated_at": "2025-12-11T04:55:19.834807+00:00",
+              "error_metadata": null
+            },
+            {
+              "id": "3ed9abdd-7315-49e5-855b-501306faa48f",
+              "type": "ai_overview",
+              "status": "finished",
+              "metadata": {
+                "total_hits": 2,
+                "ai_overview_score": 0,
+                "total_appearances": 0
+              },
+              "header_id": "b00efb15-ed7e-40df-897f-d6112a41938f",
+              "created_at": "2025-12-11T04:55:17.664442+00:00",
+              "updated_at": "2025-12-11T04:55:23.806362+00:00",
+              "error_metadata": null
+            },
+            {
+              "id": "fc53b820-5fe6-4b54-8edd-4435178b70f3",
+              "type": "ai_cite_score",
+              "status": "finished",
+              "metadata": {
+                "total_hits": 2,
+                "per_iterasi": {
+                  "1": {
+                    "rank": null,
+                    "hasMatch": false
+                  },
+                  "2": {
+                    "rank": null,
+                    "hasMatch": false
+                  }
+                },
+                "ai_cite_score": 0,
+                "total_appearances": 0
+              },
+              "header_id": "b00efb15-ed7e-40df-897f-d6112a41938f",
+              "created_at": "2025-12-11T04:55:17.528441+00:00",
+              "updated_at": "2025-12-11T04:55:39.573951+00:00",
+              "error_metadata": null
+            },
+            {
+              "id": "b34f9336-ec89-4cad-9a43-8a74560f4b44",
+              "type": "ai_cite_ranking",
+              "status": "finished",
+              "metadata": {
+                "per_iterasi": {
+                  "1": {
+                    "rank": null,
+                    "hasMatch": false
+                  },
+                  "2": {
+                    "rank": null,
+                    "hasMatch": false
+                  }
+                },
+                "total_mentions": 0,
+                "ai_cite_score_rank1": 0,
+                "total_rank1_mentions": 0
+              },
+              "header_id": "b00efb15-ed7e-40df-897f-d6112a41938f",
+              "created_at": "2025-12-11T04:55:12.162326+00:00",
+              "updated_at": "2025-12-11T04:55:45.365957+00:00",
+              "error_metadata": null
+            },
+            {
+              "id": "e0a5b41b-304e-413c-9821-30b3797aa4c4",
+              "type": "cwv",
+              "status": "finished",
+              "metadata": {
+                "url": "https://www.sribu.com/id",
+                "seo_score": 100,
+                "final_score": 74,
+                "performance_score": 27,
+                "accessibility_score": 92,
+                "best_practices_score": 77
+              },
+              "header_id": "b00efb15-ed7e-40df-897f-d6112a41938f",
+              "created_at": "2025-12-11T04:55:11.595061+00:00",
+              "updated_at": "2025-12-11T04:56:00.309466+00:00",
+              "error_metadata": null
+            }
+          ],
+          "overall_score": 39.9444444444444
+        },
+        "competitor_data": {
+          "id": "c82bf08b-0d5c-4472-9256-af85716ceb70",
+          "url": "upwork.com",
+          "status": "finished",
+          "payload": {
+            "data": {
+              "url": "upwork.com",
+              "type": "all",
+              "header_id": "b00efb15-ed7e-40df-897f-d6112a41938f",
+              "questions": [
+                "What are the best freelance platforms for hiring developers?",
+                "How can I hire a graphic designer online for my startup?",
+                "Where can I find affordable freelance writers for a blog?"
+              ]
+            }
+          },
+          "executor": null,
+          "manifest": 40,
+          "optimize": 77,
+          "questions": [
+            "What are the best freelance platforms for hiring developers?",
+            "How can I hire a graphic designer online for my startup?",
+            "Where can I find affordable freelance writers for a blog?"
+          ],
+          "created_at": "2025-12-11T10:43:55.624454+00:00",
+          "generative": 83.3333333333333,
+          "updated_at": "2025-12-11T10:45:14.968343+00:00",
+          "sub_process": [
+            {
+              "id": "9436d05c-f553-46b7-9bb0-2eb354f0cbc2",
+              "type": "news_mentioned",
+              "status": "finished",
+              "metadata": {
+                "total_mentions": 2,
+                "news_mention_score": 20
+              },
+              "header_id": "c82bf08b-0d5c-4472-9256-af85716ceb70",
+              "created_at": "2025-12-11T10:43:56.712201+00:00",
+              "updated_at": "2025-12-11T10:43:58.858639+00:00",
+              "error_metadata": null
+            },
+            {
+              "id": "36ef1901-a391-4053-b18d-bc769650f40e",
+              "type": "backlink",
+              "status": "finished",
+              "metadata": {
+                "backlink_score": 0,
+                "total_backlinks": 4571,
+                "authoritative_backlinks": 13
+              },
+              "header_id": "c82bf08b-0d5c-4472-9256-af85716ceb70",
+              "created_at": "2025-12-11T10:43:56.23685+00:00",
+              "updated_at": "2025-12-11T10:44:00.420241+00:00",
+              "error_metadata": null
+            },
+            {
+              "id": "ee6e3766-2c84-4ac7-829a-fc0a5886bed8",
+              "type": "ai_cite_ranking",
+              "status": "finished",
+              "metadata": {
+                "per_iterasi": {
+                  "1": {
+                    "rank": 1,
+                    "hasMatch": true
+                  },
+                  "2": {
+                    "rank": 2,
+                    "hasMatch": true
+                  }
+                },
+                "total_mentions": 2,
+                "ai_cite_score_rank1": 50,
+                "total_rank1_mentions": 1
+              },
+              "header_id": "c82bf08b-0d5c-4472-9256-af85716ceb70",
+              "created_at": "2025-12-11T10:43:56.980847+00:00",
+              "updated_at": "2025-12-11T10:44:37.854725+00:00",
+              "error_metadata": null
+            },
+            {
+              "id": "9203d3fa-9ee3-479b-bd9d-00802ef043ec",
+              "type": "wikidata",
+              "status": "finished",
+              "metadata": {
+                "wikidata_score": {
+                  "data": 100
+                }
+              },
+              "header_id": "c82bf08b-0d5c-4472-9256-af85716ceb70",
+              "created_at": "2025-12-11T10:43:56.487254+00:00",
+              "updated_at": "2025-12-11T10:43:59.472568+00:00",
+              "error_metadata": null
+            },
+            {
+              "id": "c9285e6d-55c1-4d02-ac72-c57f29abe71d",
+              "type": "ai_overview",
+              "status": "finished",
+              "metadata": {
+                "total_hits": 2,
+                "ai_overview_score": 100,
+                "total_appearances": 2
+              },
+              "header_id": "c82bf08b-0d5c-4472-9256-af85716ceb70",
+              "created_at": "2025-12-11T10:43:56.688911+00:00",
+              "updated_at": "2025-12-11T10:44:04.329767+00:00",
+              "error_metadata": null
+            },
+            {
+              "id": "89f66396-6d75-4c75-8c28-2c4b82635324",
+              "type": "schema",
+              "status": "finished",
+              "metadata": {
+                "overallScore": 0,
+                "error_metadata": {
+                  "id": "89f66396-6d75-4c75-8c28-2c4b82635324",
+                  "type": "schema",
+                  "error": {
+                    "code": "ERR_BAD_REQUEST",
+                    "name": "AxiosError",
+                    "stack": "AxiosError: Request failed with status code 400\n    at settle (/usr/local/lib/node_modules/n8n/node_modules/.pnpm/axios@1.12.0/node_modules/axios/lib/core/settle.js:19:12)\n    at RedirectableRequest.handleResponse (/usr/local/lib/node_modules/n8n/node_modules/.pnpm/axios@1.12.0/node_modules/axios/lib/adapters/http.js:565:9)\n    at RedirectableRequest.emit (node:events:531:35)\n    at RedirectableRequest._processResponse (/usr/local/lib/node_modules/n8n/node_modules/.pnpm/follow-redirects@1.15.11/node_modules/follow-redirects/index.js:409:10)\n    at ClientRequest.RedirectableRequest._onNativeResponse (/usr/local/lib/node_modules/n8n/node_modules/.pnpm/follow-redirects@1.15.11/node_modules/follow-redirects/index.js:102:12)\n    at Object.onceWrapper (node:events:634:26)\n    at ClientRequest.emit (node:events:519:28)\n    at HTTPParser.parserOnIncomingClient [as onIncoming] (node:_http_client:716:27)\n    at HTTPParser.parserOnHeadersComplete (node:_http_common:117:17)\n    at TLSSocket.socketOnData (node:_http_client:558:22)\n    at Axios.request (/usr/local/lib/node_modules/n8n/node_modules/.pnpm/axios@1.12.0/node_modules/axios/lib/core/Axios.js:45:41)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at invokeAxios (/usr/local/lib/node_modules/n8n/node_modules/.pnpm/n8n-core@file+packages+core_@opentelemetry+api@1.9.0_@opentelemetry+sdk-trace-base@1.30_08b575bec2313d5d8a4cc75358971443/node_modules/n8n-core/src/execution-engine/node-execution-context/utils/request-helper-functions.ts:313:10)\n    at proxyRequestToAxios (/usr/local/lib/node_modules/n8n/node_modules/.pnpm/n8n-core@file+packages+core_@opentelemetry+api@1.9.0_@opentelemetry+sdk-trace-base@1.30_08b575bec2313d5d8a4cc75358971443/node_modules/n8n-core/src/execution-engine/node-execution-context/utils/request-helper-functions.ts:695:20)\n    at Object.request (/usr/local/lib/node_modules/n8n/node_modules/.pnpm/n8n-core@file+packages+core_@opentelemetry+api@1.9.0_@opentelemetry+sdk-trace-base@1.30_08b575bec2313d5d8a4cc75358971443/node_modules/n8n-core/src/execution-engine/node-execution-context/utils/request-helper-functions.ts:1749:4)",
+                    "status": 400,
+                    "message": "400 - \"{\\\"error\\\":\\\"Failed to fetch URL\\\",\\\"details\\\":\\\"HTTP error! status: 403 Forbidden\\\"}\""
+                  },
+                  "status": "executing",
+                  "details": "HTTP error! status: 403 Forbidden",
+                  "metadata": null,
+                  "header_id": "c82bf08b-0d5c-4472-9256-af85716ceb70",
+                  "created_at": "2025-12-11T10:43:56.589Z",
+                  "updated_at": "2025-12-11T10:43:56.589Z",
+                  "error_metadata": null
+                }
+              },
+              "header_id": "c82bf08b-0d5c-4472-9256-af85716ceb70",
+              "created_at": "2025-12-11T10:43:56.589757+00:00",
+              "updated_at": "2025-12-11T10:44:09.964349+00:00",
+              "error_metadata": {
+                "id": "89f66396-6d75-4c75-8c28-2c4b82635324",
+                "type": "schema",
+                "error": {
+                  "code": "ERR_BAD_REQUEST",
+                  "name": "AxiosError",
+                  "stack": "AxiosError: Request failed with status code 400\n    at settle (/usr/local/lib/node_modules/n8n/node_modules/.pnpm/axios@1.12.0/node_modules/axios/lib/core/settle.js:19:12)\n    at RedirectableRequest.handleResponse (/usr/local/lib/node_modules/n8n/node_modules/.pnpm/axios@1.12.0/node_modules/axios/lib/adapters/http.js:565:9)\n    at RedirectableRequest.emit (node:events:531:35)\n    at RedirectableRequest._processResponse (/usr/local/lib/node_modules/n8n/node_modules/.pnpm/follow-redirects@1.15.11/node_modules/follow-redirects/index.js:409:10)\n    at ClientRequest.RedirectableRequest._onNativeResponse (/usr/local/lib/node_modules/n8n/node_modules/.pnpm/follow-redirects@1.15.11/node_modules/follow-redirects/index.js:102:12)\n    at Object.onceWrapper (node:events:634:26)\n    at ClientRequest.emit (node:events:519:28)\n    at HTTPParser.parserOnIncomingClient [as onIncoming] (node:_http_client:716:27)\n    at HTTPParser.parserOnHeadersComplete (node:_http_common:117:17)\n    at TLSSocket.socketOnData (node:_http_client:558:22)\n    at Axios.request (/usr/local/lib/node_modules/n8n/node_modules/.pnpm/axios@1.12.0/node_modules/axios/lib/core/Axios.js:45:41)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at invokeAxios (/usr/local/lib/node_modules/n8n/node_modules/.pnpm/n8n-core@file+packages+core_@opentelemetry+api@1.9.0_@opentelemetry+sdk-trace-base@1.30_08b575bec2313d5d8a4cc75358971443/node_modules/n8n-core/src/execution-engine/node-execution-context/utils/request-helper-functions.ts:313:10)\n    at proxyRequestToAxios (/usr/local/lib/node_modules/n8n/node_modules/.pnpm/n8n-core@file+packages+core_@opentelemetry+api@1.9.0_@opentelemetry+sdk-trace-base@1.30_08b575bec2313d5d8a4cc75358971443/node_modules/n8n-core/src/execution-engine/node-execution-context/utils/request-helper-functions.ts:695:20)\n    at Object.request (/usr/local/lib/node_modules/n8n/node_modules/.pnpm/n8n-core@file+packages+core_@opentelemetry+api@1.9.0_@opentelemetry+sdk-trace-base@1.30_08b575bec2313d5d8a4cc75358971443/node_modules/n8n-core/src/execution-engine/node-execution-context/utils/request-helper-functions.ts:1749:4)",
+                  "status": 400,
+                  "message": "400 - \"{\\\"error\\\":\\\"Failed to fetch URL\\\",\\\"details\\\":\\\"HTTP error! status: 403 Forbidden\\\"}\""
+                },
+                "status": "executing",
+                "details": "HTTP error! status: 403 Forbidden",
+                "metadata": null,
+                "header_id": "c82bf08b-0d5c-4472-9256-af85716ceb70",
+                "created_at": "2025-12-11T10:43:56.589Z",
+                "updated_at": "2025-12-11T10:43:56.589Z",
+                "error_metadata": null
+              }
+            },
+            {
+              "id": "56bbf0a8-f282-4fe0-803a-1666aec63ee8",
+              "type": "ai_cite_score",
+              "status": "finished",
+              "metadata": {
+                "total_hits": 2,
+                "per_iterasi": {
+                  "1": {
+                    "rank": 1,
+                    "hasMatch": true
+                  },
+                  "2": {
+                    "rank": 2,
+                    "hasMatch": true
+                  }
+                },
+                "ai_cite_score": 100,
+                "total_appearances": 2
+              },
+              "header_id": "c82bf08b-0d5c-4472-9256-af85716ceb70",
+              "created_at": "2025-12-11T10:43:57.8596+00:00",
+              "updated_at": "2025-12-11T10:44:21.790237+00:00",
+              "error_metadata": null
+            },
+            {
+              "id": "ad7b5554-47a4-40aa-90fd-9beb3c4ea06f",
+              "type": "cwv",
+              "status": "finished",
+              "metadata": {
+                "url": "https://www.upwork.com/",
+                "seo_score": 100,
+                "final_score": 77,
+                "performance_score": 46,
+                "accessibility_score": 85,
+                "best_practices_score": 77
+              },
+              "header_id": "c82bf08b-0d5c-4472-9256-af85716ceb70",
+              "created_at": "2025-12-11T10:43:56.053742+00:00",
+              "updated_at": "2025-12-11T10:45:13.580602+00:00",
+              "error_metadata": null
+            }
+          ],
+          "overall_score": 66.7777777777778
+        }
+      },
+      "pairedItem": {
+        "item": 0
+      }
+    }
+  ]
+}
