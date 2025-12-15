@@ -126,7 +126,7 @@ export default function App() {
 
   return (
     <ThemeProvider>
-      <div className="min-h-screen flex flex-col antialiased selection:bg-[#00c2b8] selection:text-[#0c192c] dark:bg-[#0c192c] light:bg-white relative">
+      <div className="min-h-screen flex flex-col antialiased selection:bg-[#00c2b8] selection:text-[#0c192c] dark:bg-[#0c192c] light:bg-[#0c192c] relative">
         {/* Gradient Background - Avonetiq Style with Animation */}
         <div className="fixed inset-0 pointer-events-none z-[1]">
           {/* Dark Mode: Dark Navy Background */}
