@@ -747,6 +747,27 @@ interface BenchmarkComparisonProps {
   userScores: { opt: number; man: number; gen: number; avg: number };
 }
 
+type UserScores = { opt: number; man: number; gen: number; avg: number };
+type UserDetail = {
+  cwv?: number;
+  schema?: number;
+  backlink?: number;
+  newsMention?: number;
+  wikidata?: number;
+  aiCite?: number;
+  aiOverview?: number;
+  aiCiteRanking?: number;
+};
+
+function extractSubScore(subs: any[], type: string, key: string): number | undefined {
+  const p = subs.find((s: any) => s?.type === type);
+  if (!p || typeof p.metadata !== 'object' || p.metadata === null) return undefined;
+  if (!(key in p.metadata)) return undefined;
+  const val = (p.metadata as Record<string, any>)[key];
+  const n = typeof val === 'object' && val !== null && 'data' in val ? Number((val as any).data) : Number(val);
+  return Number.isFinite(n) ? Math.round(n) : undefined;
+}
+
 export function BenchmarkComparison({ userDomain, userScore, userScores }: BenchmarkComparisonProps) {
   const [competitorInput, setCompetitorInput] = useState('');
   const [competitors, setCompetitors] = useState<Competitor[]>([]);
@@ -762,6 +783,7 @@ export function BenchmarkComparison({ userDomain, userScore, userScores }: Bench
   const avoData = typeof window !== 'undefined' ? storageUtils.getAvoData() : null;
   const analysisId = avoData?.id ?? null;
 
+  // Menentukan kapan polling perbandingan kompetitor dihentikan berdasarkan pola payload dan status proses
   const shouldStopPollingComparisons = useCallback((d: any) => {
     try {
       const payload = d?.data ?? d;
@@ -802,8 +824,8 @@ export function BenchmarkComparison({ userDomain, userScore, userScores }: Bench
   const { trigger: submitCompetitor } = usePost<any>('/process-N8N-AVQ');
 
   const [apiUserDomain, setApiUserDomain] = useState<string | null>(null);
-  const [apiUserScores, setApiUserScores] = useState<{ opt: number; man: number; gen: number; avg: number } | null>(null);
-  const [apiUserDetail, setApiUserDetail] = useState<{ cwv?: number; schema?: number; backlink?: number; newsMention?: number; wikidata?: number; aiCite?: number; aiOverview?: number; aiCiteRanking?: number } | null>(null);
+  const [apiUserScores, setApiUserScores] = useState<UserScores | null>(null);
+  const [apiUserDetail, setApiUserDetail] = useState<UserDetail | null>(null);
 
   useEffect(() => {
     const payload = comparisonsData?.data ?? (Array.isArray(comparisonsData) ? comparisonsData : null);
@@ -821,23 +843,15 @@ export function BenchmarkComparison({ userDomain, userScore, userScores }: Bench
       setApiUserDomain(parent?.url ?? null);
       setApiUserScores({ opt: Math.round(opt), man: Math.round(man), gen: Math.round(gen), avg: Math.round(avg) });
       const subs = Array.isArray(parent?.sub_process) ? parent.sub_process : [];
-      const getSubScore = (type: string, key: string): number | undefined => {
-        const p = subs.find((s: any) => s?.type === type);
-        if (!p || typeof p.metadata !== 'object' || p.metadata === null) return undefined;
-        if (!(key in p.metadata)) return undefined;
-        const val = (p.metadata as Record<string, any>)[key];
-        const n = typeof val === 'object' && val !== null && 'data' in val ? Number((val as any).data) : Number(val);
-        return Number.isFinite(n) ? Math.round(n) : undefined;
-      };
       setApiUserDetail({
-        cwv: getSubScore('cwv', 'final_score'),
-        schema: getSubScore('schema', 'overallScore'),
-        backlink: getSubScore('backlink', 'backlink_score'),
-        newsMention: getSubScore('news_mentioned', 'news_mention_score'),
-        wikidata: getSubScore('wikidata', 'wikidata_score'),
-        aiCite: getSubScore('ai_cite_score', 'ai_cite_score'),
-        aiOverview: getSubScore('ai_overview', 'ai_overview_score'),
-        aiCiteRanking: getSubScore('ai_cite_ranking', 'ai_cite_score_rank1'),
+        cwv: extractSubScore(subs, 'cwv', 'final_score'),
+        schema: extractSubScore(subs, 'schema', 'overallScore'),
+        backlink: extractSubScore(subs, 'backlink', 'backlink_score'),
+        newsMention: extractSubScore(subs, 'news_mentioned', 'news_mention_score'),
+        wikidata: extractSubScore(subs, 'wikidata', 'wikidata_score'),
+        aiCite: extractSubScore(subs, 'ai_cite_score', 'ai_cite_score'),
+        aiOverview: extractSubScore(subs, 'ai_overview', 'ai_overview_score'),
+        aiCiteRanking: extractSubScore(subs, 'ai_cite_ranking', 'ai_cite_score_rank1'),
       });
     }
 
@@ -851,22 +865,14 @@ export function BenchmarkComparison({ userDomain, userScore, userScores }: Bench
       const j = item?.json ?? item;
       const comp = j?.competitor_data ?? {};
       const subs = Array.isArray(comp?.sub_process) ? comp.sub_process : [];
-      const getSubScore = (type: string, key: string): number | undefined => {
-        const p = subs.find((s: any) => s?.type === type);
-        if (!p || typeof p.metadata !== 'object' || p.metadata === null) return undefined;
-        if (!(key in p.metadata)) return undefined;
-        const val = (p.metadata as Record<string, any>)[key];
-        const n = typeof val === 'object' && val !== null && 'data' in val ? Number((val as any).data) : Number(val);
-        return Number.isFinite(n) ? Math.round(n) : undefined;
-      };
-      const cwv = getSubScore('cwv', 'final_score');
-      const schema = getSubScore('schema', 'overallScore');
-      const backlink = getSubScore('backlink', 'backlink_score');
-      const newsMention = getSubScore('news_mentioned', 'news_mention_score');
-      const wikidata = getSubScore('wikidata', 'wikidata_score');
-      const aiCite = getSubScore('ai_cite_score', 'ai_cite_score');
-      const aiOverview = getSubScore('ai_overview', 'ai_overview_score');
-      const aiCiteRanking = getSubScore('ai_cite_ranking', 'ai_cite_score_rank1');
+      const cwv = extractSubScore(subs, 'cwv', 'final_score');
+      const schema = extractSubScore(subs, 'schema', 'overallScore');
+      const backlink = extractSubScore(subs, 'backlink', 'backlink_score');
+      const newsMention = extractSubScore(subs, 'news_mentioned', 'news_mention_score');
+      const wikidata = extractSubScore(subs, 'wikidata', 'wikidata_score');
+      const aiCite = extractSubScore(subs, 'ai_cite_score', 'ai_cite_score');
+      const aiOverview = extractSubScore(subs, 'ai_overview', 'ai_overview_score');
+      const aiCiteRanking = extractSubScore(subs, 'ai_cite_ranking', 'ai_cite_score_rank1');
       const overall = Number(comp?.overall_score);
       return {
         domain: comp?.url ?? 'competitor',
