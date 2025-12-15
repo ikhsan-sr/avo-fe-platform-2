@@ -40,133 +40,169 @@ type AnalysisJSON = {
   sub_processes: SubProcess[];
 };
 
-type AnalysisResponse = { data: { json: AnalysisJSON } };
+type AnalysisResponse = {
+  data: { json: AnalysisJSON & Record<string, any> } & Record<string, any>;
+} & Record<string, any>;
 
-const DUMMY_ANALYSIS_DATA: AnalysisResponse = {
-  data: {
-    json: {
-      id: 'sample-id',
-      status: 'finished',
-      url: 'example.com',
-      created_at: '2025-12-11T10:44:00.000Z',
-      updated_at: '2025-12-11T10:48:00.000Z',
-      overall_score: 86,
-      optimize: 88,
-      manifest: 72,
-      generative: 91,
-      sub_processes: [
-        {
-          id: 'sp-cwv-01',
-          type: 'cwv',
-          status: 'finished',
-          metadata: {
-            final_score: 88,
-            performance_score: 85,
-            accessibility_score: 90,
-            best_practices_score: 87,
-            seo_score: 89,
-          },
-          header_id: 'hdr-001',
-          created_at: '2025-12-11T10:44:01.000Z',
-          updated_at: '2025-12-11T10:44:05.000Z',
-          error_metadata: null,
-        },
-        {
-          id: 'sp-schema-01',
-          type: 'schema',
-          status: 'finished',
-          metadata: {
-            overallScore: 84,
-            errors: 0,
-            warnings: 2,
-          },
-          header_id: 'hdr-001',
-          created_at: '2025-12-11T10:44:02.000Z',
-          updated_at: '2025-12-11T10:44:06.000Z',
-          error_metadata: null,
-        },
-        {
-          id: 'sp-backlink-01',
-          type: 'backlink',
-          status: 'finished',
-          metadata: {
-            backlink_score: 76,
-            total_backlinks: 1240,
-            authoritative_backlinks: 328,
-          },
-          header_id: 'hdr-001',
-          created_at: '2025-12-11T10:44:03.000Z',
-          updated_at: '2025-12-11T10:44:07.000Z',
-          error_metadata: null,
-        },
-        {
-          id: 'sp-news-01',
-          type: 'news_mentioned',
-          status: 'finished',
-          metadata: {
-            total_mentions: 24,
-            news_mention_score: 69,
-          },
-          header_id: 'hdr-001',
-          created_at: '2025-12-11T10:44:03.500Z',
-          updated_at: '2025-12-11T10:44:07.500Z',
-          error_metadata: null,
-        },
-        {
-          id: 'sp-wikidata-01',
-          type: 'wikidata',
-          status: 'finished',
-          metadata: {
-            wikidata_score: { data: 93 },
-          },
-          header_id: 'hdr-001',
-          created_at: '2025-12-11T10:44:04.000Z',
-          updated_at: '2025-12-11T10:44:08.000Z',
-          error_metadata: null,
-        },
-        {
-          id: 'sp-ai-cite-01',
-          type: 'ai_cite_score',
-          status: 'finished',
-          metadata: {
-            ai_cite_score: 74,
-            sources_count: 11,
-          },
-          header_id: 'hdr-001',
-          created_at: '2025-12-11T10:44:04.500Z',
-          updated_at: '2025-12-11T10:44:08.500Z',
-          error_metadata: null,
-        },
-        {
-          id: 'sp-ai-overview-01',
-          type: 'ai_overview',
-          status: 'finished',
-          metadata: {
-            total_hits: 2,
-            ai_overview_score: 100,
-            total_appearances: 2,
-          },
-          header_id: 'hdr-001',
-          created_at: '2025-12-11T10:44:05.000Z',
-          updated_at: '2025-12-11T10:44:09.000Z',
-          error_metadata: null,
-        },
-        {
-          id: 'sp-ai-cite-rank-01',
-          type: 'ai_cite_ranking',
-          status: 'finished',
-          metadata: {
-            ai_cite_score_rank1: 81,
-          },
-          header_id: 'hdr-001',
-          created_at: '2025-12-11T10:44:05.500Z',
-          updated_at: '2025-12-11T10:44:09.500Z',
-          error_metadata: null,
-        },
-      ],
-    },
-  },
-};
+// const DUMMY_ANALYSIS_DATA: AnalysisResponse = {
+//     "status": "ok",
+//     "message": "Data successfully fetched",
+//     "data": {
+//         "json": {
+//             "id": "0d5f9c33-f524-4f01-949c-5a0782e14c73",
+//             "payload": {
+//                 "data": {
+//                     "url": "translate.google.co.id",
+//                     "type": "all",
+//                     "questions": [
+//                         "What are the best online translation tools for business documents?",
+//                         "How can I translate a website into another language accurately?",
+//                         "Where can I find a reliable translator for legal or medical documents?"
+//                     ]
+//                 }
+//             },
+//             "status": "executing",
+//             "created_at": "2025-12-15T04:27:20.155Z",
+//             "updated_at": "2025-12-15T04:28:00.523Z",
+//             "executor": null,
+//             "url": "translate.google.co.id",
+//             "optimize": 47.5,
+//             "manifest": 34, 
+//             "generative": null,
+//             "questions": [
+//                 "What are the best online translation tools for business documents?",
+//                 "How can I translate a website into another language accurately?",
+//                 "Where can I find a reliable translator for legal or medical documents?"
+//             ],
+//             "overall_score": null,
+//             "sub_processes": [
+//                 {
+//                     "id": "40cd6855-346e-453d-acd5-b4437e78c64b",
+//                     "type": "ai_overview",
+//                     "status": "executing",
+//                     "metadata": null,
+//                     "header_id": "0d5f9c33-f524-4f01-949c-5a0782e14c73",
+//                     "created_at": "2025-12-15T04:27:21.42405+00:00",
+//                     "updated_at": "2025-12-15T04:27:21.42405+00:00",
+//                     "error_metadata": null
+//                 },
+//                 {
+//                     "id": "fc860c24-cdf5-4f4f-9200-84e4ec04b939",
+//                     "type": "news_mentioned",
+//                     "status": "finished",
+//                     "metadata": {
+//                         "total_mentions": 0,
+//                         "news_mention_score": 0
+//                     },
+//                     "header_id": "0d5f9c33-f524-4f01-949c-5a0782e14c73",
+//                     "created_at": "2025-12-15T04:27:20.804727+00:00",
+//                     "updated_at": "2025-12-15T04:27:22.92773+00:00",
+//                     "error_metadata": null
+//                 },
+//                 {
+//                     "id": "6614bc95-cd1a-4803-bb65-3752dbc4c7b1",
+//                     "type": "wikidata",
+//                     "status": "finished",
+//                     "metadata": {
+//                         "wikidata_score": {
+//                             "data": 100
+//                         }
+//                     },
+//                     "header_id": "0d5f9c33-f524-4f01-949c-5a0782e14c73",
+//                     "created_at": "2025-12-15T04:27:21.201375+00:00",
+//                     "updated_at": "2025-12-15T04:27:24.155792+00:00",
+//                     "error_metadata": null
+//                 },
+//                 {
+//                     "id": "9aa8a27c-62a1-469e-ae74-081e62b3e62c",
+//                     "type": "backlink",
+//                     "status": "finished",
+//                     "metadata": {
+//                         "backlink_score": 2,
+//                         "total_backlinks": 420,
+//                         "authoritative_backlinks": 7
+//                     },
+//                     "header_id": "0d5f9c33-f524-4f01-949c-5a0782e14c73",
+//                     "created_at": "2025-12-15T04:27:21.091455+00:00",
+//                     "updated_at": "2025-12-15T04:27:24.525005+00:00",
+//                     "error_metadata": null
+//                 },
+//                 {
+//                     "id": "4993d81c-493b-4026-8fd3-e29f105750d9",
+//                     "type": "schema",
+//                     "status": "finished",
+//                     "metadata": {
+//                         "overallScore": 0
+//                     },
+//                     "header_id": "0d5f9c33-f524-4f01-949c-5a0782e14c73",
+//                     "created_at": "2025-12-15T04:27:20.976494+00:00",
+//                     "updated_at": "2025-12-15T04:27:37.172604+00:00",
+//                     "error_metadata": null
+//                 },
+//                 {
+//                     "id": "917cc09b-a0be-42f4-aa55-41c0f728e8a6",
+//                     "type": "ai_cite_score",
+//                     "status": "finished",
+//                     "metadata": {
+//                         "total_hits": 1,
+//                         "per_iterasi": {
+//                             "1": {
+//                                 "rank": 1,
+//                                 "hasMatch": true
+//                             }
+//                         },
+//                         "ai_cite_score": 100,
+//                         "total_appearances": 1
+//                     },
+//                     "header_id": "0d5f9c33-f524-4f01-949c-5a0782e14c73",
+//                     "created_at": "2025-12-15T04:27:21.302886+00:00",
+//                     "updated_at": "2025-12-15T04:27:39.958099+00:00",
+//                     "error_metadata": null
+//                 },
+//                 {
+//                     "id": "d3a7faa1-8a9d-4e7d-80d2-63a63cdd4ff7",
+//                     "type": "cwv",
+//                     "status": "finished",
+//                     "metadata": {
+//                         "url": "https://translate.google.co.id/",
+//                         "seo_score": 100,
+//                         "final_score": 95,
+//                         "performance_score": 78,
+//                         "accessibility_score": 100,
+//                         "best_practices_score": 100
+//                     },
+//                     "header_id": "0d5f9c33-f524-4f01-949c-5a0782e14c73",
+//                     "created_at": "2025-12-15T04:27:20.520008+00:00",
+//                     "updated_at": "2025-12-15T04:27:42.08821+00:00",
+//                     "error_metadata": null
+//                 },
+//                 {
+//                     "id": "ad7fa7e5-db39-4511-9823-62aa2f461631",
+//                     "type": "ai_cite_ranking",
+//                     "status": "finished",
+//                     "metadata": {
+//                         "per_iterasi": {
+//                             "1": {
+//                                 "rank": 1,
+//                                 "hasMatch": true
+//                             }
+//                         },
+//                         "total_mentions": 1,
+//                         "ai_cite_score_rank1": 100,
+//                         "total_rank1_mentions": 1
+//                     },
+//                     "header_id": "0d5f9c33-f524-4f01-949c-5a0782e14c73",
+//                     "created_at": "2025-12-15T04:27:21.07231+00:00",
+//                     "updated_at": "2025-12-15T04:28:00.23387+00:00",
+//                     "error_metadata": null
+//                 }
+//             ]
+//         },
+//         "pairedItem": {
+//             "item": 0
+//         }
+//     }
+// };
 
 interface DashboardViewProps {
   domain: string;
@@ -584,11 +620,11 @@ function ScoreCardContent({
           <div className="content-stretch flex flex-col gap-[14px] items-start relative shrink-0 w-full">
             <div className="content-stretch flex flex-col gap-[10px] items-start relative shrink-0 text-nowrap whitespace-pre" data-name="Card Content">
               <div className="content-stretch flex font-satoshi font-bold items-end leading-[normal] not-italic relative shrink-0" data-name="Score Container">
-                {loading || typeof score === null ? (
+                {loading || !(typeof score === 'number' && Number.isFinite(score)) ? (
                   <LoadingSpinner size={32} />
                 ) : (
                   <>
-                      <p className="relative shrink-0 text-[28px] md:text-[36px] text-white mb-[-3px] mr-[2px]">{Math.round(score ?? 0)}</p>
+                      <p className="relative shrink-0 text-[28px] md:text-[36px] text-white mb-[-3px] mr-[2px]">{Math.round(score)}</p>
                       <p className="relative shrink-0 text-[#919eab] text-[18px] md:text-[24px]">/100</p>
                     </>
                 )}
@@ -614,7 +650,7 @@ function ScoreCardContent({
                 <div key={idx} className="content-stretch flex  font-normal items-center justify-between leading-[normal] relative shrink-0 text-nowrap w-full whitespace-pre" data-name="Detail Item">
                   <p className="relative shrink-0 text-[#a7a7a7] text-[14px]">{d.label}</p>
                   <p className="relative shrink-0 text-[16px] text-white">
-                    {(loading || d.loading) ? <LoadingDots color="#ffffff" /> : (typeof d.value === 'number' && Number.isFinite(d.value) ? Math.round(d.value) : '-' )}
+                    {d.loading ? <LoadingDots color="#ffffff" /> : (typeof d.value === 'number' && Number.isFinite(d.value) ? Math.round(d.value) : '-' )}
                   </p>
                 </div>
               ))}
@@ -633,7 +669,7 @@ export function DashboardView({ domain, onOpenModal, onReset, analysisId }: Dash
 
    const { data: analysisData, isLoading } =
     withDummy
-      ? { data: DUMMY_ANALYSIS_DATA, isLoading: false }
+      ? { data: {}, isLoading: false }
       : usePollingGet<any>(
           analysisId ? `/findone-main-process?id=${analysisId}` : null,
           {
