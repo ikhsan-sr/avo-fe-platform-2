@@ -5,6 +5,7 @@
 /reference-react/node_modules
 /reference-react/build
 /reference-react/dist
+reference-react/package-lock.json
 /.pnp
 .pnp.*
 .yarn/*

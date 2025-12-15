@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState } from 'react';
 import { LandingView } from './components/LandingView';
 import { DashboardView } from './components/DashboardViewNew';
 import { PreLoader } from './components/PreLoader';
@@ -20,93 +20,97 @@ import {
   AlertDialogTrigger,
 } from "./components/ui/alert-dialog";
 
+type View = 'landing' | 'preloader' | 'loading' | 'dashboard';
+
+interface Scores {
+  opt: number;
+  man: number;
+  gen: number;
+  avg: number;
+}
+
+const PRELOADER_MS = 8000;
+const LOADING_MS = 16500;
+const TOTAL_LOADING_MS = PRELOADER_MS + LOADING_MS;
+
+function normalizeDomain(input: string): string {
+  return input.trim().toLowerCase();
+}
+
+function deriveScoresForDomain(domainInput: string): Scores {
+  const domainBase = normalizeDomain(domainInput).split('.')[0];
+  let scoreOpt: number;
+  let scoreMan: number;
+  let scoreGen: number;
+  let avgScore: number;
+
+  // Dummy mapping for known authority examples
+  if (domainBase === 'authority1') {
+    avgScore = 40;
+    scoreOpt = 35;
+    scoreMan = 40;
+    scoreGen = 45;
+  } else if (domainBase === 'authority2') {
+    avgScore = 60;
+    scoreOpt = 58;
+    scoreMan = 60;
+    scoreGen = 62;
+  } else if (domainBase === 'authority3') {
+    avgScore = 70;
+    scoreOpt = 68;
+    scoreMan = 70;
+    scoreGen = 72;
+  } else if (domainBase === 'authority4') {
+    avgScore = 80;
+    scoreOpt = 78;
+    scoreMan = 80;
+    scoreGen = 82;
+  } else if (domainBase === 'authority5') {
+    avgScore = 90;
+    scoreOpt = 88;
+    scoreMan = 90;
+    scoreGen = 92;
+  } else {
+    // Randomized fallback while preserving prior behavior
+    scoreOpt = Math.floor(Math.random() * (98 - 85) + 85);
+    scoreMan = Math.floor(Math.random() * (90 - 70) + 70);
+    scoreGen = Math.floor(Math.random() * (95 - 75) + 75);
+    avgScore = Math.round((scoreOpt + scoreMan + scoreGen) / 3);
+  }
+
+  return { opt: scoreOpt, man: scoreMan, gen: scoreGen, avg: avgScore };
+}
+
 export default function App() {
-  const [view, setView] = useState<'landing' | 'preloader' | 'loading' | 'dashboard'>('landing');
-  const [domain, setDomain] = useState('');
-  const [scores, setScores] = useState({ opt: 0, man: 0, gen: 0, avg: 0 });
+  const initialAvoData = storageUtils.getAvoData();
+  const [view, setView] = useState<View>(initialAvoData?.id ? 'dashboard' : 'landing');
+  const [domain, setDomain] = useState(initialAvoData?.url ?? '');
+  const [scores, setScores] = useState<Scores>({ opt: 0, man: 0, gen: 0, avg: 0 });
   const [modalOpen, setModalOpen] = useState(false);
   const [modalType, setModalType] = useState<string>('');
-  const [analysisId, setAnalysisId] = useState<string | null>(null);
-
-  useEffect(() => {
-    const avoData = storageUtils.getAvoData();
-    if (avoData?.id) {
-      if (avoData.url) {
-        setDomain(avoData.url);
-      }
-      setAnalysisId(avoData.id);
-      setView('dashboard');
-    }
-  }, []);
+  const [analysisId, setAnalysisId] = useState<string | null>(initialAvoData?.id ?? null);
 
   const handleStartAnalysis = (inputDomain: string) => {
-    // Check local storage for ID
+    // Verify persisted Analysis ID exists to proceed
     const avoData = storageUtils.getAvoData();
-    
-    // If ID is missing, redirect to landing and stop
     if (!avoData?.id) {
       console.warn('No Analysis ID found in storage');
       setView('landing');
       return;
     }
 
-    // Set ID to trigger useGet hook
+    // Normalize and persist inputs, then compute initial scores
+    const normalized = normalizeDomain(inputDomain);
+    const computedScores = deriveScoresForDomain(normalized);
     setAnalysisId(avoData.id);
+    setDomain(normalized);
+    setScores(computedScores);
 
-    // Check for dummy domains and assign specific scores
-    const domainBase = inputDomain.toLowerCase().split('.')[0];
-    let scoreOpt, scoreMan, scoreGen, avgScore;
-
-    
-    if (domainBase === 'authority1') {
-      // Very Poorly: score < 55
-      avgScore = 40;
-      scoreOpt = 35;
-      scoreMan = 40;
-      scoreGen = 45;
-    } else if (domainBase === 'authority2') {
-      // Risk: score 55-65
-      avgScore = 60;
-      scoreOpt = 58;
-      scoreMan = 60;
-      scoreGen = 62;
-    } else if (domainBase === 'authority3') {
-      // Borderline: score 65-75
-      avgScore = 70;
-      scoreOpt = 68;
-      scoreMan = 70;
-      scoreGen = 72;
-    } else if (domainBase === 'authority4') {
-      // Qualified: score 75-85
-      avgScore = 80;
-      scoreOpt = 78;
-      scoreMan = 80;
-      scoreGen = 82;
-    } else if (domainBase === 'authority5') {
-      // Trusted: score 85-100
-      avgScore = 90;
-      scoreOpt = 88;
-      scoreMan = 90;
-      scoreGen = 92;
-    } else {
-      // Random scores for other domains
-      scoreOpt = Math.floor(Math.random() * (98 - 85) + 85);
-      scoreMan = Math.floor(Math.random() * (90 - 70) + 70);
-      scoreGen = Math.floor(Math.random() * (95 - 75) + 75);
-      avgScore = Math.round((scoreOpt + scoreMan + scoreGen) / 3);
-    }
-
-    setDomain(inputDomain.toLowerCase());
-    setScores({ opt: scoreOpt, man: scoreMan, gen: scoreGen, avg: avgScore });
-    // Stay on landing view - preloader is now embedded in the input field
-    
+    // Preloader is embedded in input field; proceed to loading view
     setView('loading');
-    
-    // Transition to dashboard after loading completes
-    const totalLoadingTime = 8000 + 16500; // 8s preloader + 16.5s loading = 24.5s total
-    setTimeout(() => {
-      setView('dashboard');
-    }, totalLoadingTime);
+
+    // Transition to dashboard after combined preloader/loading durations
+    setTimeout(() => setView('dashboard'), TOTAL_LOADING_MS);
   };
 
   const handleOpenModal = (type: string) => {

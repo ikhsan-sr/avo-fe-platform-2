@@ -6,11 +6,21 @@ import { DashboardHeader } from './DashboardHeader';
 import { InfoContainer } from './InfoContainer';
 import { BenchmarkComparison } from './BenchmarkComparison';
 import { ImageWithFallback } from './figma/ImageWithFallback';
-import svgBase from "../imports/svg-1zduvpfvng";
-import svgExtra from "../imports/svg-9xenn4o0xj";
-const svgPaths = { ...svgBase, ...svgExtra };
 import svgPathsGenerative from "../imports/svg-v5gyqubm8s";
 import Image from 'next/image';
+
+const FRAME_MS = 16;
+const COUNT_DURATION_MS = 800;
+const BAR_DURATION_MS = 800;
+const AVG_ANIM_MS = 1000;
+const AVG_FRAME_MS = 10;
+const STAGGER = {
+  opt: 500,
+  man: 1500,
+  gen: 2500,
+  avg: 3500,
+  info: 4500,
+} as const;
 
 type SubProcess = {
   id: string;
@@ -280,6 +290,7 @@ type DetailStatusSet = {
   aiCiteRanking?: boolean;
 };
 
+// Menormalkan data API analisis menjadi skor dan status yang siap ditampilkan
 function useAnalysisData(analysisData: any) {
   const resultData = useMemo(() => (analysisData ? analysisData.data?.json || analysisData : null), [analysisData]);
 
@@ -360,6 +371,7 @@ function useAnalysisData(analysisData: any) {
   return { localScores, detailScores, detailStatuses, createdAt };
 }
 
+// Mengatur animasi bertahap untuk skor dan progress bar agar UI tetap responsif
 function useDashboardAnimation(
   localScores: ScoreSet,
   detailScores: DetailScoreSet,
@@ -402,11 +414,11 @@ function useDashboardAnimation(
       return () => clearTimeout(resetId);
     }
 
-    const animateCount = (target: number | undefined, setter: (n: number) => void, durationMs = 1000) => {
+    const animateCount = (target: number | undefined, setter: (n: number) => void, durationMs = COUNT_DURATION_MS) => {
       if (!Number.isFinite(target as number)) return;
       const t = target as number;
       let current = 0;
-      const steps = Math.max(1, Math.floor(durationMs / 16));
+      const steps = Math.max(1, Math.floor(durationMs / FRAME_MS));
       const inc = t / steps;
       const id = setInterval(() => {
         current += inc;
@@ -416,15 +428,15 @@ function useDashboardAnimation(
         } else {
           setter(Math.ceil(current));
         }
-      }, 16);
+      }, FRAME_MS);
       return id as unknown as number;
     };
 
-    const animateBar = (target: number | undefined, setter: (n: number) => void, durationMs = 1000) => {
+    const animateBar = (target: number | undefined, setter: (n: number) => void, durationMs = BAR_DURATION_MS) => {
       if (!Number.isFinite(target as number)) return;
       const t = target as number;
       let current = 0;
-      const steps = Math.max(1, Math.floor(durationMs / 16));
+      const steps = Math.max(1, Math.floor(durationMs / FRAME_MS));
       const inc = t / steps;
       const id = setInterval(() => {
         current += inc;
@@ -434,7 +446,7 @@ function useDashboardAnimation(
         } else {
           setter(current);
         }
-      }, 16);
+      }, FRAME_MS);
       return id as unknown as number;
     };
 
@@ -449,10 +461,10 @@ function useDashboardAnimation(
         setBarOpt(0);
       } else {
         setLoadingOptimize(false);
-        timers.push(animateCount(optTarget, setDisplayOpt, 800) as number);
-        timers.push(animateBar(optTarget, setBarOpt, 800) as number);
+        timers.push(animateCount(optTarget, setDisplayOpt, COUNT_DURATION_MS) as number);
+        timers.push(animateBar(optTarget, setBarOpt, BAR_DURATION_MS) as number);
       }
-    }, 500) as unknown as number);
+    }, STAGGER.opt) as unknown as number);
 
     timeouts.push(setTimeout(() => {
       const manTarget = localScores.man;
@@ -462,10 +474,10 @@ function useDashboardAnimation(
         setBarMan(0);
       } else {
         setLoadingManifest(false);
-        timers.push(animateCount(manTarget, setDisplayMan, 800) as number);
-        timers.push(animateBar(manTarget, setBarMan, 800) as number);
+        timers.push(animateCount(manTarget, setDisplayMan, COUNT_DURATION_MS) as number);
+        timers.push(animateBar(manTarget, setBarMan, BAR_DURATION_MS) as number);
       }
-    }, 1500) as unknown as number);
+    }, STAGGER.man) as unknown as number);
 
     timeouts.push(setTimeout(() => {
       const genTarget = localScores.gen;
@@ -475,17 +487,17 @@ function useDashboardAnimation(
         setBarGen(0);
       } else {
         setLoadingGenerative(false);
-        timers.push(animateCount(genTarget, setDisplayGen, 800) as number);
-        timers.push(animateBar(genTarget, setBarGen, 800) as number);
+        timers.push(animateCount(genTarget, setDisplayGen, COUNT_DURATION_MS) as number);
+        timers.push(animateBar(genTarget, setBarGen, BAR_DURATION_MS) as number);
       }
-    }, 2500) as unknown as number);
+    }, STAGGER.gen) as unknown as number);
 
     timeouts.push(setTimeout(() => {
       setLoadingAuthority(false);
       if (Number.isFinite(localScores.avg as number)) {
         const avg = localScores.avg as number;
         let current = 0;
-        const steps = Math.max(1, Math.floor(1000 / 10));
+        const steps = Math.max(1, Math.floor(AVG_ANIM_MS / AVG_FRAME_MS));
         const inc = avg / steps;
         const id = setInterval(() => {
           current += inc;
@@ -498,14 +510,14 @@ function useDashboardAnimation(
             setDisplayAvg(val);
             setProgressStroke(val);
           }
-        }, 10);
+        }, AVG_FRAME_MS);
         timers.push(id as unknown as number);
       }
-    }, 3500) as unknown as number);
+    }, STAGGER.avg) as unknown as number);
 
     timeouts.push(setTimeout(() => {
       setLoadingInfo(false);
-    }, 4500) as unknown as number);
+    }, STAGGER.info) as unknown as number);
 
     return () => {
       timeouts.forEach((to) => clearTimeout(to as any));
@@ -665,20 +677,15 @@ function ScoreCardContent({
 export function DashboardView({ domain, onOpenModal, onReset, analysisId }: DashboardViewProps) {
   const shouldStopPolling = useCallback((data: any) => (data as any)?.data?.json?.status === 'finished', []);
   
-  const withDummy = false;
-
-   const { data: analysisData, isLoading } =
-    withDummy
-      ? { data: {}, isLoading: false }
-      : usePollingGet<any>(
-          analysisId ? `/findone-main-process?id=${analysisId}` : null,
-          {
-            interval: 2000,
-            shouldStopPolling,
-            initialLoading: true,
-          }
-        );
-
+  const { data: analysisData, isLoading } = usePollingGet<any>(
+    analysisId ? `/findone-main-process?id=${analysisId}` : null,
+    {
+      interval: 2000,
+      shouldStopPolling,
+      initialLoading: true,
+    }
+  );
+ 
       
 
   const { localScores, detailScores, detailStatuses, createdAt } = useAnalysisData(analysisData);
