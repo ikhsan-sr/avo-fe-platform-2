@@ -1473,7 +1473,7 @@ export function BenchmarkComparison({ userDomain, userScore, userScores }: Bench
 
                               {/* OMG Comparison Cards */}
                               <div className="relative shrink-0 w-full">
-                                <div className="flex flex-row items-start size-full gap-[24px]">
+                                <div className="flex flex-row items-start size-full gap-[60px]">
                                   {/* YOUR BRAND Card */}
                                   <div className="content-stretch flex flex-col items-start relative rounded-[12px] shrink-0 flex-1">
                                     <div aria-hidden="true" className="absolute border border-[rgba(240,241,244,0.05)] border-solid inset-0 pointer-events-none rounded-[12px] shadow-[0px_4px_16px_0px_rgba(112,112,112,0.15)]" />

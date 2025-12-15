@@ -289,9 +289,14 @@ export function InfoContainer({ domain, loading = false, score }: InfoContainerP
               </defs>
             </svg>
           </div>
-          <p className="[text-underline-position:from-font] decoration-solid font-['Manrope:Regular',sans-serif] font-normal leading-[normal] relative shrink-0 text-[#bababa] text-[16px] text-nowrap underline whitespace-pre">
+          <a
+            href={`https://${domain.toLowerCase()}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="[text-underline-position:from-font] decoration-solid font-['Manrope:Regular',sans-serif] font-normal leading-[normal] relative shrink-0 text-[#bababa] text-[16px] text-nowrap underline whitespace-pre cursor-pointer"
+          >
             {domain.toLowerCase()}
-          </p>
+          </a>
         </div>
 
         {/* Title with Icon */}

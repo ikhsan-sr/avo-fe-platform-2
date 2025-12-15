@@ -614,7 +614,7 @@ function ScoreCardContent({
   details: Array<{ label: string; value?: number; loading?: boolean }>;
 }) {
   return (
-    <div className="bg-[rgba(22,36,62,0.5)] relative rounded-bl-[12px] rounded-br-[12px] shrink-0 w-full" data-name="Card - Testimoni">
+    <div className="bg-[rgba(22,36,62,0.5)] relative rounded-bl-[12px] rounded-br-[12px] flex-1 w-full" data-name="Card - Testimoni">
       <div className="flex flex-col items-center size-full">
         <div className="box-border content-stretch flex flex-col gap-[16px] items-center pb-[16px] pt-[24px] px-[20px] relative size-full">
           <div className="content-stretch flex flex-col gap-[14px] items-start relative shrink-0 w-full">
@@ -645,7 +645,7 @@ function ScoreCardContent({
                 </svg>
               </div>
             </div>
-            <div className="content-stretch flex flex-col gap-[6px] items-start relative shrink-0 w-full">
+            <div className="content-stretch flex flex-col gap-[6px] items-start relative shrink-0 w-full min-h-[78px]">
               {details.map((d, idx) => (
                 <div key={idx} className="content-stretch flex  font-normal items-center justify-between leading-[normal] relative shrink-0 text-nowrap w-full whitespace-pre" data-name="Detail Item">
                   <p className="relative shrink-0 text-[#a7a7a7] text-[14px]">{d.label}</p>
@@ -752,13 +752,13 @@ export function DashboardView({ domain, onOpenModal, onReset, analysisId }: Dash
         {/* Three Cards - responsive grid */}
         <div className={
           isMd
-            ? "absolute content-stretch flex items-start justify-between left-1/2 top-[380px] translate-x-[-50%] w-[871px]"
-            : `w-full px-4 grid gap-4 ${isTablet ? 'grid-cols-2' : 'grid-cols-1'} mt-6`
+            ? "absolute content-stretch flex items-stretch justify-between left-1/2 top-[380px] translate-x-[-50%] w-[871px]"
+            : `w-full px-4 grid auto-rows-fr gap-4 ${isTablet ? 'grid-cols-2' : 'grid-cols-1'} mt-6`
         } data-name="Card">
           {/* OPTIMIZE Card */}
           <div 
             onClick={() => onOpenModal('omg_optimize')}
-            className="content-stretch flex flex-col items-start relative rounded-[12px] shrink-0 w-full md:w-[277px] min-h-[48px] transition-all duration-300 hover:scale-[1.02] hover:border-[rgba(0,194,184,0.3)] hover:shadow-[0px_8px_32px_0px_rgba(0,194,184,0.2)]"
+            className="content-stretch flex flex-col items-start relative rounded-[12px] shrink-0 w-full md:w-[277px] min-h-[48px] h-full transition-all duration-300 hover:scale-[1.02] hover:border-[rgba(0,194,184,0.3)] hover:shadow-[0px_8px_32px_0px_rgba(0,194,184,0.2)]"
           >
             <div aria-hidden="true" className="absolute border border-[rgba(240,241,244,0.05)] border-solid inset-0 pointer-events-none rounded-[12px] shadow-[0px_4px_16px_0px_rgba(112,112,112,0.15)]" />
             
@@ -797,7 +797,7 @@ export function DashboardView({ domain, onOpenModal, onReset, analysisId }: Dash
           {/* MANIFEST Card */}
           <div 
             onClick={() => onOpenModal('omg_manifest')}
-            className="content-stretch flex flex-col items-start relative rounded-[12px] shrink-0 w-full md:w-[277px] min-h-[48px] transition-all duration-300 hover:scale-[1.02] hover:border-[rgba(207,255,4,0.3)] hover:shadow-[0px_8px_32px_0px_rgba(207,255,4,0.2)]"
+            className="content-stretch flex flex-col items-start relative rounded-[12px] shrink-0 w-full md:w-[277px] min-h-[48px] h-full transition-all duration-300 hover:scale-[1.02] hover:border-[rgba(207,255,4,0.3)] hover:shadow-[0px_8px_32px_0px_rgba(207,255,4,0.2)]"
           >
             <div aria-hidden="true" className="absolute border border-[rgba(240,241,244,0.05)] border-solid inset-0 pointer-events-none rounded-[12px] shadow-[0px_4px_16px_0px_rgba(112,112,112,0.15)]" />
             
@@ -837,7 +837,7 @@ export function DashboardView({ domain, onOpenModal, onReset, analysisId }: Dash
           {/* GENERATIVE Card */}
           <div 
             onClick={() => onOpenModal('omg_generative')}
-            className="content-stretch flex flex-col items-start relative rounded-[12px] shrink-0 w-full md:w-[277px] min-h-[48px] transition-all duration-300 hover:scale-[1.02] hover:border-[rgba(248,180,0,0.3)] hover:shadow-[0px_8px_32px_0px_rgba(248,180,0,0.2)]"
+            className="content-stretch flex flex-col items-start relative rounded-[12px] shrink-0 w-full md:w-[277px] min-h-[48px] h-full transition-all duration-300 hover:scale-[1.02] hover:border-[rgba(248,180,0,0.3)] hover:shadow-[0px_8px_32px_0px_rgba(248,180,0,0.2)]"
           >
             <div aria-hidden="true" className="absolute border border-[rgba(240,241,244,0.05)] border-solid inset-0 pointer-events-none rounded-[12px] shadow-[0px_4px_16px_0px_rgba(112,112,112,0.15)]" />
             
