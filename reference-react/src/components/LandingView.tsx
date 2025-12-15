@@ -297,115 +297,64 @@ export function LandingView({ onStartAnalysis }: LandingViewProps) {
                           {/* Preloader Content */}
                           <div className="flex flex-row items-center gap-[16px]">
                             {/* Animated Icon */}
-                            <div className="relative shrink-0 size-[48px]">
-                              {/* Outer rotating ring with pulsing scale and animated dash */}
-                              <motion.div
-                                className="absolute inset-0"
-                                animate={{ 
-                                  rotate: 360,
-                                  scale: [1, 1.05, 1, 0.95, 1],
-                                }}
-                                transition={{ 
-                                  rotate: {
-                                    duration: 3,
-                                    repeat: Infinity,
-                                    ease: [0.45, 0.05, 0.55, 0.95]
-                                  },
-                                  scale: {
-                                    duration: 4,
-                                    repeat: Infinity,
-                                    ease: "easeInOut"
-                                  }
-                                }}
-                              >
+                            <div className="relative shrink-0" style={{ width: 48, height: 48 }}>
+                              {/* Outer hexagon - stationary with animated stroke */}
+                              <motion.div className="absolute inset-0">
                                 <svg className="block size-full" fill="none" viewBox="0 0 48 48">
-                                  {/* Outer rotating ring with animated stroke length */}
-                                  <motion.circle 
-                                    cx="24" 
-                                    cy="24" 
-                                    r="22" 
-                                    stroke="url(#gradient1)" 
-                                    strokeWidth="2"
+                                  <motion.path
+                                    d="M 24,2 L 43.05,13 L 43.05,35 L 24,46 L 4.95,35 L 4.95,13 Z"
+                                    stroke="url(#hexagon-gradient-outer-2)" 
+                                    strokeWidth="2.5"
                                     strokeLinecap="round"
-                                    strokeDasharray="60 20"
-                                    opacity="0.6"
+                                    strokeLinejoin="round"
+                                    fill="none"
+                                    strokeDasharray="80 60"
+                                    opacity="0.7"
                                     animate={{
-                                      strokeDasharray: [
-                                        "60 20",
-                                        "80 10", 
-                                        "45 35",
-                                        "90 5",
-                                        "60 20"
-                                      ]
+                                      strokeDashoffset: [0, -140]
                                     }}
                                     transition={{
-                                      duration: 4,
+                                      duration: 2.6,
                                       repeat: Infinity,
-                                      ease: [0.42, 0, 0.58, 1],
-                                      times: [0, 0.25, 0.5, 0.75, 1]
+                                      ease: "linear"
                                     }}
                                   />
                                   <defs>
-                                    <linearGradient id="gradient1" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <linearGradient id="hexagon-gradient-outer-2" x1="0%" y1="0%" x2="100%" y2="100%">
                                       <stop offset="0%" stopColor="#00C2B8" />
-                                      <stop offset="100%" stopColor="#00D4FF" />
+                                      <stop offset="50%" stopColor="#00D4FF" />
+                                      <stop offset="100%" stopColor="#00C2B8" />
                                     </linearGradient>
                                   </defs>
                                 </svg>
                               </motion.div>
                               
-                              {/* Inner rotating ring with complex easing and animated dash */}
-                              <motion.div
-                                className="absolute inset-0"
-                                animate={{ 
-                                  rotate: -360,
-                                  scale: [1, 0.95, 1, 1.05, 1],
-                                }}
-                                transition={{ 
-                                  rotate: {
-                                    duration: 2,
-                                    repeat: Infinity,
-                                    ease: [0.65, 0, 0.35, 1]
-                                  },
-                                  scale: {
-                                    duration: 3,
-                                    repeat: Infinity,
-                                    ease: "easeInOut",
-                                    times: [0, 0.25, 0.5, 0.75, 1]
-                                  }
-                                }}
-                              >
+                              {/* Inner hexagon - stationary with animated stroke (opposite direction) */}
+                              <motion.div className="absolute inset-0">
                                 <svg className="block size-full" fill="none" viewBox="0 0 48 48">
-                                  {/* Inner rotating ring with animated stroke length */}
-                                  <motion.circle 
-                                    cx="24" 
-                                    cy="24" 
-                                    r="16" 
-                                    stroke="url(#gradient2)" 
-                                    strokeWidth="2"
+                                  <motion.path
+                                    d="M 24,10 L 36.12,17 L 36.12,31 L 24,38 L 11.88,31 L 11.88,17 Z"
+                                    stroke="url(#hexagon-gradient-inner-2)" 
+                                    strokeWidth="2.5"
                                     strokeLinecap="round"
-                                    strokeDasharray="40 15"
-                                    opacity="0.8"
+                                    strokeLinejoin="round"
+                                    fill="none"
+                                    strokeDasharray="60 40"
+                                    opacity="0.9"
                                     animate={{
-                                      strokeDasharray: [
-                                        "40 15",
-                                        "25 30",
-                                        "55 10",
-                                        "30 25",
-                                        "40 15"
-                                      ]
+                                      strokeDashoffset: [0, 100]
                                     }}
                                     transition={{
-                                      duration: 3.5,
+                                      duration: 2.2,
                                       repeat: Infinity,
-                                      ease: [0.65, 0, 0.35, 1],
-                                      times: [0, 0.3, 0.5, 0.8, 1]
+                                      ease: "linear"
                                     }}
                                   />
                                   <defs>
-                                    <linearGradient id="gradient2" x1="0%" y1="0%" x2="100%" y2="0%">
+                                    <linearGradient id="hexagon-gradient-inner-2" x1="0%" y1="0%" x2="100%" y2="0%">
                                       <stop offset="0%" stopColor="#F8B400" />
-                                      <stop offset="100%" stopColor="#D5650F" />
+                                      <stop offset="50%" stopColor="#D5650F" />
+                                      <stop offset="100%" stopColor="#F8B400" />
                                     </linearGradient>
                                   </defs>
                                 </svg>
@@ -424,7 +373,7 @@ export function LandingView({ onStartAnalysis }: LandingViewProps) {
                                   ease: "easeInOut"
                                 }}
                               >
-                                <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                                <svg width="16" height="16" viewBox="0 0 20 20" fill="none">
                                   <circle cx="10" cy="10" r="8" stroke="#FCFCFC" strokeWidth="1.5" />
                                   <ellipse cx="10" cy="10" rx="3" ry="8" stroke="#FCFCFC" strokeWidth="1.5" />
                                   <line x1="2" y1="10" x2="18" y2="10" stroke="#FCFCFC" strokeWidth="1.5" />
