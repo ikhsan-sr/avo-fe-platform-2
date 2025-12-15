@@ -707,7 +707,7 @@ export function DashboardView({ domain, onOpenModal, onReset, analysisId }: Dash
 
 
   return (
-    <div className="bg-[#0c192c] relative size-full flex flex-col pb-14" data-name="AVQ">
+    <div className="bg-[#0c192c] min-h-screen relative size-full flex flex-col pb-14" data-name="AVQ">
       {/* Pattern Background */}
       {/* <div className="absolute h-[777px] left-0 opacity-10 top-0 w-full pointer-events-none" data-name="Pattern"> */}
       {/* <div className="fixed inset-0 opacity-10 pointer-events-none -z-10" data-name="Pattern"> */}
@@ -886,7 +886,7 @@ export function DashboardView({ domain, onOpenModal, onReset, analysisId }: Dash
         </div>
 
         {/* Benchmark Comparison - responsive container with horizontal scroll on small screens */}
-        <div className={isMd ? "absolute content-stretch flex items-start justify-center left-1/2 top-[700px] translate-x-[-50%] w-[871px]" : "w-full px-4 overflow-x-auto mt-6"}>
+        <div className={isMd ? "relative content-stretch flex items-start justify-center mx-auto mt-[700px] w-[871px]" : "w-full px-4 overflow-x-auto mt-6"}>
           {isMd ? (
             <BenchmarkComparison 
               userDomain={domain}

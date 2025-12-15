@@ -164,7 +164,7 @@ export default function App() {
         </div>
 
         {/* Content Layer - Highest z-index */}
-        <div className="relative z-[10] flex flex-col flex-1">
+        <div className="relative bg-[#0c192c] z-[10] flex flex-col flex-1">
           {view === 'landing' && <LandingView onStartAnalysis={handleStartAnalysis} />}
           {view === 'preloader' && <PreLoader domain={domain} />}
           {view === 'loading' && <LoadingTransition domain={domain} />}
