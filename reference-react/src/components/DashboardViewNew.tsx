@@ -51,7 +51,7 @@ const DUMMY_ANALYSIS_DATA: AnalysisResponse = {
       created_at: '2025-12-11T10:44:00.000Z',
       updated_at: '2025-12-11T10:48:00.000Z',
       overall_score: 86,
-      optimize: 82,
+      optimize: 88,
       manifest: 72,
       generative: 91,
       sub_processes: [
@@ -168,7 +168,6 @@ const DUMMY_ANALYSIS_DATA: AnalysisResponse = {
   },
 };
 
-
 interface DashboardViewProps {
   domain: string;
   onOpenModal: (type: string) => void;
@@ -234,6 +233,17 @@ type DetailScoreSet = {
   aiCiteRanking?: number;
 };
 
+type DetailStatusSet = {
+  cwv?: boolean;
+  schema?: boolean;
+  backlink?: boolean;
+  newsMention?: boolean;
+  wikidata?: boolean;
+  aiCite?: boolean;
+  aiOverview?: boolean;
+  aiCiteRanking?: boolean;
+};
+
 function useAnalysisData(analysisData: any) {
   const resultData = useMemo(() => (analysisData ? analysisData.data?.json || analysisData : null), [analysisData]);
 
@@ -285,16 +295,39 @@ function useAnalysisData(analysisData: any) {
     };
   }, [resultData]);
 
+  const detailStatuses = useMemo<DetailStatusSet>(() => {
+    if (!resultData) {
+      return {} as DetailStatusSet;
+    }
+    const subProcesses = resultData.sub_processes || [];
+    const status = (type: string): boolean | undefined => {
+      const p = subProcesses.find((sp: any) => sp?.type === type);
+      if (!p || typeof p.status !== 'string') return undefined;
+      return p.status !== 'finished';
+    };
+    return {
+      cwv: status('cwv'),
+      schema: status('schema'),
+      backlink: status('backlink'),
+      newsMention: status('news_mentioned'),
+      wikidata: status('wikidata'),
+      aiCite: status('ai_cite_score'),
+      aiOverview: status('ai_overview'),
+      aiCiteRanking: status('ai_cite_ranking'),
+    };
+  }, [resultData]);
+
   useEffect(() => {
     if (analysisData) storageUtils.set('avo_analysis_result', analysisData);
   }, [analysisData]);
 
-  return { localScores, detailScores, createdAt };
+  return { localScores, detailScores, detailStatuses, createdAt };
 }
 
 function useDashboardAnimation(
   localScores: ScoreSet,
   detailScores: DetailScoreSet,
+  detailStatuses: DetailStatusSet,
   isLoading: boolean,
 ) {
   const [loadingOptimize, setLoadingOptimize] = useState(true);
@@ -373,21 +406,42 @@ function useDashboardAnimation(
     const timeouts: number[] = [];
 
     timeouts.push(setTimeout(() => {
-      setLoadingOptimize(false);
-      timers.push(animateCount(localScores.opt, setDisplayOpt, 800) as number);
-      timers.push(animateBar(localScores.opt, setBarOpt, 800) as number);
+      const optTarget = localScores.opt;
+      if (!Number.isFinite(optTarget as number)) {
+        setLoadingOptimize(true);
+        setDisplayOpt(0);
+        setBarOpt(0);
+      } else {
+        setLoadingOptimize(false);
+        timers.push(animateCount(optTarget, setDisplayOpt, 800) as number);
+        timers.push(animateBar(optTarget, setBarOpt, 800) as number);
+      }
     }, 500) as unknown as number);
 
     timeouts.push(setTimeout(() => {
-      setLoadingManifest(false);
-      timers.push(animateCount(localScores.man, setDisplayMan, 800) as number);
-      timers.push(animateBar(localScores.man, setBarMan, 800) as number);
+      const manTarget = localScores.man;
+      if (!Number.isFinite(manTarget as number)) {
+        setLoadingManifest(true);
+        setDisplayMan(0);
+        setBarMan(0);
+      } else {
+        setLoadingManifest(false);
+        timers.push(animateCount(manTarget, setDisplayMan, 800) as number);
+        timers.push(animateBar(manTarget, setBarMan, 800) as number);
+      }
     }, 1500) as unknown as number);
 
     timeouts.push(setTimeout(() => {
-      setLoadingGenerative(false);
-      timers.push(animateCount(localScores.gen, setDisplayGen, 800) as number);
-      timers.push(animateBar(localScores.gen, setBarGen, 800) as number);
+      const genTarget = localScores.gen;
+      if (!Number.isFinite(genTarget as number)) {
+        setLoadingGenerative(true);
+        setDisplayGen(0);
+        setBarGen(0);
+      } else {
+        setLoadingGenerative(false);
+        timers.push(animateCount(genTarget, setDisplayGen, 800) as number);
+        timers.push(animateBar(genTarget, setBarGen, 800) as number);
+      }
     }, 2500) as unknown as number);
 
     timeouts.push(setTimeout(() => {
@@ -429,8 +483,8 @@ function useDashboardAnimation(
   );
 
   const display = useMemo(
-    () => ({ opt: displayOpt, man: displayMan, gen: displayGen, details: detailScores }),
-    [displayOpt, displayMan, displayGen, detailScores]
+    () => ({ opt: displayOpt, man: displayMan, gen: displayGen, details: detailScores, detailsStatus: detailStatuses }),
+    [displayOpt, displayMan, displayGen, detailScores, detailStatuses]
   );
 
   const barWidths = useMemo(
@@ -521,7 +575,7 @@ function ScoreCardContent({
   barColor: string;
   barWidth?: number;
   scoreLabel: string;
-  details: Array<{ label: string; value?: number }>;
+  details: Array<{ label: string; value?: number; loading?: boolean }>;
 }) {
   return (
     <div className="bg-[rgba(22,36,62,0.5)] relative rounded-bl-[12px] rounded-br-[12px] shrink-0 w-full" data-name="Card - Testimoni">
@@ -530,17 +584,13 @@ function ScoreCardContent({
           <div className="content-stretch flex flex-col gap-[14px] items-start relative shrink-0 w-full">
             <div className="content-stretch flex flex-col gap-[10px] items-start relative shrink-0 text-nowrap whitespace-pre" data-name="Card Content">
               <div className="content-stretch flex font-satoshi font-bold items-end leading-[normal] not-italic relative shrink-0" data-name="Score Container">
-                {loading ? (
+                {loading || typeof score === null ? (
                   <LoadingSpinner size={32} />
                 ) : (
-                  typeof score === 'number' && Number.isFinite(score) ? (
-                    <>
-                      <p className="relative shrink-0 text-[28px] md:text-[36px] text-white mb-[-3px] mr-[2px]">{Math.round(score)}</p>
+                  <>
+                      <p className="relative shrink-0 text-[28px] md:text-[36px] text-white mb-[-3px] mr-[2px]">{Math.round(score ?? 0)}</p>
                       <p className="relative shrink-0 text-[#919eab] text-[18px] md:text-[24px]">/100</p>
                     </>
-                  ) : (
-                    <LoadingDots color="#ffffff" />
-                  )
                 )}
               </div>
               <p className=" font-normal leading-[16px] relative shrink-0 text-[#919eab] text-[12px]">{scoreLabel}</p>
@@ -563,7 +613,9 @@ function ScoreCardContent({
               {details.map((d, idx) => (
                 <div key={idx} className="content-stretch flex  font-normal items-center justify-between leading-[normal] relative shrink-0 text-nowrap w-full whitespace-pre" data-name="Detail Item">
                   <p className="relative shrink-0 text-[#a7a7a7] text-[14px]">{d.label}</p>
-                  <p className="relative shrink-0 text-[16px] text-white">{loading ? <LoadingDots color="#ffffff" /> : (typeof d.value === 'number' && Number.isFinite(d.value) ? Math.round(d.value) : '-' )}</p>
+                  <p className="relative shrink-0 text-[16px] text-white">
+                    {(loading || d.loading) ? <LoadingDots color="#ffffff" /> : (typeof d.value === 'number' && Number.isFinite(d.value) ? Math.round(d.value) : '-' )}
+                  </p>
                 </div>
               ))}
             </div>
@@ -593,10 +645,11 @@ export function DashboardView({ domain, onOpenModal, onReset, analysisId }: Dash
 
       
 
-  const { localScores, detailScores, createdAt } = useAnalysisData(analysisData);
+  const { localScores, detailScores, detailStatuses, createdAt } = useAnalysisData(analysisData);
   const { loading, displayScore, progressStroke, barWidths, display } = useDashboardAnimation(
     localScores,
     detailScores,
+    detailStatuses,
     isLoading,
   );
   const [animated, setAnimated] = useState(false);
@@ -699,8 +752,8 @@ export function DashboardView({ domain, onOpenModal, onReset, analysisId }: Dash
               barWidth={barWidths.opt}
               scoreLabel="Clarity System"
               details={[
-                { label: 'CWV Score', value: display.details.cwv },
-                { label: 'Schema Score', value: display.details.schema },
+                { label: 'CWV Score', value: display.details.cwv, loading: !!display.detailsStatus?.cwv },
+                { label: 'Schema Score', value: display.details.schema, loading: !!display.detailsStatus?.schema },
               ]}
             />
           </div>
@@ -738,9 +791,9 @@ export function DashboardView({ domain, onOpenModal, onReset, analysisId }: Dash
               barWidth={barWidths.man}
               scoreLabel="Answer Source"
               details={[
-                { label: 'Backlink Score', value: display.details.backlink },
-                { label: 'News Mention Score', value: display.details.newsMention },
-                { label: 'Wikidata Score', value: display.details.wikidata },
+                { label: 'Backlink Score', value: display.details.backlink, loading: !!display.detailsStatus?.backlink },
+                { label: 'News Mention Score', value: display.details.newsMention, loading: !!display.detailsStatus?.newsMention },
+                { label: 'Wikidata Score', value: display.details.wikidata, loading: !!display.detailsStatus?.wikidata },
               ]}
             />
           </div>
@@ -788,9 +841,9 @@ export function DashboardView({ domain, onOpenModal, onReset, analysisId }: Dash
               barWidth={barWidths.gen}
               scoreLabel="Influence Origin"
               details={[
-                { label: 'AI Cite Score', value: display.details.aiCite },
-                { label: 'AI Overview Appearance', value: display.details.aiOverview },
-                { label: 'AI Cite Ranking Score', value: display.details.aiCiteRanking },
+                { label: 'AI Cite Score', value: display.details.aiCite, loading: !!display.detailsStatus?.aiCite },
+                { label: 'AI Overview Appearance', value: display.details.aiOverview, loading: !!display.detailsStatus?.aiOverview },
+                { label: 'AI Cite Ranking Score', value: display.details.aiCiteRanking, loading: !!display.detailsStatus?.aiCiteRanking },
               ]}
             />
           </div>
