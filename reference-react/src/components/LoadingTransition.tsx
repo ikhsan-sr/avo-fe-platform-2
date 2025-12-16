@@ -97,9 +97,7 @@ export function LoadingTransition({ domain }: LoadingTransitionProps) {
   return (
     <div className="relative w-full h-screen flex items-center justify-center overflow-hidden">
       {/* Background Pattern - Exact copy from Figma */}
-      <div className={`absolute inset-0 bg-linear-to-b from-[rgba(12,25,44,0)] to-[#0c192c]`} 
-        style={{background: 'linear-gradient(135deg, #0a2540 0%, #1a3a5c 100%) fixed'}}
-      />
+      <div className="absolute inset-0 bg-linear-to-b from-[rgba(12,25,44,0)] to-[#0c192c]" />
       
       {/* Pattern Layer */}
       <div className="absolute inset-0 opacity-10">
