@@ -22,7 +22,36 @@ jobs:
         run: |
           curl -X POST ${{ secrets.LARK_WEBHOOK_URL }} \
           -H "Content-Type: application/json" \
-          -d '{ "msg_type": "text", "content": { "text": "✅ Deploy SUCCESS - ${{ github.repository }}" }}'
+          -d '{
+            "msg_type": "interactive",
+            "card": {
+              "header": {
+                "title": {
+                  "tag": "plain_text",
+                  "content": "✅ Deployment Success"
+                },
+                "template": "green"
+              },
+              "elements": [
+                {
+                  "tag": "markdown",
+                  "content": "**📦 Repo:** ${{ github.repository }}"
+                },
+                {
+                  "tag": "markdown",
+                  "content": "**🌿 Branch:** `${{ github.ref_name }}`"
+                },
+                {
+                  "tag": "markdown",
+                  "content": "**🔖 Commit:** `${{ github.sha }}`"
+                },
+                {
+                  "tag": "markdown",
+                  "content": "**👤 Triggered by:** ${{ github.actor }}"
+                }
+              ]
+            }
+          }'
 
       - name: Notify Lark - Failed
         if: failure()
