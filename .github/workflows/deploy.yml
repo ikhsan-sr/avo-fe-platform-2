@@ -48,6 +48,17 @@ jobs:
                 {
                   "tag": "markdown",
                   "content": "**👤 Triggered by:** ${{ github.actor }}"
+                },
+                 {
+                  "tag": "action",
+                  "actions": [
+                    {
+                      "tag": "button",
+                      "text": { "tag": "plain_text", "content": "🚨 Check Logs" },
+                      "url": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}",
+                      "type": "danger"
+                    }
+                  ]
                 }
               ]
             }
@@ -58,7 +69,34 @@ jobs:
         run: |
           curl -X POST ${{ secrets.LARK_WEBHOOK_URL }} \
           -H "Content-Type: application/json" \
-          -d '{ "msg_type": "text", "content": { "text": "❌ Deploy FAILED - ${{ github.repository }}" }}'
+          -d '{
+            "msg_type": "interactive",
+            "card": {
+              "header": {
+                "title": {
+                  "tag": "plain_text",
+                  "content": "❌ Deployment Failed"
+                },
+                "template": "red"
+              },
+              "elements": [
+                { "tag": "markdown", "content": "**📦 Repo:** ${{ github.repository }}" },
+                { "tag": "markdown", "content": "**🌿 Branch:** `${{ github.ref_name }}`" },
+                { "tag": "markdown", "content": "**👤 Triggered by:** ${{ github.actor }}" },
+                {
+                  "tag": "action",
+                  "actions": [
+                    {
+                      "tag": "button",
+                      "text": { "tag": "plain_text", "content": "🚨 Check Logs" },
+                      "url": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}",
+                      "type": "danger"
+                    }
+                  ]
+                }
+              ]
+            }
+          }'
 
       - name: Notify Lark - Cancelled
         if: cancelled()
