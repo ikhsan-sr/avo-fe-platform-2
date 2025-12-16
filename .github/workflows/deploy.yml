@@ -28,7 +28,7 @@ jobs:
               "header": {
                 "title": {
                   "tag": "plain_text",
-                  "content": "✅ Deployment Success"
+                  "content": "✅ Deployment Success: FE Avonetiq"
                 },
                 "template": "green"
               },
@@ -54,9 +54,9 @@ jobs:
                   "actions": [
                     {
                       "tag": "button",
-                      "text": { "tag": "plain_text", "content": "🚨 Check Logs" },
+                      "text": { "tag": "plain_text", "content": "🔍 View Workflow" },
                       "url": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}",
-                      "type": "danger"
+                      "type": "primary"
                     }
                   ]
                 }
