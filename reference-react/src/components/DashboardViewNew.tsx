@@ -863,6 +863,7 @@ function ScoreCardContent({
 }
 
 export function DashboardView({ domain, onOpenModal, onReset, analysisId }: DashboardViewProps) {
+  const [mounted, setMounted] = useState(false)
   const shouldStopPolling = useCallback((data: any) => (data as any)?.data?.json?.status === 'finished', []);
   
   const { data: analysisData, isLoading } = usePollingGet<any>(
@@ -874,8 +875,6 @@ export function DashboardView({ domain, onOpenModal, onReset, analysisId }: Dash
     }
   );
  
-      
-
   const { localScores, detailScores, detailStatuses, createdAt } = useAnalysisData(analysisData);
   const { loading, displayScore, progressStroke, barWidths, display } = useDashboardAnimation(
     localScores,
@@ -900,6 +899,12 @@ export function DashboardView({ domain, onOpenModal, onReset, analysisId }: Dash
   const isMd = viewportWidth >= 768;
   const isTablet = viewportWidth >= 640 && viewportWidth < 768;
 
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setMounted(true)
+  }, []);
+
+  if (!mounted) return null
 
   return (
     <div className="bg-[#0c192c] min-h-screen relative size-full flex flex-col pb-14" data-name="AVQ">
@@ -1100,7 +1105,7 @@ export function DashboardView({ domain, onOpenModal, onReset, analysisId }: Dash
             />
           ) : (
             <div className="min-w-[871px]">
-              <BenchmarkComparison 
+              {/* <BenchmarkComparison 
                 userDomain={domain}
                 userScore={localScores.avg ?? 0}
                 userScores={{
@@ -1110,7 +1115,7 @@ export function DashboardView({ domain, onOpenModal, onReset, analysisId }: Dash
                   avg: localScores.avg ?? 0,
                 }}
                 isAuthorityLoading={typeof localScores.avg !== 'number'}
-              />
+              /> */}
             </div>
           )}
         </div>

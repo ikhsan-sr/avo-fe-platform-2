@@ -302,7 +302,7 @@ export function InfoContainer({ domain, loading = false, score }: InfoContainerP
             <LoadingDots color="#919eab" />
           ) : (
             <>
-              <p>{config.subtitlePrefix}</p>
+              <span>{config.subtitlePrefix}</span>
               <span className="font-manrope font-normal text-sm" style={{ color: config.subtitleColor }}>
                 {config.subtitleHighlight}
               </span>

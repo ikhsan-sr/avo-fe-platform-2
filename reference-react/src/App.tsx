@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { LandingView } from './components/LandingView';
 import { DashboardView } from './components/DashboardViewNew';
 import { PreLoader } from './components/PreLoader';
@@ -85,6 +85,7 @@ function deriveScoresForDomain(domainInput: string): Scores {
 }
 
 export default function App() {
+  const [mounted, setMounted] = useState(false)
   const initialAvoData = storageUtils.getAvoData();
   const [view, setView] = useState<View>(initialAvoData?.id ? 'dashboard' : 'landing');
   const [domain, setDomain] = useState(initialAvoData?.url ?? '');
@@ -130,6 +131,13 @@ export default function App() {
     setDomain('');
     setScores({ opt: 0, man: 0, gen: 0, avg: 0 });
   };
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setMounted(true)
+  }, []);
+
+  if (!mounted) return null
 
   return (
     <ThemeProvider>

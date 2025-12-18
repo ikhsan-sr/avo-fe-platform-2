@@ -1184,6 +1184,7 @@ export function BenchmarkComparison({ userDomain, userScore, userScores, isAutho
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -10 }}
                   className="w-full"
+                  key="error-message"
                 >
                   <div className="bg-red-500/10 border border-red-500/30 rounded-[8px] px-[16px] py-[12px]">
                     <p className=" text-[14px] text-red-500">
@@ -1198,6 +1199,7 @@ export function BenchmarkComparison({ userDomain, userScore, userScores, isAutho
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -10 }}
                   className="w-full"
+                  key="authority-message"
                 >
                   <div className="bg-yellow-500/10 border border-yellow-500/30 rounded-[8px] px-[16px] py-[12px]">
                     <p className=" text-[14px] text-yellow-500">
@@ -1212,6 +1214,7 @@ export function BenchmarkComparison({ userDomain, userScore, userScores, isAutho
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -10 }}
                   className="w-full"
+                  key="is-submitting"
                 >
                   <div className="bg-[rgba(0,194,184,0.1)] border border-[#006964]/50 rounded-[8px] px-[16px] py-[12px]">
                     <p className=" text-[14px] text-[#00c2b8]">Submitting competitor...</p>
@@ -1224,6 +1227,7 @@ export function BenchmarkComparison({ userDomain, userScore, userScores, isAutho
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -10 }}
                   className="w-full"
+                  key="submit-success"
                 >
                   <div className="bg-[#00c2b8]/10 border border-[#00c2b8]/50 rounded-[8px] px-[16px] py-[12px]">
                     <p className=" text-[14px] text-[#00c2b8]">{submitMessage}</p>
@@ -1236,6 +1240,7 @@ export function BenchmarkComparison({ userDomain, userScore, userScores, isAutho
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -10 }}
                   className="w-full"
+                  key="submit-failure"
                 >
                   <div className="bg-red-500/10 border border-red-500/30 rounded-[8px] px-[16px] py-[12px]">
                     <p className=" text-[14px] text-red-500">{submitMessage}</p>
@@ -1248,6 +1253,7 @@ export function BenchmarkComparison({ userDomain, userScore, userScores, isAutho
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -10 }}
                   className="w-full"
+                  key="comparisons-loading"
                 >
                   <div className="bg-[rgba(0,194,184,0.1)] border border-[#006964]/50 rounded-[8px] px-[16px] py-[12px]">
                     <p className=" text-[14px] text-[#00c2b8]">Loading comparisons...</p>
@@ -1260,6 +1266,7 @@ export function BenchmarkComparison({ userDomain, userScore, userScores, isAutho
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -10 }}
                   className="w-full"
+                  key="comparisons-error"
                 >
                   <div className="bg-red-500/10 border border-red-500/30 rounded-[8px] px-[16px] py-[12px]">
                     <p className=" text-[14px] text-red-500">Failed to load comparisons</p>
