@@ -556,55 +556,228 @@ function AuthorityScoreCircle({
   progressStroke: number;
   createdAt: string | null;
 }) {
+  // State for trivia rotation during loading
+  const [currentTrivia, setCurrentTrivia] = useState(0);
+
+  // Rotate trivia content every 8 seconds during loading
+  useEffect(() => {
+    if (!loading) return; // Stop rotation when loading is done
+    
+    const triviaInterval = setInterval(() => {
+      setCurrentTrivia((prev) => (prev + 1) % 3); // Cycle through 0, 1, 2
+    }, 8000); // Change every 8 seconds
+
+    return () => clearInterval(triviaInterval);
+  }, [loading]);
+
   return (
     <div className="relative shrink-0 size-[256px]" data-name="Container">
       <div className="absolute border-[0.8px] border-[rgba(207,255,4,0.2)] border-solid left-0 rounded-[2.68435e+07px] size-[256px] top-0" data-name="Container" />
-      <div className={`absolute left-0 size-[256px] top-0`}>
-        <svg className="size-full" viewBox="0 0 256 256" style={{ transform: 'rotate(-90deg)' }}>
+      
+      {/* Idle Loading Animation - Rotating yellow stroke (State 1) */}
+      {loading && (
+        <div className="absolute left-0 size-[256px] top-0">
+          <style>{`
+            @keyframes rotateLoader {
+              0% { transform: rotate(-90deg); }
+              100% { transform: rotate(270deg); }
+            }
+          `}</style>
+          <svg
+            className="size-full"
+            viewBox="0 0 256 256"
+            style={{
+              animation: 'rotateLoader 2s linear infinite'
+            }}
+          >
+            {/* 1/4 circle stroke (90 degrees) that rotates clockwise */}
+            <circle
+              cx="128"
+              cy="128"
+              r="125"
+              fill="none"
+              stroke="#F8B400"
+              strokeWidth="6"
+              strokeLinecap="round"
+              strokeDasharray="196.35 589.05" // 1/4 of circumference (785.4/4 = 196.35)
+              opacity="0.8"
+            />
+          </svg>
+        </div>
+      )}
+
+      {/* Progress loader stroke - fills based on score with color conditions (State 2) */}
+      <div
+        className={`absolute left-0 size-[256px] top-0 transition-opacity duration-1000 ease-in-out ${progressStroke > 0 ? "opacity-100" : "opacity-0"}`}
+      >
+        <svg
+          className="size-full"
+          viewBox="0 0 256 256"
+          style={{ transform: "rotate(-90deg)" }}
+        >
+          {/* Calculate circumference: 2 * π * r = 2 * π * 125 ≈ 785.4 */}
           <circle
             cx="128"
             cy="128"
             r="125"
             fill="none"
             stroke={
-              progressStroke < 50 ? '#EF4444' :
-              progressStroke <= 75 ? '#F8B400' :
-              '#22c55e'
+              progressStroke <= 49
+                ? "#EF4444" // Red for 0-49 (authority1 & authority2)
+                : progressStroke <= 74
+                  ? "#F8B400" // Orange for 50-74 (authority3 & authority4)
+                  : "#22c55e" // Green for 75-100 (authority5 & authority6)
             }
             strokeWidth="6"
             strokeLinecap="round"
             strokeDasharray="785.4"
-            strokeDashoffset={785.4 - (progressStroke / 100) * 785.4}
+            strokeDashoffset={
+              785.4 - (progressStroke / 100) * 785.4
+            }
+            style={{
+              transition:
+                "stroke-dashoffset 1s ease-out, stroke 0.3s ease-out",
+            }}
             opacity="1"
           />
         </svg>
       </div>
+
       <div className="absolute border-[0.8px] border-[rgba(0,194,184,0.1)] border-solid left-[-16px] opacity-[0.74] rounded-[2.68435e+07px] size-[288px] top-[-16px] animate-pulse-slow" data-name="Container" />
       <div className="absolute bg-[rgba(22,36,62,0.6)] border-[0.8px] border-[rgba(252,252,252,0.06)] border-solid left-[16px] rounded-[2.68435e+07px] shadow-[0px_10px_25px_0px_rgba(4,11,23,0.4),0px_4px_60px_0px_rgba(240,241,244,0.15)] size-[224px] top-[16px]" data-name="Container">
-        <div className="absolute h-[15.988px] left-[40.39px] top-[34.41px] w-[141.613px]" data-name="Text">
-          <p 
-            className="absolute leading-[16px] left-[calc(50%-64.34px)] text-[#F8B400] text-[12px] text-nowrap top-[-0.8px] tracking-[1.2px] whitespace-pre"
-          >
-            AUTHORITY SCORE
-          </p>
-        </div>
-        <div className="absolute content-stretch flex flex-col gap-[12px] items-center left-[55.46px] top-[56.4px] w-[111.463px]">
-          <div className="h-[96px] relative shrink-0 w-full flex items-center justify-center" data-name="Heading 1">
-            {loading ? (
-              <LoadingSpinner size={48} />
-            ) : (
-              typeof displayScore === 'number' && Number.isFinite(displayScore) ? (
-                <p className="[text-shadow:rgba(50,255,4,0.15)_0px_4px_60px,rgba(4,11,23,0.3)_0px_10px_25px] font-satoshi font-bold not-italic text-[#defcd7] text-[48px] sm:text-[64px] md:text-[96px] leading-[60px] md:leading-[96px] text-nowrap tracking-[-2px] md:tracking-[-4.8px] whitespace-pre">{Math.round(displayScore)}</p>
-              ) : (
-                <LoadingSpinner size={48} />
-              )
+        {loading ? (
+          /* Loading Trivia Content - Changes every 8 seconds */
+          <div className="absolute inset-0 flex flex-col items-center justify-center px-[20px] py-[24px]">
+            <style>{`
+              @keyframes triviaFadeInUp {
+                0% { 
+                  opacity: 0; 
+                  transform: translateY(15px);
+                }
+                100% { 
+                  opacity: 1; 
+                  transform: translateY(0);
+                }
+              }
+              
+              .trivia-icon {
+                animation: triviaFadeInUp 0.6s ease-out forwards;
+                opacity: 0;
+              }
+              
+              .trivia-heading {
+                animation: triviaFadeInUp 0.6s ease-out 0.2s forwards;
+                opacity: 0;
+              }
+              
+              .trivia-body {
+                animation: triviaFadeInUp 0.6s ease-out 0.4s forwards;
+                opacity: 0;
+              }
+            `}</style>
+            
+            {/* Trivia 1: Optimize */}
+            {currentTrivia === 0 && (
+              <div className="flex flex-col items-center gap-[12px] text-center" key="trivia-0">
+                {/* Icon */}
+                <div className="size-[32px] flex items-center justify-center trivia-icon">
+                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#00C2B8" strokeWidth="1.5">
+                    <path d="M12 2L14.5 7.5L20 8L15.5 12L17 17.5L12 14.5L7 17.5L8.5 12L4 8L9.5 7.5L12 2Z" fill="none" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                </div>
+                {/* Heading */}
+                <h3 className="font-['Manrope:Bold',sans-serif] text-[16px] text-[#00C2B8] tracking-wide trivia-heading">
+                  What&apos;s Optimize?
+                </h3>
+                {/* Body */}
+                <p className="font-['Manrope:Regular',sans-serif] text-[12px] text-[#a7a7a7] leading-[16px] trivia-body">
+                  Make your website easy for AI to read, understand, and process efficiently.
+                </p>
+              </div>
+            )}
+
+            {/* Trivia 2: Manifest */}
+            {currentTrivia === 1 && (
+              <div className="flex flex-col items-center gap-[12px] text-center" key="trivia-1">
+                {/* Icon */}
+                <div className="size-[32px] flex items-center justify-center trivia-icon">
+                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#CFFF04" strokeWidth="1.5">
+                    <path d="M12 2L17 7L12 12L7 7L12 2Z" fill="none" strokeLinecap="round" strokeLinejoin="round"/>
+                    <path d="M7 17L12 12L17 17" fill="none" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                </div>
+                {/* Heading */}
+                <h3 className="font-['Manrope:Bold',sans-serif] text-[16px] text-[#CFFF04] tracking-wide trivia-heading">
+                  What&apos;s Manifest?
+                </h3>
+                {/* Body */}
+                <p className="font-['Manrope:Regular',sans-serif] text-[12px] text-[#a7a7a7] leading-[16px] trivia-body">
+                  Create excellent content that AI systems recognize and cite frequently.
+                </p>
+              </div>
+            )}
+
+            {/* Trivia 3: Generative */}
+            {currentTrivia === 2 && (
+              <div className="flex flex-col items-center gap-[12px] text-center" key="trivia-2">
+                {/* Icon */}
+                <div className="size-[32px] flex items-center justify-center trivia-icon">
+                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#F8B400" strokeWidth="1.5">
+                    <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" fill="none" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                </div>
+                {/* Heading */}
+                <h3 className="font-['Manrope:Bold',sans-serif] text-[16px] text-[#F8B400] tracking-wide trivia-heading">
+                  What&apos;s Generative?
+                </h3>
+                {/* Body */}
+                <p className="font-['Manrope:Regular',sans-serif] text-[12px] text-[#a7a7a7] leading-[16px] trivia-body">
+                  Become the recognized authority leader that AI trusts and promotes.
+                </p>
+              </div>
             )}
           </div>
-          <div className="box-border content-stretch flex items-center justify-center px-[16px] py-[8px] relative rounded-[2.68435e+07px] shrink-0" data-name="Container">
-            <div aria-hidden="true" className="absolute border border-[rgba(0,194,184,0.4)] border-solid inset-0 pointer-events-none rounded-[2.68435e+07px]" />
-            <p className="font-['Manrope:Medium',sans-serif] font-medium leading-[16px] relative shrink-0 text-[#00c2b8] text-[14px] text-nowrap whitespace-pre">{createdAt ? timeAgo(createdAt) : <LoadingDots color="#00c2b8" />}</p>
-          </div>
-        </div>
+        ) : (
+          /* Final State: Authority Score Display */
+          <>
+            {/* Authority Score Label */}
+            <div
+              className="absolute h-[15.988px] left-[40.39px] top-[34.41px] w-[141.613px]"
+              data-name="Text"
+            >
+              <p className="absolute font-['Manrope:Bold',sans-serif] font-bold leading-[16px] left-[calc(50%-64.34px)] text-[#F8B400] text-[12px] text-nowrap top-[-0.8px] tracking-[1.2px] whitespace-pre">
+                AUTHORITY SCORE
+              </p>
+            </div>
+
+            {/* Score Number and Growth */}
+            <div className="absolute content-stretch flex flex-col gap-[12px] items-center left-[55.46px] top-[56.4px] w-[111.463px]">
+              {/* Score Number */}
+              <div
+                className="h-[96px] relative shrink-0 w-full flex items-center justify-center"
+                data-name="Heading 1"
+              >
+                <p className="[text-shadow:rgba(50,255,4,0.15)_0px_4px_60px,rgba(4,11,23,0.3)_0px_10px_25px] font-['Satoshi:Bold',sans-serif] leading-[96px] not-italic text-[#defcd7] text-[96px] text-nowrap tracking-[-4.8px] whitespace-pre">
+                  {displayScore}
+                </p>
+              </div>
+
+              {/* Time Period Indicator */}
+              <div
+                className="box-border content-stretch flex items-center justify-center px-[16px] py-[8px] relative rounded-[2.68435e+07px] shrink-0"
+                data-name="Container"
+              >
+                <div
+                  aria-hidden="true"
+                  className="absolute border border-[rgba(0,194,184,0.4)] border-solid inset-0 pointer-events-none rounded-[2.68435e+07px]"
+                />
+                <p className="font-['Manrope:Medium',sans-serif] font-medium leading-[16px] relative shrink-0 text-[#00c2b8] text-[14px] text-nowrap whitespace-pre">
+                  {createdAt ? timeAgo(createdAt) : 'Last 20 Days'}
+                </p>
+              </div>
+            </div>
+          </>
+        )}
       </div>
     </div>
   );

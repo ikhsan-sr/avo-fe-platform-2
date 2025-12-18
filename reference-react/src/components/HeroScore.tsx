@@ -75,7 +75,7 @@ export function HeroScore({ avgScore }: { avgScore: number }) {
           <CheckCircle className="w-6 h-6 text-[#00c2b8]" />
           <h2 className="font-display text-3xl dark:text-[#fcfcfc] light:text-[#0c192c]">Trusted Source</h2>
         </div>
-        <p className="dark:text-[#919EAB] light:text-[#637381] text-base leading-relaxed">Your brand's authority score for search engines and AI.</p>
+        <p className="dark:text-[#919EAB] light:text-[#637381] text-base leading-relaxed">Your brand&apos;s authority score for search engines and AI.</p>
         <p className="text-sm text-[#00c2b8] flex items-center gap-2">
           <TrendingUp className="w-4 h-4" />
           <span>Growing month-over-month</span>
