@@ -904,6 +904,7 @@ export function DashboardView({ domain, onOpenModal, onReset, analysisId }: Dash
                 gen: localScores.gen ?? 0,
                 avg: localScores.avg ?? 0,
               }}
+              isAuthorityLoading={typeof localScores.avg !== 'number'}
             />
           ) : (
             <div className="min-w-[871px]">
@@ -916,6 +917,7 @@ export function DashboardView({ domain, onOpenModal, onReset, analysisId }: Dash
                   gen: localScores.gen ?? 0,
                   avg: localScores.avg ?? 0,
                 }}
+                isAuthorityLoading={typeof localScores.avg !== 'number'}
               />
             </div>
           )}

@@ -1,3 +1,5 @@
+'use client';
+
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import type { JSX } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
@@ -745,6 +747,7 @@ interface BenchmarkComparisonProps {
   userDomain: string;
   userScore: number;
   userScores: { opt: number; man: number; gen: number; avg: number };
+  isAuthorityLoading?: boolean;
 }
 
 type UserScores = { opt: number; man: number; gen: number; avg: number };
@@ -768,7 +771,7 @@ function extractSubScore(subs: any[], type: string, key: string): number | undef
   return Number.isFinite(n) ? Math.round(n) : undefined;
 }
 
-export function BenchmarkComparison({ userDomain, userScore, userScores }: BenchmarkComparisonProps) {
+export function BenchmarkComparison({ userDomain, userScore, userScores, isAuthorityLoading }: BenchmarkComparisonProps) {
   const [competitorInput, setCompetitorInput] = useState('');
   const [competitors, setCompetitors] = useState<Competitor[]>([]);
   const [expandedCompetitors, setExpandedCompetitors] = useState<Set<string>>(new Set());
@@ -900,6 +903,12 @@ export function BenchmarkComparison({ userDomain, userScore, userScores }: Bench
   const displayUserAvg = (displayUserScores?.avg ?? userScore ?? 0);
 
   const validateDomain = (value: string) => {
+    if (isAuthorityLoading) {
+      setError(true);
+      setErrorMessage('Comparison is available only after your brand authorization is completed');
+      return false;
+    }
+    
     const trimmedDomain = value.trim();
     
     if (!trimmedDomain) {
@@ -928,6 +937,9 @@ export function BenchmarkComparison({ userDomain, userScore, userScores }: Bench
   };
 
   const handleAddCompetitor = async () => {
+    if (isAuthorityLoading) {
+      return;
+    }
     if (!validateDomain(competitorInput)) {
       setTimeout(() => {
         setError(false);
@@ -992,7 +1004,7 @@ export function BenchmarkComparison({ userDomain, userScore, userScores }: Bench
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter') {
+    if (e.key === 'Enter' && !isAuthorityLoading) {
       handleAddCompetitor();
     }
   };
@@ -1098,16 +1110,16 @@ export function BenchmarkComparison({ userDomain, userScore, userScores }: Bench
             <div className="content-stretch flex gap-[16px] items-start justify-center relative shrink-0 w-full">
               <div className={`basis-0 bg-[#0b1525] grow h-[58px] min-h-px min-w-px relative rounded-[10px] shrink-0 transition-all duration-300 ${
                 error ? 'ring-2 ring-red-500/50' : (isFocused || competitorInput ? 'ring-2 ring-[#C6F558]/50' : '')
-              }`}>
+              } ${isAuthorityLoading ? 'opacity-50 cursor-not-allowed' : ''}`}>
                 <div className="flex flex-row items-center overflow-clip rounded-[inherit] size-full">
                   <div className="content-stretch flex h-[58px] items-center p-[16px] relative w-full">
                     <div className="content-stretch flex gap-[10px] items-center relative shrink-0 w-full">
                       <div className="relative shrink-0 size-[20px]">
                         <svg className="block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 20 20">
                           <g clipPath="url(#clip0_bench_input)">
-                            <path d={svgPaths.p14d24500} stroke={error ? "#EF4444" : (competitorInput || isFocused ? "#C6F558" : "#CFD1D4")} strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.66667" />
-                            <path d={svgPaths.p17212180} stroke={error ? "#EF4444" : (competitorInput || isFocused ? "#C6F558" : "#CFD1D4")} strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.66667" />
-                            <path d="M1.66667 10H18.3333" stroke={error ? "#EF4444" : (competitorInput || isFocused ? "#C6F558" : "#CFD1D4")} strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.66667" />
+                            <path d={svgPaths.p14d24500} stroke={error ? "#EF4444" : (isAuthorityLoading ? "#6a6a6b" : (competitorInput || isFocused ? "#C6F558" : "#CFD1D4"))} strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.66667" />
+                            <path d={svgPaths.p17212180} stroke={error ? "#EF4444" : (isAuthorityLoading ? "#6a6a6b" : (competitorInput || isFocused ? "#C6F558" : "#CFD1D4"))} strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.66667" />
+                            <path d="M1.66667 10H18.3333" stroke={error ? "#EF4444" : (isAuthorityLoading ? "#6a6a6b" : (competitorInput || isFocused ? "#C6F558" : "#CFD1D4"))} strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.66667" />
                           </g>
                           <defs>
                             <clipPath id="clip0_bench_input">
@@ -1120,19 +1132,23 @@ export function BenchmarkComparison({ userDomain, userScore, userScores }: Bench
                         type="text"
                         value={competitorInput}
                         onChange={(e) => {
-                          setCompetitorInput(e.target.value);
-                          if (error) {
-                            setError(false);
-                            setErrorMessage('');
+                          if (!isAuthorityLoading) {
+                            setCompetitorInput(e.target.value);
+                            if (error) {
+                              setError(false);
+                              setErrorMessage('');
+                            }
                           }
                         }}
                         onKeyPress={handleKeyPress}
                         onFocus={() => setIsFocused(true)}
                         onBlur={() => setIsFocused(false)}
                         placeholder='type "competitor.com"'
+                        disabled={isAuthorityLoading}
                         className={`font-['Manrope:Medium',sans-serif] font-medium leading-[normal] bg-transparent outline-none text-[16px] text-nowrap whitespace-pre w-full ${
                           error ? 'text-red-500 placeholder-red-500/50' : (competitorInput ? 'text-white' : 'text-[#6a6a6b] placeholder-[#6a6a6b]')
-                        }`}
+                        } ${isAuthorityLoading ? 'cursor-not-allowed opacity-50' : ''}`}
+                        title={isAuthorityLoading ? 'Comparison is available only after your brand authorization is completed' : ''}
                       />
                     </div>
                   </div>
@@ -1148,10 +1164,11 @@ export function BenchmarkComparison({ userDomain, userScore, userScores }: Bench
 
               <button
                 onClick={handleAddCompetitor}
-                disabled={!competitorInput.trim() || isSubmitting}
+                disabled={!competitorInput.trim() || isSubmitting || isAuthorityLoading}
                 className={`bg-[rgba(0,194,184,0.1)] content-stretch flex items-center justify-center px-[15px] py-[9px] relative rounded-[10px] self-stretch shrink-0 transition-all duration-300 ${
-                  competitorInput.trim() && !isSubmitting ? 'hover:bg-[rgba(0,194,184,0.15)] cursor-pointer' : 'opacity-50 cursor-not-allowed'
+                  competitorInput.trim() && !isSubmitting && !isAuthorityLoading ? 'hover:bg-[rgba(0,194,184,0.15)] cursor-pointer' : 'opacity-50 cursor-not-allowed'
                 }`}
+                title={isAuthorityLoading ? 'Comparison is available only after your brand authorization is completed' : ''}
               >
                 <div aria-hidden="true" className="absolute border border-[#006964] border-solid inset-0 pointer-events-none rounded-[10px]" />
                 <p className=" font-semibold leading-[normal] relative shrink-0 text-[#00c2b8] text-[16px] text-center text-nowrap whitespace-pre">
@@ -1171,6 +1188,20 @@ export function BenchmarkComparison({ userDomain, userScore, userScores }: Bench
                   <div className="bg-red-500/10 border border-red-500/30 rounded-[8px] px-[16px] py-[12px]">
                     <p className=" text-[14px] text-red-500">
                       {errorMessage}
+                    </p>
+                  </div>
+                </motion.div>
+              )}
+              {isAuthorityLoading && !error && (
+                <motion.div
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  className="w-full"
+                >
+                  <div className="bg-yellow-500/10 border border-yellow-500/30 rounded-[8px] px-[16px] py-[12px]">
+                    <p className=" text-[14px] text-yellow-500">
+                      Comparison is available only after your brand authorization is completed
                     </p>
                   </div>
                 </motion.div>
