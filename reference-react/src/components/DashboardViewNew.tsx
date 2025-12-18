@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState, useCallback } from 'react';
+import { motion } from 'motion/react';
 import { usePollingGet } from '../../../src/hooks/api';
 import { storageUtils } from '../../../src/utils/storage';
 import { timeAgo } from '../../../src/utils/timeUtils';
@@ -566,7 +567,7 @@ function AuthorityScoreCircle({
     
     const triviaInterval = setInterval(() => {
       setCurrentTrivia((prev) => (prev + 1) % 3); // Cycle through 0, 1, 2
-    }, 8000); // Change every 8 seconds
+    }, 2000); // Change every 8 seconds
 
     return () => clearInterval(triviaInterval);
   }, [loading]);
@@ -696,11 +697,11 @@ function AuthorityScoreCircle({
                   </svg>
                 </div>
                 {/* Heading */}
-                <h3 className="font-['Manrope:Bold',sans-serif] text-[16px] text-[#00C2B8] tracking-wide trivia-heading">
+                <h3 className="font-manrope font-bold text-[16px] text-[#00C2B8] tracking-wide trivia-heading">
                   What&apos;s Optimize?
                 </h3>
                 {/* Body */}
-                <p className="font-['Manrope:Regular',sans-serif] text-[12px] text-[#a7a7a7] leading-[16px] trivia-body">
+                <p className="font-manrope text-[12px] text-[#a7a7a7] leading-[16px] trivia-body">
                   Make your website easy for AI to read, understand, and process efficiently.
                 </p>
               </div>
@@ -717,11 +718,11 @@ function AuthorityScoreCircle({
                   </svg>
                 </div>
                 {/* Heading */}
-                <h3 className="font-['Manrope:Bold',sans-serif] text-[16px] text-[#CFFF04] tracking-wide trivia-heading">
+                <h3 className="font-manrope font-bold text-[16px] text-[#CFFF04] tracking-wide trivia-heading">
                   What&apos;s Manifest?
                 </h3>
                 {/* Body */}
-                <p className="font-['Manrope:Regular',sans-serif] text-[12px] text-[#a7a7a7] leading-[16px] trivia-body">
+                <p className="font-manrope text-[12px] text-[#a7a7a7] leading-[16px] trivia-body">
                   Create excellent content that AI systems recognize and cite frequently.
                 </p>
               </div>
@@ -737,11 +738,11 @@ function AuthorityScoreCircle({
                   </svg>
                 </div>
                 {/* Heading */}
-                <h3 className="font-['Manrope:Bold',sans-serif] text-[16px] text-[#F8B400] tracking-wide trivia-heading">
+                <h3 className="font-manrope font-bold text-[16px] text-[#F8B400] tracking-wide trivia-heading">
                   What&apos;s Generative?
                 </h3>
                 {/* Body */}
-                <p className="font-['Manrope:Regular',sans-serif] text-[12px] text-[#a7a7a7] leading-[16px] trivia-body">
+                <p className="font-manrope text-[12px] text-[#a7a7a7] leading-[16px] trivia-body">
                   Become the recognized authority leader that AI trusts and promotes.
                 </p>
               </div>
@@ -755,7 +756,7 @@ function AuthorityScoreCircle({
               className="absolute h-[15.988px] left-[40.39px] top-[34.41px] w-[141.613px]"
               data-name="Text"
             >
-              <p className="absolute font-['Manrope:Bold',sans-serif] font-bold leading-[16px] left-[calc(50%-64.34px)] text-[#F8B400] text-[12px] text-nowrap top-[-0.8px] tracking-[1.2px] whitespace-pre">
+              <p className="absolute font-manrope font-bold font-bold leading-[16px] left-[calc(50%-64.34px)] text-[#F8B400] text-[12px] text-nowrap top-[-0.8px] tracking-[1.2px] whitespace-pre">
                 AUTHORITY SCORE
               </p>
             </div>
@@ -786,7 +787,7 @@ function AuthorityScoreCircle({
                   aria-hidden="true"
                   className="absolute border border-[rgba(0,194,184,0.4)] border-solid inset-0 pointer-events-none rounded-[2.68435e+07px]"
                 />
-                <p className="font-['Manrope:Medium',sans-serif] font-medium leading-[16px] relative shrink-0 text-[#00c2b8] text-[14px] text-nowrap whitespace-pre">
+                <p className="font-manrope font-medium leading-[16px] relative shrink-0 text-[#00c2b8] text-[14px] text-nowrap whitespace-pre">
                   {createdAt ? timeAgo(createdAt) : 'Last 20 Days'}
                 </p>
               </div>
@@ -876,11 +877,13 @@ export function DashboardView({ domain, onOpenModal, onReset, analysisId }: Dash
   );
  
   const { localScores, detailScores, detailStatuses, createdAt } = useAnalysisData(analysisData);
+  const backendStatus = (analysisData as any)?.data?.json?.status as string | undefined;
+  const uiLoading = !analysisData || backendStatus !== 'finished';
   const { loading, displayScore, progressStroke, barWidths, display } = useDashboardAnimation(
     localScores,
     detailScores,
     detailStatuses,
-    isLoading,
+    uiLoading,
   );
   const [animated, setAnimated] = useState(false);
   const [viewportWidth, setViewportWidth] = useState(typeof window !== 'undefined' ? window.innerWidth : 1024);
@@ -929,21 +932,29 @@ export function DashboardView({ domain, onOpenModal, onReset, analysisId }: Dash
     <div className={`relative mt-15 xl:mt-0 flex-1 min-h-screen md:min-h-[1100px] fade-enter ${animated ? 'fade-enter-active' : ''}`} style={{ transitionDelay: '100ms' }}>
         {/* Authority Score Circle - desktop absolute, mobile centered */}
         <div
-          className={isMd ? "absolute top-[60px] left-1/2" : "flex justify-center px-4"}
-          style={isMd ? { transform: 'translateX(calc(-50% - 200px))' } : undefined}
+          className={isMd ? "absolute top-[60px] left-1/2 translate-x-[-50%]" : "flex justify-center px-4"}
         >
-          <AuthorityScoreCircle 
-            loading={loading.authority}
-            displayScore={displayScore}
-            progressStroke={progressStroke}
-            createdAt={createdAt}
-          />
+          <motion.div
+            initial={{ x: 0 }}
+            animate={{ x: isMd ? (loading.authority ? 0 : -200) : 0 }}
+            transition={{ duration: 0.3, ease: 'easeInOut' }}
+          >
+            <AuthorityScoreCircle 
+              loading={loading.authority}
+              displayScore={displayScore}
+              progressStroke={progressStroke}
+              createdAt={createdAt}
+            />
+          </motion.div>
         </div>
 
         {/* Info Container - desktop absolute, mobile centered */}
-        <div 
+        <motion.div 
           className={isMd ? "absolute top-[60px]" : "flex justify-center px-4 mt-6"}
-          style={isMd ? { left: 'calc(50% - 8px)', opacity: 1, transform: 'translateX(0)' } : undefined}
+          style={isMd ? { left: 'calc(50% - 8px)', transform: 'translateX(0)' } : undefined}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: loading.authority ? 0 : 1 }}
+          transition={{ duration: 0.3, ease: 'easeInOut' }}
         >
           <div className="mt-12"></div>
           <InfoContainer 
@@ -951,7 +962,7 @@ export function DashboardView({ domain, onOpenModal, onReset, analysisId }: Dash
             loading={loading.info} 
             score={localScores.avg ?? 0}
           />
-        </div>
+        </motion.div>
 
         {/* Three Cards - responsive grid */}
         <div className={
