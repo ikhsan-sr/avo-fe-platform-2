@@ -8,6 +8,7 @@ import { BenchmarkComparison } from './BenchmarkComparison';
 import { ImageWithFallback } from './figma/ImageWithFallback';
 import svgPathsGenerative from "../imports/svg-v5gyqubm8s";
 import Image from 'next/image';
+import { cn } from './ui/utils';
 
 const FRAME_MS = 16;
 const COUNT_DURATION_MS = 800;
@@ -570,6 +571,15 @@ function AuthorityScoreCircle({
     return () => clearInterval(triviaInterval);
   }, [loading]);
 
+  const scoreColor = (score: number) => {
+    if (score < 20) return '#fdb2b2';
+    if (score >= 20 && score < 35) return '#fdb2b2';
+    if (score >= 35 && score < 46) return '#fceed7';
+    if (score >= 46 && score < 66) return '#fceed7';
+    if (score >= 66 && score < 86) return '#c0fdb2';
+    if (score >= 86) return '#c0fdb2';
+  }
+
   return (
     <div className="relative shrink-0 size-[256px]" data-name="Container">
       <div className="absolute border-[0.8px] border-[rgba(207,255,4,0.2)] border-solid left-0 rounded-[2.68435e+07px] size-[256px] top-0" data-name="Container" />
@@ -757,7 +767,12 @@ function AuthorityScoreCircle({
                 className="h-[96px] relative shrink-0 w-full flex items-center justify-center"
                 data-name="Heading 1"
               >
-                <p className="[text-shadow:rgba(50,255,4,0.15)_0px_4px_60px,rgba(4,11,23,0.3)_0px_10px_25px] font-['Satoshi:Bold',sans-serif] leading-[96px] not-italic text-[#defcd7] text-[96px] text-nowrap tracking-[-4.8px] whitespace-pre">
+                {/* <p className="[text-shadow:rgba(50,255,4,0.15)_0px_4px_60px,rgba(4,11,23,0.3)_0px_10px_25px] font-satoshi font-bold leading-[96px] not-italic text-[#defcd7] text-[96px] text-nowrap tracking-[-4.8px] whitespace-pre"> */}
+                <p className={cn(
+                  'font-satoshi font-bold leading-[96px] not-italic text-[96px] text-nowrap tracking-[-4.8px] whitespace-pre',
+                )}
+                  style={{ color: displayScore ? scoreColor(displayScore) : 'inherit' }}
+                >
                   {displayScore}
                 </p>
               </div>
@@ -926,7 +941,11 @@ export function DashboardView({ domain, onOpenModal, onReset, analysisId }: Dash
           style={isMd ? { left: 'calc(50% - 8px)', opacity: 1, transform: 'translateX(0)' } : undefined}
         >
           <div className="mt-12"></div>
-          <InfoContainer domain={domain} loading={loading.info} score={localScores.avg ?? 0} />
+          <InfoContainer 
+            domain={domain} 
+            loading={loading.info} 
+            score={localScores.avg ?? 0}
+          />
         </div>
 
         {/* Three Cards - responsive grid */}

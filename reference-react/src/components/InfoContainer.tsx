@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+
 import svgPathsVeryPoorly from "../imports/svg-hwd4s7iovw";
 import svgPathsRisk from "../imports/svg-yjq3nin4tv";
 import svgPathsBorderline from "../imports/svg-05j5mqbpjp";
@@ -46,120 +47,90 @@ export function InfoContainer({ domain, loading = false, score }: InfoContainerP
     setIsLoading(loading);
   }, [loading]);
 
-  // Check for dummy domains first (overrides actual score)
-  const getDummyState = () => {
-    const domainBase = domain.toLowerCase().split('.')[0]; // Get domain name without TLD
-    if (domainBase === 'authority1') return 'veryPoorly';
-    if (domainBase === 'authority2') return 'risk';
-    if (domainBase === 'authority3') return 'borderline';
-    if (domainBase === 'authority4') return 'qualified';
-    if (domainBase === 'authority5') return 'trusted';
-    return null;
-  };
-
   // Determine state based on score or dummy domain
   const getState = () => {
-    const dummyState = getDummyState();
-    if (dummyState) return dummyState;
-    
-    if (score < 55) return 'veryPoorly';
-    if (score >= 55 && score < 65) return 'risk';
-    if (score >= 65 && score < 75) return 'borderline';
-    if (score >= 75 && score < 85) return 'qualified';
-    return 'trusted';
+    if (score < 20) return 'invisible';
+    if (score >= 20 && score < 35) return 'foundational';
+    if (score >= 35 && score < 46) return 'contender';
+    if (score >= 46 && score < 66) return 'validated';
+    if (score >= 66 && score < 86) return 'authority';
+    if (score >= 86) return 'trusted';
   };
 
   const state = getState();
 
   // Configuration for each state
   const stateConfig = {
-    veryPoorly: {
+    invisible: {
       svgPaths: svgPathsVeryPoorly,
-      titlePrefix: 'Authority ',
-      titleHighlight: 'Very Poorly',
+      titlePrefix: '',
+      titleHighlight: 'Invisible',
       titleColor: '#ff9b95',
-      subtitlePrefix: `Your brand's authority score is `,
-      subtitleHighlight: 'barely visible',
-      subtitleColor: '#e3170a',
-      subtitleSuffix: ' by AI Platform',
-      valueRating: '-5.4%',
-      valueIcon: 'downRed',
-      aiVisibility: 'Not Verified',
-      aiVisibilityColor: '#f8b400',
-      aiVisibilityIcon: 'warning',
-      updated: 'Just Now',
+      subtitlePrefix: '',
+      subtitleHighlight: 'The brand lacks a fundamental, recognizable digital footprint. No entity is recognized, and content is unindexable or non-existent.',
+      subtitleColor: '#919eab',
+      subtitleSuffix: '',
       iconType: 'xRed'
     },
-    risk: {
+    foundational: {
       svgPaths: svgPathsRisk,
-      titlePrefix: 'Authority at ',
-      titleHighlight: 'Risk',
+      titlePrefix: '',
+      titleHighlight: 'Foundational',
       titleColor: '#ff9b95',
-      subtitlePrefix: `Your brand's authority score is `,
-      subtitleHighlight: 'Low Visible',
-      subtitleColor: '#e3170a',
-      subtitleSuffix: ' by AI Platform',
-      valueRating: '-1.0%',
-      valueIcon: 'downRed',
-      aiVisibility: 'Not Verified',
-      aiVisibilityColor: '#f8b400',
-      aiVisibilityIcon: 'warning',
-      updated: '1 min ago',
+      subtitlePrefix: '',
+      subtitleHighlight: 'The entity is technically present and indexable, but lacks the structure or volume of signals to be recognized as a viable competitor.',
+      subtitleColor: '#919eab',
+      subtitleSuffix: '',
       iconType: 'xRed'
     },
-    borderline: {
+    contender: {
       svgPaths: svgPathsBorderline,
-      titlePrefix: 'Authority at ',
-      titleHighlight: 'Borderline',
+      titlePrefix: '',
+      titleHighlight: 'Contender',
       titleColor: '#ffdf99',
-      subtitlePrefix: `Your brand's authority score is `,
-      subtitleHighlight: 'moderately visible',
-      subtitleColor: '#f8b400',
-      subtitleSuffix: ' by AI Platform',
-      valueRating: '+4.2%',
-      valueIcon: 'horizontalYellow',
-      aiVisibility: 'Verified',
-      aiVisibilityColor: '#00c2b8',
-      aiVisibilityIcon: 'check',
-      updated: '24 hour ago',
+      subtitlePrefix: '',
+      subtitleHighlight: 'The technical groundwork is laid. The entity is recognizable and can compete for low-difficulty queries. This phase is dedicated to content velocity and increasing Answer Share.',
+      subtitleColor: '#ffffff',
+      subtitleSuffix: '',
       iconType: 'warningYellow'
     },
-    qualified: {
+    validated: {
       svgPaths: svgPathsTrusted,
-      titlePrefix: 'Authority ',
-      titleHighlight: 'Qualified',
+      titlePrefix: '',
+      titleHighlight: 'Validated',
       titleColor: '#bbff97',
-      subtitlePrefix: `Your brand's authority score is `,
-      subtitleHighlight: 'visible',
-      subtitleColor: '#c6f558',
-      subtitleSuffix: ' by AI Platform',
-      valueRating: '+4.2%',
-      valueIcon: 'upGreen',
-      aiVisibility: 'Verified',
-      aiVisibilityColor: '#00c2b8',
-      aiVisibilityIcon: 'check',
-      updated: 'Just Now',
+      subtitlePrefix: '',
+      subtitleHighlight: 'The brand has begun to prove its expertise. It is actively cited by media and search engines, confirming its role as a reliable source but not yet the market leader.',
+      subtitleColor: '#ffffff',
+      subtitleSuffix: '',
+      iconType: 'checkTeal'
+    },
+    authority: {
+      svgPaths: svgPathsTrusted,
+      titlePrefix: '',
+      titleHighlight: 'Authority',
+      titleColor: '#bbff97',
+      subtitlePrefix: '',
+      subtitleHighlight: 'The brand is the definitive and recognized source for its core topics. It consistently captures AI answers and forces competitors to measure against it.',
+      subtitleColor: '#ffffff',
+      subtitleSuffix: '',
       iconType: 'checkTeal'
     },
     trusted: {
       svgPaths: svgPathsTrusted,
-      titlePrefix: 'Authority ',
+      titlePrefix: '',
       titleHighlight: 'Trusted',
       titleColor: '#bbff97',
-      subtitlePrefix: `Your brand's authority score is `,
-      subtitleHighlight: 'highly visible',
-      subtitleColor: '#c6f558',
-      subtitleSuffix: ' by AI Platform',
-      valueRating: '+4.2%',
-      valueIcon: 'upGreen',
-      aiVisibility: 'Verified',
-      aiVisibilityColor: '#00c2b8',
-      aiVisibilityIcon: 'check',
-      updated: 'Just Now',
+      subtitlePrefix: '',
+      subtitleHighlight: 'The brand is the absolute, undisputed standard in its category. Its authority is proven and unquestionable to AI, institutions, and the audience.',
+      subtitleColor: '#ffffff',
+      subtitleSuffix: '',
       iconType: 'checkTeal'
     }
   };
-
+  
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
   const config = stateConfig[state];
   const svgPaths = config.svgPaths;
 
@@ -313,7 +284,7 @@ export function InfoContainer({ domain, loading = false, score }: InfoContainerP
           <div className={`relative shrink-0 size-[24px] transition-all duration-900 ${isLoading ? 'scale-0 rotate-[-180deg] opacity-0' : 'scale-100 rotate-0 opacity-100'}`} data-name="Icon" style={{ transitionTimingFunction: 'cubic-bezier(0.34, 1.56, 0.64, 1)', transitionDelay: isLoading ? '0ms' : '400ms' }}>
             {renderIcon()}
           </div>
-          <p className={`[text-shadow:rgba(240,241,244,0.15)_0px_4px_60px,rgba(4,11,23,0.4)_0px_10px_25px] font-['Manrope:Bold',sans-serif] font-bold leading-[normal] relative shrink-0 text-[#fcfcfc] text-[30px] text-nowrap whitespace-pre transition-opacity duration-500`}>
+          <p className={`[text-shadow:rgba(240,241,244,0.15)_0px_4px_60px,rgba(4,11,23,0.4)_0px_10px_25px] font-manrope font-bold leading-[normal] relative shrink-0 text-[#fcfcfc] text-[30px] text-nowrap whitespace-pre transition-opacity duration-500`}>
             {isLoading ? (
             <LoadingDots color="#fcfcfc" />
           ) : (
@@ -326,13 +297,13 @@ export function InfoContainer({ domain, loading = false, score }: InfoContainerP
         </div>
 
         {/* Subtitle */}
-        <p className={`font-['Manrope:Regular',sans-serif] font-normal leading-[normal] relative shrink-0 text-[#919eab] text-[16px] text-nowrap whitespace-pre min-h-[20px] transition-all duration-900 ease-out ${isLoading ? 'opacity-0 translate-y-5' : 'opacity-100 translate-y-0'}`} style={{ transitionDelay: isLoading ? '0ms' : '800ms' }}>
+        <p className={`font-manrope font-normal leading-[normal] relative shrink-0 text-[#919eab] text-[16px] min-h-[20px] max-w-[425px] transition-all duration-900 ease-out ${isLoading ? 'opacity-0 translate-y-5' : 'opacity-100 translate-y-0'}`} style={{ transitionDelay: isLoading ? '0ms' : '800ms' }}>
           {isLoading ? (
             <LoadingDots color="#919eab" />
           ) : (
             <>
-              <span>{config.subtitlePrefix}</span>
-              <span className="font-['Manrope:Medium',sans-serif] font-medium" style={{ color: config.subtitleColor }}>
+              <p>{config.subtitlePrefix}</p>
+              <span className="font-manrope font-normal text-sm" style={{ color: config.subtitleColor }}>
                 {config.subtitleHighlight}
               </span>
               <span>{config.subtitleSuffix}</span>
