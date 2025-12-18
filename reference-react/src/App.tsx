@@ -8,6 +8,8 @@ import { LoadingTransition } from './components/LoadingTransition';
 import { Modal } from './components/Modal';
 import { ThemeProvider } from './components/ThemeContext';
 import { storageUtils } from '../../src/utils/storage';
+import { loadingSteps } from './components/LoadingTransition';
+
 import {
   AlertDialog,
   AlertDialogAction,
@@ -30,8 +32,9 @@ interface Scores {
 }
 
 const PRELOADER_MS = 8000;
-const LOADING_MS = 16500;
-const TOTAL_LOADING_MS = PRELOADER_MS + LOADING_MS;
+const LOADING_MS = loadingSteps.reduce((acc, step) => acc + step.duration, 0);
+// const TOTAL_LOADING_MS = PRELOADER_MS + LOADING_MS;
+const TOTAL_LOADING_MS = LOADING_MS;
 
 function normalizeDomain(input: string): string {
   return input.trim().toLowerCase();
