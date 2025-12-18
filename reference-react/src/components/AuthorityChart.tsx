@@ -2,6 +2,23 @@ import { LineChart, Line, XAxis, YAxis, ResponsiveContainer, Area, AreaChart, To
 import { TrendingUp, TrendingDown, MinusCircle, Info } from 'lucide-react';
 import { useState } from 'react';
 
+// Custom tooltip component - defined outside to avoid recreation during render
+const CustomTooltip = ({ active, payload }: any) => {
+  if (active && payload && payload.length) {
+    return (
+      <div className="glass-panel rounded-lg p-3 border dark:border-white/10 light:border-black/10">
+        <p className="text-xs dark:text-white light:text-[#0C182C] font-mono">
+          Score: {payload[0].value}
+        </p>
+        <p className="text-[10px] dark:text-[#A3A9B7] light:text-[#5B6B8C] mt-1">
+          {payload[0].payload.month}
+        </p>
+      </div>
+    );
+  }
+  return null;
+};
+
 export function AuthorityChart({ avgScore }: { avgScore: number }) {
   const [showCoachmark, setShowCoachmark] = useState(false);
   
@@ -19,23 +36,6 @@ export function AuthorityChart({ avgScore }: { avgScore: number }) {
   const lastScore = data[data.length - 1].score;
   const trendDirection = lastScore > firstScore ? 'improving' : lastScore < firstScore ? 'declining' : 'stable';
   const trendPercentage = Math.abs(((lastScore - firstScore) / firstScore) * 100).toFixed(1);
-
-  // Custom tooltip component
-  const CustomTooltip = ({ active, payload }: any) => {
-    if (active && payload && payload.length) {
-      return (
-        <div className="glass-panel rounded-lg p-3 border dark:border-white/10 light:border-black/10">
-          <p className="text-xs dark:text-white light:text-[#0C182C] font-mono">
-            Score: {payload[0].value}
-          </p>
-          <p className="text-[10px] dark:text-[#A3A9B7] light:text-[#5B6B8C] mt-1">
-            {payload[0].payload.month}
-          </p>
-        </div>
-      );
-    }
-    return null;
-  };
 
   return (
     <div className="glass-panel rounded-2xl p-6">

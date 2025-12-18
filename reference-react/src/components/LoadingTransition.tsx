@@ -7,13 +7,13 @@ interface LoadingTransitionProps {
   domain: string;
 }
 
-const loadingSteps = [
-  { text: 'Connecting to domain...', duration: 2500, targetProgress: 12 },
-  { text: 'Analyzing website structure...', duration: 3000, targetProgress: 28 },
-  { text: 'Scanning SEO & performance data...', duration: 3500, targetProgress: 62 },
-  { text: 'Evaluating AI citations...', duration: 3000, targetProgress: 85 },
-  { text: 'Calculating authority score...', duration: 2500, targetProgress: 96 },
-  { text: 'Finalizing results...', duration: 2000, targetProgress: 100 },
+export const loadingSteps = [
+  { text: 'Connecting to domain...', duration: 900, targetProgress: 12 },
+  { text: 'Analyzing website structure...', duration: 1100, targetProgress: 28 },
+  { text: 'Scanning SEO & performance data...', duration: 1600, targetProgress: 62 },
+  { text: 'Evaluating AI citations...', duration: 1200, targetProgress: 85 },
+  { text: 'Calculating authority score...', duration: 1200, targetProgress: 96 },
+  { text: 'Finalizing results...', duration: 1000, targetProgress: 100 },
 ];
 
 export function LoadingTransition({ domain }: LoadingTransitionProps) {

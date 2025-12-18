@@ -5,6 +5,11 @@ on:
   push:
     branches: [main]
 
+env:
+  PR_TITLE: ${{ github.event.pull_request.title || '-' }}
+  PR_BODY_RAW: ${{ github.event.pull_request.body || '-' }}
+  PR_URL: ${{ github.event.pull_request.html_url || '-' }}
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -12,11 +17,21 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Prepare PR Description (truncate)
+        id: pr
+        run: |
+          BODY="${PR_BODY_RAW}"
+          BODY_CLEAN=$(echo "$BODY" | tr '\n' ' ' | cut -c1-300)
+          echo "PR_BODY=$BODY_CLEAN" >> $GITHUB_ENV
+
       - name: Deploy
         run: |
           echo "Deploying..."
           sleep 3
 
+      # ========================
+      # SUCCESS NOTIFICATION
+      # ========================
       - name: Notify Lark - Success
         if: success()
         run: |
@@ -33,37 +48,15 @@ jobs:
                 "template": "green"
               },
               "elements": [
-                {
-                  "tag": "markdown",
-                  "content": "**📦 Repo:** ${{ github.repository }}"
-                },
-                {
-                  "tag": "markdown",
-                  "content": "**🌿 Branch:** `${{ github.ref_name }}`"
-                },
-                {
-                  "tag": "markdown",
-                  "content": "**🔖 Commit:** `${{ github.sha }}`"
-                },
-                {
-                  "tag": "markdown",
-                  "content": "**👤 Triggered by:** ${{ github.actor }}"
-                },
-                 {
-                  "tag": "action",
-                  "actions": [
-                    {
-                      "tag": "button",
-                      "text": { "tag": "plain_text", "content": "🔍 View Workflow" },
-                      "url": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}",
-                      "type": "primary"
-                    }
-                  ]
-                }
+                { "tag": "markdown", "content": "**🧾 Pull Request Title**\n${{ env.PR_TITLE }}" },
+                { "tag": "markdown", "content": "**📝 Pull Request Description**\n${{ env.PR_BODY }}" },
               ]
             }
           }'
 
+      # ========================
+      # FAILED NOTIFICATION
+      # ========================
       - name: Notify Lark - Failed
         if: failure()
         run: |
@@ -83,6 +76,11 @@ jobs:
                 { "tag": "markdown", "content": "**📦 Repo:** ${{ github.repository }}" },
                 { "tag": "markdown", "content": "**🌿 Branch:** `${{ github.ref_name }}`" },
                 { "tag": "markdown", "content": "**👤 Triggered by:** ${{ github.actor }}" },
+
+                { "tag": "hr" },
+
+                { "tag": "markdown", "content": "**🧾 Pull Request Title**\n${{ env.PR_TITLE }}" },
+
                 {
                   "tag": "action",
                   "actions": [
@@ -98,9 +96,17 @@ jobs:
             }
           }'
 
+      # ========================
+      # CANCELLED NOTIFICATION
+      # ========================
       - name: Notify Lark - Cancelled
         if: cancelled()
         run: |
           curl -X POST ${{ secrets.LARK_WEBHOOK_URL }} \
           -H "Content-Type: application/json" \
-          -d '{ "msg_type": "text", "content": { "text": "⏹ Deploy CANCELLED - ${{ github.repository }}" }}'
+          -d '{
+            "msg_type": "text",
+            "content": {
+              "text": "⏹ Deployment CANCELLED\nRepo: ${{ github.repository }}\nBranch: ${{ github.ref_name }}"
+            }
+          }'

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { LandingView } from './components/LandingView';
 import { DashboardView } from './components/DashboardViewNew';
 import { PreLoader } from './components/PreLoader';
@@ -8,6 +8,8 @@ import { LoadingTransition } from './components/LoadingTransition';
 import { Modal } from './components/Modal';
 import { ThemeProvider } from './components/ThemeContext';
 import { storageUtils } from '../../src/utils/storage';
+import { loadingSteps } from './components/LoadingTransition';
+
 import {
   AlertDialog,
   AlertDialogAction,
@@ -30,8 +32,9 @@ interface Scores {
 }
 
 const PRELOADER_MS = 8000;
-const LOADING_MS = 16500;
-const TOTAL_LOADING_MS = PRELOADER_MS + LOADING_MS;
+const LOADING_MS = loadingSteps.reduce((acc, step) => acc + step.duration, 0);
+// const TOTAL_LOADING_MS = PRELOADER_MS + LOADING_MS;
+const TOTAL_LOADING_MS = LOADING_MS;
 
 function normalizeDomain(input: string): string {
   return input.trim().toLowerCase();
@@ -82,6 +85,7 @@ function deriveScoresForDomain(domainInput: string): Scores {
 }
 
 export default function App() {
+  const [mounted, setMounted] = useState(false)
   const initialAvoData = storageUtils.getAvoData();
   const [view, setView] = useState<View>(initialAvoData?.id ? 'dashboard' : 'landing');
   const [domain, setDomain] = useState(initialAvoData?.url ?? '');
@@ -127,6 +131,13 @@ export default function App() {
     setDomain('');
     setScores({ opt: 0, man: 0, gen: 0, avg: 0 });
   };
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setMounted(true)
+  }, []);
+
+  if (!mounted) return null
 
   return (
     <ThemeProvider>
